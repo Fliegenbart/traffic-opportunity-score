@@ -1,7 +1,7 @@
 # Truckonomics
 
-Truckonomics ist ein Vercel-Projekt fuer einen deutschen TCO-Rechner fuer Diesel- und Elektro-LKW.
-Zusaetzlich enthaelt das Projekt einen B2B Depot Readiness Check fuer eTruckathon / Electrified.
+Truckonomics ist ein Vercel-Projekt für einen deutschen TCO-Rechner für Diesel- und Elektro-LKW.
+Zusätzlich enthält das Projekt einen B2B DepotOne Readiness Check als Lead-Generation-Funnel für Depot-Elektrifizierung.
 
 Live: https://truckonomics.vercel.app
 
@@ -39,16 +39,16 @@ Die statischen Dateien landen in `dist/public`. Alle nicht-API-Routen werden per
 - `GET /api/readiness-export?format=json&token=...`: exportiert Readiness Leads als JSON.
 - `GET /api/readiness-export?format=csv&token=...`: exportiert Readiness Leads als CSV.
 
-Fuer den Lead-Versand werden optional diese Environment Variables genutzt:
+Für den Lead-Versand werden optional diese Environment Variables genutzt:
 
 - `LEAD_TO_EMAIL`
 - `LEAD_FROM_EMAIL`
 - `RESEND_API_KEY`
 
-Fuer den Depot Readiness Export wird benoetigt:
+Für den Depot Readiness Export wird benötigt:
 
-- `ADMIN_EXPORT_TOKEN`: einfacher MVP-Schutz fuer JSON-/CSV-Export.
-- `READINESS_STORAGE_PATH`: optionaler Dateipfad fuer gespeicherte Readiness Submissions. Ohne Wert nutzt die App `/tmp/truckonomics-readiness-submissions.json`.
+- `ADMIN_EXPORT_TOKEN`: einfacher MVP-Schutz für JSON-/CSV-Export.
+- `READINESS_STORAGE_PATH`: optionaler Dateipfad für gespeicherte Readiness Submissions. Ohne Wert nutzt die App `/tmp/truckonomics-readiness-submissions.json`.
 
 ## Depot Readiness Check
 
@@ -65,13 +65,14 @@ Dann im Browser oeffnen:
 http://127.0.0.1:3000/depot-readiness
 ```
 
-Der Check umfasst:
+Der Check ist auf DepotOne ausgerichtet und dient als qualifizierter Lead-Funnel. Er umfasst:
 
-- mehrstufigen Wizard fuer Unternehmen, Fuhrpark, Einsatzprofil, Depot, Energie, Wirtschaftlichkeit und Kontaktfreigabe
+- mehrstufigen Wizard für Unternehmen, Fuhrpark, Einsatzprofil, Depot, Energie, Wirtschaftlichkeit und Kontaktfreigabe
 - Score von 0 bis 100 mit Readiness-Level
 - Lead-Klassen A, B und C
 - DSGVO-Struktur mit separater Kontakt- und Marketing-Einwilligung
-- Mock-Schnittstelle in `api/crmAdapter.ts` fuer spaetere Anbindung an HubSpot, Salesforce, Pipedrive oder DepotOne/E.ON-Endpunkte
+- DepotOne-orientiertes Design mit E.ON Drive, NEoT und Mitsui als Partnerbezug
+- Mock-Schnittstelle in `api/crmAdapter.ts` für spätere Anbindung an HubSpot, Salesforce, Pipedrive oder DepotOne/E.ON-Endpunkte
 
 Tests ausfuehren:
 

@@ -329,26 +329,26 @@ export function calculateReadinessScore(submission: ReadinessSubmission): Scorin
 function getInterpretation(level: ReadinessLevel) {
   switch (level) {
     case "High Readiness":
-      return "Ihr Depot wirkt auf Basis der Angaben bereits gut geeignet fuer eine konkrete E-Truck-Pruefung.";
+      return "Ihr Depot wirkt auf Basis der Angaben bereits gut geeignet für eine konkrete DepotOne-Prüfung.";
     case "Medium Readiness":
-      return "Es gibt klare Anknuepfungspunkte, einige technische oder organisatorische Fragen sollten aber vor dem naechsten Schritt geklaert werden.";
+      return "Es gibt klare Anknüpfungspunkte für DepotOne, einige technische oder organisatorische Fragen sollten aber vor dem nächsten Schritt geklärt werden.";
     case "Early Stage":
-      return "Die Elektrifizierung ist grundsaetzlich denkbar, braucht aber zuerst mehr Klarheit zu Einsatzprofil, Standort und Wirtschaftlichkeit.";
+      return "Die Elektrifizierung ist grundsätzlich denkbar. DepotOne kann helfen, Einsatzprofil, Standort und Wirtschaftlichkeit sauber vorzuprüfen.";
     case "Low Readiness":
-      return "Aktuell fehlen noch wichtige Voraussetzungen oder Informationen fuer eine belastbare Depot-Elektrifizierung.";
+      return "Aktuell fehlen noch wichtige Voraussetzungen oder Informationen für eine belastbare DepotOne-Einschätzung.";
   }
 }
 
 function getCtaLabel(level: ReadinessLevel) {
   switch (level) {
     case "High Readiness":
-      return "Jetzt DepotOne-Ersteinschaetzung anfragen";
+      return "DepotOne-Ersteinschätzung anfragen";
     case "Medium Readiness":
-      return "Depot-Potenzial pruefen lassen";
+      return "DepotOne-Potenzial prüfen lassen";
     case "Early Stage":
-      return "E-Truck-Depot-Guide herunterladen";
+      return "DepotOne Orientierungsgespräch anfragen";
     case "Low Readiness":
-      return "Grundlagen zur Depot-Elektrifizierung ansehen";
+      return "DepotOne Grundlagen-Check anfragen";
   }
 }
 
@@ -356,23 +356,23 @@ function buildStrengths(submission: ReadinessSubmission, categories: ScoringCate
   const strengths: string[] = [];
   const strongCategories = categories
     .filter((category) => category.score / category.maxScore >= 0.7)
-    .map((category) => `${category.label} ist bereits stark ausgepraegt.`);
+    .map((category) => `${category.label} ist bereits stark ausgeprägt.`);
 
   strengths.push(...strongCategories);
   if (submission.operation.depotReturnShare === "75-100 %") {
-    strengths.push("Viele Fahrzeuge kehren regelmaessig ins Depot zurueck.");
+    strengths.push("Viele Fahrzeuge kehren regelmäßig ins Depot zurück.");
   }
   if (submission.economics.wantsConsultation) {
-    strengths.push("Es gibt ein klares Interesse an einer fachlichen Ersteinschaetzung.");
+    strengths.push("Es gibt ein klares Interesse an einer DepotOne-Ersteinschätzung.");
   }
   if (submission.depot.gridConnectionKnown === "ja") {
     strengths.push("Der Netzanschluss ist bereits bekannt.");
   }
 
   return fillToThree(strengths, [
-    "Die Angaben reichen fuer eine erste indikative Bewertung.",
-    "Der Check liefert eine gute Grundlage fuer ein strukturiertes Folgegespraech.",
-    "Fuhrpark- und Depotdaten koennen im naechsten Schritt konkretisiert werden.",
+    "Die Angaben reichen für eine erste indikative Bewertung.",
+    "Der Check liefert eine gute Grundlage für ein strukturiertes DepotOne-Folgegespräch.",
+    "Fuhrpark- und Depotdaten können im nächsten Schritt konkretisiert werden.",
   ]);
 }
 
@@ -380,14 +380,14 @@ function buildOpenPoints(submission: ReadinessSubmission, categories: ScoringCat
   const openPoints: string[] = [];
   const weakCategories = categories
     .filter((category) => category.score / category.maxScore < 0.45)
-    .map((category) => `${category.label} sollte genauer geprueft werden.`);
+    .map((category) => `${category.label} sollte genauer geprüft werden.`);
 
   openPoints.push(...weakCategories);
   if (submission.depot.gridConnectionKnown !== "ja") {
-    openPoints.push("Netzanschluss und verfuegbare Leistung sind noch nicht ausreichend geklaert.");
+    openPoints.push("Netzanschluss und verfügbare Leistung sind noch nicht ausreichend geklärt.");
   }
   if (submission.operation.averageKmPerDay === "unbekannt") {
-    openPoints.push("Die durchschnittliche Tagesfahrleistung sollte nachgeschaerft werden.");
+    openPoints.push("Die durchschnittliche Tagesfahrleistung sollte nachgeschärft werden.");
   }
   if (submission.economics.budgetStatus === "noch kein Budget") {
     openPoints.push("Budget und interne Entscheidungsgrundlage sind noch offen.");
@@ -395,24 +395,24 @@ function buildOpenPoints(submission: ReadinessSubmission, categories: ScoringCat
 
   return fillToThree(openPoints, [
     "Ladefenster und Standzeiten sollten mit realen Tourdaten abgeglichen werden.",
-    "Parkflaechen, Kabelwege und Bauzeiten sollten am Standort geprueft werden.",
+    "Parkflächen, Kabelwege und Bauzeiten sollten am Standort geprüft werden.",
     "Eine belastbare Bewertung braucht technische und wirtschaftliche Detaildaten.",
   ]);
 }
 
 function buildRecommendations(level: ReadinessLevel, submission: ReadinessSubmission) {
   const recommendations = [
-    "Tourdaten, Standzeiten und Rueckkehrquoten fuer die wichtigsten Fahrzeuggruppen sammeln.",
-    "Netzanschluss, verfuegbare Leistung und Flaechen am Depot technisch vorpruefen.",
-    "TCO-Annahmen, Capex/Opex-Praeferenz und Projektzeitplan gemeinsam bewerten.",
+    "Tourdaten, Standzeiten und Rückkehrquoten für die wichtigsten Fahrzeuggruppen sammeln.",
+    "Netzanschluss, verfügbare Leistung und Flächen am Depot technisch vorprüfen.",
+    "TCO-Annahmen, Capex/Opex-Präferenz und Projektzeitplan gemeinsam bewerten.",
   ];
 
   if (level === "High Readiness" || level === "Medium Readiness") {
-    recommendations.unshift("Eine unverbindliche DepotOne-Ersteinschaetzung mit Standortdaten vorbereiten.");
+    recommendations.unshift("Eine unverbindliche DepotOne-Ersteinschätzung mit Standortdaten vorbereiten.");
   }
 
   if (!submission.contact.consentContact) {
-    recommendations.push("Kontaktfreigabe aktiv erteilen, wenn eine DepotOne-Rueckmeldung gewuenscht ist.");
+    recommendations.push("Kontaktfreigabe aktiv erteilen, wenn eine DepotOne-Rückmeldung gewünscht ist.");
   }
 
   return recommendations.slice(0, 4);
