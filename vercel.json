@@ -21,5 +21,10 @@
       ]
     }
   ],
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/" }]
+  "rewrites": [
+    {
+      "source": "/((?!api/|@vite/|@react-refresh|@fs/|src/|node_modules/).*)",
+      "destination": "/"
+    }
+  ]
 }

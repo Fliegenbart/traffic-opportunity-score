@@ -10,6 +10,8 @@
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test:lifecycle": "npx --yes tsx shared/lifecycle.test.ts",
+    "test:readiness": "npx --yes tsx shared/readiness.test.ts",
+    "test": "npm run test:lifecycle && npm run test:readiness",
     "check": "tsc"
   },
   "dependencies": {

@@ -30,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useTenant } from "@/lib/tenant";
 import { EmbedAutoResize } from "@/components/embed-auto-resize";
 import type { OperationProfile } from "@/types/operation-profile";
+import { Link } from "wouter";
 
 const defaultDieselTruck: TruckParameters = {
   name: "Diesel-Sattelzug",
@@ -301,6 +302,11 @@ export default function Home() {
                 Der präzise Kostenvergleich zwischen Diesel- und Elektro-Sattelzügen.
                 Fundierte Entscheidungen auf Basis realer Daten.
               </p>
+              <Link href="/depot-readiness">
+                <Button className="mt-8 min-h-12 rounded-xl px-6">
+                  Depot Readiness Check starten
+                </Button>
+              </Link>
             </div>
           </div>
         </header>
