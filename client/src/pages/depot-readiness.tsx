@@ -271,7 +271,7 @@ export default function DepotReadiness() {
         <div className="relative mx-auto flex min-h-[620px] max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-12">
           <nav className="flex items-center justify-between gap-4">
             <DepotOneMark />
-            <Link href="/">
+            <Link href="/tco">
               <Button
                 variant="outline"
                 className="rounded-full border-white/20 bg-white/10 text-white hover:bg-white hover:text-[#1d1d1f]"
