@@ -289,7 +289,7 @@ export default function DepotReadiness() {
                 DepotOne Lead Readiness Funnel
               </p>
               <h1 className="max-w-4xl text-5xl font-semibold leading-[1.03] tracking-[-0.02em] sm:text-6xl lg:text-7xl">
-                DepotOne Readiness Check
+                Depot Readiness Check
               </h1>
               <p className="mt-7 max-w-2xl text-xl leading-relaxed text-white/72">
                 Prüfen Sie in wenigen Minuten, ob Fuhrpark, Standort und Einsatzprofil
