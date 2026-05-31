@@ -133,6 +133,9 @@ const high = calculateReadinessScore(highSubmission);
 assert.equal(high.score, 100);
 assert.equal(getReadinessLevel(high.score), "High Readiness");
 assert.equal(classifyLead(highSubmission, high), "A-Lead");
+assert.equal(high.planType, "Optimization Plan");
+assert.equal(high.ctaLabel, "Digital-Twin-Routenanalyse anfragen");
+assert.ok(high.planHighlights.includes("Ladepläne optimieren"));
 
 const noConsent = calculateReadinessScore({
   ...highSubmission,
@@ -170,3 +173,6 @@ const mediumSubmission = baseSubmission({
 const medium = calculateReadinessScore(mediumSubmission);
 assert.equal(getReadinessLevel(medium.score), "Medium Readiness");
 assert.equal(classifyLead(mediumSubmission, medium), "B-Lead");
+assert.equal(medium.planType, "Feasibility Plan");
+assert.equal(medium.ctaLabel, "DepotOne Plan anfragen");
+assert.ok(medium.planHighlights.includes("Machbarkeit und Infrastrukturgröße prüfen"));

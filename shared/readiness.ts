@@ -98,6 +98,11 @@ export type ReadinessLevel =
   | "Early Stage"
   | "Low Readiness";
 export type LeadClassification = "A-Lead" | "B-Lead" | "C-Lead";
+export type DepotOnePlanType =
+  | "Feasibility Plan"
+  | "Optimization Plan"
+  | "Digital Twin Route Analysis"
+  | "Basics Check";
 
 export interface ScoringCategory {
   key: string;
@@ -110,6 +115,10 @@ export interface ScoringResult {
   score: number;
   readinessLevel: ReadinessLevel;
   leadClass: LeadClassification;
+  planType: DepotOnePlanType;
+  planTitle: string;
+  planDescription: string;
+  planHighlights: string[];
   categories: ScoringCategory[];
   interpretation: string;
   strengths: string[];
@@ -308,10 +317,12 @@ export function calculateReadinessScore(submission: ReadinessSubmission): Scorin
     categories.reduce((sum, category) => sum + category.score, 0),
   );
   const readinessLevel = getReadinessLevel(score);
+  const plan = getDepotOnePlan(submission, categories, readinessLevel);
   const resultWithoutLead = {
     score,
     readinessLevel,
     leadClass: "C-Lead" as LeadClassification,
+    ...plan,
     categories,
     interpretation: getInterpretation(readinessLevel),
     strengths: buildStrengths(submission, categories),
@@ -342,14 +353,70 @@ function getInterpretation(level: ReadinessLevel) {
 function getCtaLabel(level: ReadinessLevel) {
   switch (level) {
     case "High Readiness":
-      return "DepotOne-Ersteinschätzung anfragen";
+      return "Digital-Twin-Routenanalyse anfragen";
     case "Medium Readiness":
-      return "DepotOne-Potenzial prüfen lassen";
+      return "DepotOne Plan anfragen";
     case "Early Stage":
-      return "DepotOne Orientierungsgespräch anfragen";
+      return "Routen und Ladebedarf prüfen lassen";
     case "Low Readiness":
       return "DepotOne Grundlagen-Check anfragen";
   }
+}
+
+function getDepotOnePlan(
+  submission: ReadinessSubmission,
+  categories: ScoringCategory[],
+  level: ReadinessLevel,
+) {
+  const operationScore = categories.find((category) => category.key === "operation")?.score ?? 0;
+  const depotScore = categories.find((category) => category.key === "depot")?.score ?? 0;
+  const hasHighRoutePotential =
+    operationScore >= 18 &&
+    ["75-100 %", "50-75 %"].includes(submission.operation.depotReturnShare) &&
+    submission.operation.averageKmPerDay !== "unbekannt";
+  const hasOptimizationNeed =
+    level === "High Readiness" ||
+    (level === "Medium Readiness" && hasHighRoutePotential && operationScore >= 21 && depotScore >= 18);
+
+  if (hasOptimizationNeed) {
+    return {
+      planType: "Optimization Plan" as DepotOnePlanType,
+      planTitle: "Empfohlener nächster Schritt: DepotOne Optimization Plan",
+      planDescription:
+        "Ihre Angaben wirken konkret genug, um Ladefenster, Peak Power, Energiebedarf und erste Elektrifizierungswellen genauer zu optimieren.",
+      planHighlights: [
+        "Ladepläne optimieren",
+        "Peak Power und Netzanschlussbedarf senken",
+        "PV, Batteriespeicher und Energiemanagement als Szenario prüfen",
+      ],
+    };
+  }
+
+  if (level === "Medium Readiness" || level === "Early Stage" || depotScore >= 8) {
+    return {
+      planType: "Feasibility Plan" as DepotOnePlanType,
+      planTitle: "Empfohlener nächster Schritt: DepotOne Feasibility Plan",
+      planDescription:
+        "Der beste nächste Schritt ist eine strukturierte Machbarkeitsprüfung für Fuhrpark, Standort, Ladebedarf und Infrastrukturgröße.",
+      planHighlights: [
+        "Machbarkeit und Infrastrukturgröße prüfen",
+        "Routen- und Standzeitdaten für die erste E-Truck-Welle sammeln",
+        "Netzanschluss, Ladepunkte und Investitionslogik vorqualifizieren",
+      ],
+    };
+  }
+
+  return {
+    planType: "Basics Check" as DepotOnePlanType,
+    planTitle: "Empfohlener nächster Schritt: DepotOne Grundlagen-Check",
+    planDescription:
+      "Vor einer technischen Planung sollten Einsatzprofil, Depotdaten und interne Projektziele zuerst grob geschärft werden.",
+    planHighlights: [
+      "Basisdaten zu Fuhrpark und Depot vervollständigen",
+      "kritische Routendaten identifizieren",
+      "erste Entscheidungsgrundlage für das Management vorbereiten",
+    ],
+  };
 }
 
 function buildStrengths(submission: ReadinessSubmission, categories: ScoringCategory[]) {
@@ -402,13 +469,13 @@ function buildOpenPoints(submission: ReadinessSubmission, categories: ScoringCat
 
 function buildRecommendations(level: ReadinessLevel, submission: ReadinessSubmission) {
   const recommendations = [
-    "Tourdaten, Standzeiten und Rückkehrquoten für die wichtigsten Fahrzeuggruppen sammeln.",
-    "Netzanschluss, verfügbare Leistung und Flächen am Depot technisch vorprüfen.",
-    "TCO-Annahmen, Capex/Opex-Präferenz und Projektzeitplan gemeinsam bewerten.",
+    "Tourdaten, Standzeiten und Rückkehrquoten als Grundlage für einen Digital Twin sammeln.",
+    "Netzanschluss, verfügbare Leistung und Ladepunktanzahl im DepotOne Feasibility Plan vorprüfen.",
+    "TCO-Annahmen, Capex/Opex-Präferenz und Projektzeitplan im DepotOne Plan gemeinsam bewerten.",
   ];
 
   if (level === "High Readiness" || level === "Medium Readiness") {
-    recommendations.unshift("Eine unverbindliche DepotOne-Ersteinschätzung mit Standortdaten vorbereiten.");
+    recommendations.unshift("DepotOne Plan anfragen und Routen-/Ladebedarf strukturiert prüfen lassen.");
   }
 
   if (!submission.contact.consentContact) {

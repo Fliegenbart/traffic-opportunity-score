@@ -681,6 +681,33 @@ function ReadinessResultCard({
         ))}
       </div>
 
+      <div className="mt-8 rounded-[1.25rem] border border-[#0DBBC8]/20 bg-[#0DBBC8]/10 p-5">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0A99A4]">
+              DepotOne Plan
+            </p>
+            <h3 className="mt-2 text-2xl font-semibold tracking-[-0.015em]">
+              {result.planTitle}
+            </h3>
+            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#3f3f46]">
+              {result.planDescription}
+            </p>
+          </div>
+          <div className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#0A99A4] shadow-sm">
+            {result.planType}
+          </div>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          {result.planHighlights.map((highlight) => (
+            <div key={highlight} className="flex gap-2 rounded-2xl bg-white p-4 text-sm text-[#3f3f46]">
+              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#0A99A4]" />
+              <span>{highlight}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         <ResultList title="Top 3 Stärken" items={result.strengths} />
         <ResultList title="Top 3 offene Punkte" items={result.openPoints} />
