@@ -302,11 +302,18 @@ export default function Home() {
                 Der präzise Kostenvergleich zwischen Diesel- und Elektro-Sattelzügen.
                 Fundierte Entscheidungen auf Basis realer Daten.
               </p>
-              <Link href="/depot-readiness">
-                <Button className="mt-8 min-h-12 rounded-xl px-6">
-                  Depot Readiness Check starten
-                </Button>
-              </Link>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <Link href="/depot-readiness">
+                  <Button className="min-h-12 rounded-xl px-6">
+                    Depot Readiness Check starten
+                  </Button>
+                </Link>
+                <Link href="/traffic-opportunity">
+                  <Button variant="outline" className="min-h-12 rounded-xl px-6">
+                    Traffic Opportunity prüfen
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </header>

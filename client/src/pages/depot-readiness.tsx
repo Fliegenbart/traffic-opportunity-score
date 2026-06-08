@@ -271,15 +271,25 @@ export default function DepotReadiness() {
         <div className="relative mx-auto flex min-h-[620px] max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-12">
           <nav className="flex items-center justify-between gap-4">
             <DepotOneMark />
-            <Link href="/tco">
-              <Button
-                variant="outline"
-                className="rounded-full border-white/20 bg-white/10 text-white hover:bg-white hover:text-[#1d1d1f]"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                TCO-Rechner
-              </Button>
-            </Link>
+            <div className="flex flex-wrap items-center gap-3">
+              <Link href="/traffic-opportunity">
+                <Button
+                  variant="outline"
+                  className="rounded-full border-white/20 bg-white/10 text-white hover:bg-white hover:text-[#1d1d1f]"
+                >
+                  Traffic Score
+                </Button>
+              </Link>
+              <Link href="/tco">
+                <Button
+                  variant="outline"
+                  className="rounded-full border-white/20 bg-white/10 text-white hover:bg-white hover:text-[#1d1d1f]"
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  TCO-Rechner
+                </Button>
+              </Link>
+            </div>
           </nav>
 
           <div className="grid flex-1 items-center gap-10 py-16 lg:grid-cols-[1.08fr_0.92fr]">

@@ -6,3 +6,7 @@ vite.config.ts.*
 *.tar.gz
 .vercel
 .env*.local
+.playwright-mcp
+/data/
+/output/
+/tmp/

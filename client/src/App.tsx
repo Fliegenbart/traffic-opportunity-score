@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { TenantProvider } from "@/lib/tenant";
 import Home from "@/pages/home";
 import DepotReadiness from "@/pages/depot-readiness";
+import TrafficOpportunity from "@/pages/traffic-opportunity";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -15,6 +16,7 @@ function Router() {
       <Route path="/tco" component={Home} />
       <Route path="/embed" component={Home} />
       <Route path="/depot-readiness" component={DepotReadiness} />
+      <Route path="/traffic-opportunity" component={TrafficOpportunity} />
       <Route component={NotFound} />
     </Switch>
   );
