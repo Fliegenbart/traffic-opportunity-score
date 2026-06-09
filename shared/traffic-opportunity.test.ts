@@ -4,11 +4,17 @@ import {
   classifyTrafficOpportunity,
   getDistanceFitScore,
   normalizeAgainstMax,
+  normalizeVolumeSqrt,
 } from "./traffic-opportunity";
 
 assert.equal(normalizeAgainstMax(50, 100), 50);
 assert.equal(normalizeAgainstMax(125, 100), 100);
 assert.equal(normalizeAgainstMax(10, 0), 0);
+
+assert.equal(normalizeVolumeSqrt(25, 100), 50);
+assert.equal(normalizeVolumeSqrt(100, 100), 100);
+assert.equal(normalizeVolumeSqrt(125, 100), 100);
+assert.equal(normalizeVolumeSqrt(10, 0), 0);
 
 assert.equal(getDistanceFitScore(220), 100);
 assert.equal(getDistanceFitScore(480), 90);
@@ -23,10 +29,11 @@ const high = calculateTrafficOpportunityScore({
   corridorRelevanceScore: 90,
 });
 
-assert.equal(high.score, 91);
-assert.equal(classifyTrafficOpportunity(high.score).level, "High Opportunity");
-assert.equal(high.components.volume, 90);
+// volume = sqrt(0.9) * 100 = 95, growth = 50 % / 60 % = 83
+assert.equal(high.components.volume, 95);
 assert.equal(high.components.growth, 83);
+assert.equal(high.score, 92);
+assert.equal(classifyTrafficOpportunity(high.score).level, "High Opportunity");
 
 const low = calculateTrafficOpportunityScore({
   trucks2019: 0,
@@ -37,5 +44,6 @@ const low = calculateTrafficOpportunityScore({
 });
 
 assert.equal(low.components.growth, 0);
-assert.equal(low.score, 10);
+assert.equal(low.components.volume, 9);
+assert.equal(low.score, 13);
 assert.equal(classifyTrafficOpportunity(low.score).level, "Low Opportunity");

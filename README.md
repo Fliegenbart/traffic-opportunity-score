@@ -1,9 +1,24 @@
 # Truckonomics
 
 Truckonomics ist ein Vercel-Projekt für einen deutschen TCO-Rechner für Diesel- und Elektro-LKW.
-Zusätzlich enthält das Projekt einen B2B DepotOne Readiness Check als Lead-Generation-Funnel für Depot-Elektrifizierung.
+Zusätzlich enthält das Projekt einen B2B DepotOne Readiness Check als Lead-Generation-Funnel für Depot-Elektrifizierung
+sowie den Traffic Opportunity Score (Startseite `/`): eine Strecken- und Regionsanalyse für halböffentliches Lkw-Laden.
 
 Live: https://truckonomics.vercel.app
+
+## Traffic Opportunity Score
+
+- Frontend: `client/src/pages/traffic-opportunity.tsx`, Karte in `client/src/components/traffic-map.tsx`
+- Score-Logik: `shared/traffic-opportunity.ts` (Test: `npm run test:traffic`)
+- Daten: `client/public/data/traffic-opportunity-de.json`, generiert aus der lokalen Mendeley-ZIP
+  (liegt bewusst nicht im Repo) per `python3 scripts/build_traffic_opportunity_de.py`
+- Validierung: `python3 scripts/validate_against_bast.py` vergleicht die synthetischen Netzkanten
+  mit den BASt-Autobahn-Dauerzählstellen (Schwerverkehrs-DTV) und schreibt
+  `data/external/bast-validation.json`; der Generator bettet das Ergebnis in die App-JSON ein.
+  Reihenfolge: erst Validierung, dann Generator.
+- Deep-Links: `?region=<id>` und `?strecke=<edgeId>` werden beim Laden übernommen und bei Auswahl
+  in die URL gespiegelt.
+- Embed-Modus: `?embed=1` blendet Navigation und CTA aus (für Präsentationen/iFrames).
 
 ## Technik
 

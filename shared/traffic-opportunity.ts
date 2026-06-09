@@ -44,6 +44,17 @@ export function normalizeAgainstMax(value: number, maxValue: number) {
   return Math.round(clamp((value / maxValue) * 100));
 }
 
+// Wurzelkurve statt linear: Eine einzelne dominante Region (Hamburg) drückt
+// sonst alle anderen Volumen-Komponenten zusammen.
+export function normalizeVolumeSqrt(value: number, maxValue: number) {
+  if (!Number.isFinite(value) || !Number.isFinite(maxValue) || maxValue <= 0) {
+    return 0;
+  }
+
+  const ratio = Math.min(1, Math.max(0, value / maxValue));
+  return Math.round(Math.sqrt(ratio) * 100);
+}
+
 export function getDistanceFitScore(distanceKm: number) {
   if (!Number.isFinite(distanceKm) || distanceKm <= 0) return 0;
   if (distanceKm < 150) return 65;
@@ -63,7 +74,7 @@ function getGrowthComponent(trucks2019: number, trucks2030: number) {
 export function calculateTrafficOpportunityScore(
   input: TrafficOpportunityScoreInput,
 ): TrafficOpportunityScore {
-  const volume = normalizeAgainstMax(input.trucks2030, input.maxTrucks2030);
+  const volume = normalizeVolumeSqrt(input.trucks2030, input.maxTrucks2030);
   const growth = getGrowthComponent(input.trucks2019, input.trucks2030);
   const distanceFit = Math.round(clamp(input.distanceFitScore));
   const corridorRelevance = Math.round(clamp(input.corridorRelevanceScore));
