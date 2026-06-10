@@ -1,0 +1,40 @@
+{
+  "id": "demo",
+  "company": "Demo Spedition Nord GmbH",
+  "isDemo": true,
+  "preparedFor": "eTruckathon 2026",
+  "date": "2026-06-10",
+  "fleet": { "trucks": 85, "annualKmPerTruck": 105000 },
+  "relations": [
+    {
+      "name": "Hamburg – Berlin",
+      "originRegionId": "107060000",
+      "destinationRegionId": "107030000",
+      "tripsPerWeek": 48
+    },
+    {
+      "name": "Hamburg – Köln",
+      "originRegionId": "107060000",
+      "destinationRegionId": "107100203",
+      "tripsPerWeek": 36
+    },
+    {
+      "name": "Hannover – München",
+      "originRegionId": "107090209",
+      "destinationRegionId": "107020102",
+      "tripsPerWeek": 20
+    },
+    {
+      "name": "Bremen – Dortmund",
+      "originRegionId": "107050001",
+      "destinationRegionId": "107100502",
+      "tripsPerWeek": 30
+    },
+    {
+      "name": "Hamburg – Leipzig",
+      "originRegionId": "107060000",
+      "destinationRegionId": "107130301",
+      "tripsPerWeek": 24
+    }
+  ]
+}

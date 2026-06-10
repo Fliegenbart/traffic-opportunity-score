@@ -19,6 +19,13 @@ Live: https://truckonomics.vercel.app
 - Deep-Links: `?region=<id>` und `?strecke=<edgeId>` werden beim Laden übernommen und bei Auswahl
   in die URL gespiegelt.
 - Embed-Modus: `?embed=1` blendet Navigation und CTA aus (für Präsentationen/iFrames).
+- Korridor-Report: personalisierte 4-Seiten-Analyse für Logistiker (eTruckathon-Funnel).
+  Konfiguration je Kunde unter `client/public/data/reports/<id>.json` (siehe `demo.json`),
+  Ansicht unter `/korridor-report?id=<id>`, PDF per
+  `./scripts/create_korridor_report_pdf.sh <id> [output.pdf]` (Playwright headless Chrome).
+  Bewertungslogik in `shared/korridor-report.ts` (Test: `npm run test:report`):
+  Machbarkeits-Ampel je Relation (Reichweite vs. größte Ladelücke), vereinfachtes
+  Energie- und Mautkosten-Modell mit ausgewiesenen Annahmen, CO₂-Einsparung.
 - Lkw-Ladeparks: `python3 scripts/build_truck_charging_de.py` erzeugt
   `client/public/data/truck-charging-de.json` aus dem BNetzA-Ladesäulenregister
   (CSV nach `data/external/bnetza_ladesaeulen.csv` laden; Link auf bundesnetzagentur.de unter

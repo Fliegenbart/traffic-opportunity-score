@@ -47,6 +47,14 @@ export interface MapCharger {
   type: "mcs" | "hpc";
 }
 
+export interface MapRoute {
+  label: string;
+  aLon: number;
+  aLat: number;
+  bLon: number;
+  bLat: number;
+}
+
 interface TooltipState {
   x: number;
   y: number;
@@ -66,6 +74,7 @@ export default function TrafficMap({
   regions,
   chargers = [],
   proxyChargers = [],
+  routes = [],
   selectedRegionId,
   selectedEdgeId,
   onSelectRegion,
@@ -76,6 +85,7 @@ export default function TrafficMap({
   regions: MapRegion[];
   chargers?: MapCharger[];
   proxyChargers?: [number, number][];
+  routes?: MapRoute[];
   selectedRegionId: string;
   selectedEdgeId: number | null;
   onSelectRegion: (id: string) => void;
@@ -194,6 +204,27 @@ export default function TrafficMap({
                   })
                 }
               />
+            </g>
+          );
+        })}
+
+        {routes.map((route, index) => {
+          const [x1, y1] = project(route.aLon, route.aLat);
+          const [x2, y2] = project(route.bLon, route.bLat);
+          return (
+            <g key={`route-${index}`}>
+              <line
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+                stroke="#1d1d1f"
+                strokeWidth={1.6}
+                strokeDasharray="5 4"
+                opacity={0.85}
+              />
+              <circle cx={x1} cy={y1} r={3} fill="#1d1d1f" />
+              <circle cx={x2} cy={y2} r={3} fill="#1d1d1f" />
             </g>
           );
         })}

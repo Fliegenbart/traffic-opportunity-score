@@ -7,6 +7,7 @@ import { TenantProvider } from "@/lib/tenant";
 import Home from "@/pages/home";
 import DepotReadiness from "@/pages/depot-readiness";
 import TrafficOpportunity from "@/pages/traffic-opportunity";
+import KorridorReport from "@/pages/korridor-report";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/embed" component={Home} />
       <Route path="/depot-readiness" component={DepotReadiness} />
       <Route path="/traffic-opportunity" component={TrafficOpportunity} />
+      <Route path="/korridor-report" component={KorridorReport} />
       <Route component={NotFound} />
     </Switch>
   );

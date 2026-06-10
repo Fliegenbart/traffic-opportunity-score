@@ -12,9 +12,10 @@
     "test:lifecycle": "npx --yes tsx shared/lifecycle.test.ts",
     "test:readiness": "npx --yes tsx shared/readiness.test.ts",
     "test:traffic": "npx --yes tsx shared/traffic-opportunity.test.ts",
-    "test": "npm run test:lifecycle && npm run test:readiness && npm run test:traffic && npm run test:geo",
+    "test": "npm run test:lifecycle && npm run test:readiness && npm run test:traffic && npm run test:geo && npm run test:report",
     "check": "tsc",
-    "test:geo": "npx --yes tsx shared/geo.test.ts"
+    "test:geo": "npx --yes tsx shared/geo.test.ts",
+    "test:report": "npx --yes tsx shared/korridor-report.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
