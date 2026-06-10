@@ -11,6 +11,7 @@ import {
   Truck,
 } from "lucide-react";
 import TrafficMap, { type MapCharger, type MapRoute } from "@/components/traffic-map";
+import { distanceKm, pointToSegmentKm } from "@shared/geo";
 import {
   DEFAULT_ASSUMPTIONS,
   FEASIBILITY_LABELS,
@@ -58,7 +59,34 @@ interface TrafficDataSlice {
     destinationRegionId: string;
     totalDistanceKm: number;
   }[];
+  edgeHotspots: {
+    edgeId: number;
+    aLon: number;
+    aLat: number;
+    bLon: number;
+    bLat: number;
+  }[];
   backdrop: [number, number][];
+}
+
+interface TrendStation {
+  station: { zst: string; name: string; strasse: string; distanceKm: number };
+  profile: Record<"werktag" | "samstag" | "sonntag", number[]> | null;
+  trend: {
+    trendPctP10: number;
+    trendPctP50: number;
+    trendPctP90: number;
+    contextWeeks: number;
+  } | null;
+}
+
+interface TrendSlice {
+  metadata: {
+    stationsBacktested: number;
+    meanCoverage80: number | null;
+    source: string;
+  };
+  edges: Record<string, TrendStation>;
 }
 
 interface ChargingSlice {
@@ -109,6 +137,7 @@ export default function KorridorReport() {
   const [config, setConfig] = useState<ReportConfig | null>(null);
   const [traffic, setTraffic] = useState<TrafficDataSlice | null>(null);
   const [charging, setCharging] = useState<ChargingSlice | null>(null);
+  const [trendData, setTrendData] = useState<TrendSlice | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -122,11 +151,16 @@ export default function KorridorReport() {
       }),
       fetch("/data/traffic-opportunity-de.json").then((r) => r.json()),
       fetch("/data/truck-charging-de.json").then((r) => r.json()),
+      // Trend-Layer ist optional — der Report funktioniert auch ohne.
+      fetch("/data/traffic-trend-de.json")
+        .then((r) => (r.ok ? r.json() : null))
+        .catch(() => null),
     ])
-      .then(([cfg, trafficData, chargingData]) => {
+      .then(([cfg, trafficData, chargingData, trend]) => {
         setConfig(cfg);
         setTraffic(trafficData);
         setCharging(chargingData);
+        if (trend) setTrendData(trend);
       })
       .catch((e: Error) => setError(e.message));
   }, []);
@@ -177,6 +211,60 @@ export default function KorridorReport() {
       ];
     });
   }, [config, regionsById]);
+
+  // Gemessene Zählstellen je Relation: Hotspot-Kanten mit Trenddaten, deren
+  // Mittelpunkt im Korridor-Puffer der Relation liegt (gleiche Logik wie Ladeparks).
+  const relationTrends = useMemo(() => {
+    const result = new Map<string, TrendStation[]>();
+    if (!config || !traffic || !trendData) return result;
+    for (const relation of config.relations) {
+      const origin = regionsById.get(relation.originRegionId);
+      const destination = regionsById.get(relation.destinationRegionId);
+      if (!origin || !destination) continue;
+      const straight = distanceKm(origin, destination);
+      const buffer = Math.max(20, straight * 0.15);
+      const seen = new Set<string>();
+      const candidates: { entry: TrendStation; lineKm: number }[] = [];
+      for (const edge of traffic.edgeHotspots) {
+        const entry = trendData.edges[String(edge.edgeId)];
+        if (!entry || seen.has(entry.station.zst)) continue;
+        const mid = { lon: (edge.aLon + edge.bLon) / 2, lat: (edge.aLat + edge.bLat) / 2 };
+        const lineKm = pointToSegmentKm(mid, origin, destination);
+        if (lineKm <= buffer) {
+          seen.add(entry.station.zst);
+          candidates.push({ entry, lineKm });
+        }
+      }
+      // Die routennächste Zählstelle zuerst — sie repräsentiert die Relation am ehesten.
+      candidates.sort((a, b) => a.lineKm - b.lineKm);
+      result.set(
+        relation.name,
+        candidates.map((candidate) => candidate.entry),
+      );
+    }
+    return result;
+  }, [config, traffic, trendData, regionsById]);
+
+  // Aggregiertes Werktags-Ladefenster über alle Routen-Zählstellen,
+  // je Station auf ihre Tagesspitze normiert (Anteil der Spitze in %).
+  const aggregatedProfile = useMemo(() => {
+    const seen = new Set<string>();
+    const sums = new Array(24).fill(0);
+    let count = 0;
+    relationTrends.forEach((stations) => {
+      for (const entry of stations) {
+        if (!entry.profile?.werktag || seen.has(entry.station.zst)) continue;
+        seen.add(entry.station.zst);
+        const max = Math.max(...entry.profile.werktag, 1);
+        entry.profile.werktag.forEach((value, hour) => {
+          sums[hour] += value / max;
+        });
+        count += 1;
+      }
+    });
+    if (count === 0) return null;
+    return { shares: sums.map((s) => s / count), stationCount: count };
+  }, [relationTrends]);
 
   const mapChargers = useMemo<MapCharger[]>(
     () =>
@@ -336,7 +424,7 @@ export default function KorridorReport() {
           Lkw-Ladeparks (Umriss = angekündigt). Nur Parks in Betrieb zählen in die
           Lücken-Berechnung.
         </p>
-        <div className="mx-auto mt-5 w-[136mm] rounded-2xl border border-black/[0.08] bg-[#fbfbfd] p-4">
+        <div className="mx-auto mt-5 w-[98mm] rounded-2xl border border-black/[0.08] bg-[#fbfbfd] p-4">
           <TrafficMap
             backdrop={traffic.backdrop}
             edges={[]}
@@ -349,7 +437,7 @@ export default function KorridorReport() {
             onSelectEdge={() => undefined}
           />
         </div>
-        <div className="mt-4 space-y-1">
+        <div className="mt-3 space-y-0.5">
           {evaluated.map((row) => (
             <p key={row.relation.name} className="text-sm text-[#6e6e73]">
               <span className="font-semibold text-[#1d1d1f]">{row.relation.name}</span> ·{" "}
@@ -359,6 +447,42 @@ export default function KorridorReport() {
             </p>
           ))}
         </div>
+
+        {aggregatedProfile && (
+          <div className="report-card mt-4 rounded-2xl border border-black/[0.08] bg-white p-4">
+            <div className="flex items-baseline justify-between gap-4">
+              <h3 className="text-sm font-semibold tracking-[-0.01em]">
+                Ihr Ladefenster: Tagesgang des Lkw-Verkehrs an Ihren Routen
+              </h3>
+              <p className="text-xs text-[#9b9ba0]">
+                {aggregatedProfile.stationCount} BASt-Zählstellen, Werktag, in % der
+                Tagesspitze
+              </p>
+            </div>
+            <div className="mt-2 flex h-10 items-end gap-[3px]">
+              {aggregatedProfile.shares.map((share, hour) => (
+                <div key={hour} className="flex flex-1 items-end" style={{ height: "100%" }}>
+                  <div
+                    className="w-full rounded-sm bg-[#0A99A4]"
+                    style={{ height: `${Math.max(5, share * 100)}%`, opacity: 0.45 + 0.55 * share }}
+                    title={`${hour}–${hour + 1} Uhr: ${Math.round(share * 100)} % der Spitze`}
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="mt-1 flex justify-between text-[10px] text-[#9b9ba0]">
+              <span>0 Uhr</span>
+              <span>6 Uhr</span>
+              <span>12 Uhr</span>
+              <span>18 Uhr</span>
+              <span>24 Uhr</span>
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-[#9b9ba0]">
+              Wann sieht ein Ladepark an Ihren Korridoren Nachfrage? Relevant für
+              Ladestopp-Planung und die Auslastungsrechnung eines eigenen Standorts.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Seite 3: Relationen im Detail */}
@@ -370,13 +494,13 @@ export default function KorridorReport() {
           Energie- und Mautvorteil gegenüber Diesel.
         </p>
 
-        <div className="mt-5 space-y-3">
+        <div className="mt-4 space-y-2.5">
           {evaluated.map((row) => {
             const feasibility = FEASIBILITY_LABELS[row.feasibility];
             return (
               <div
                 key={row.relation.name}
-                className="report-card rounded-2xl border border-black/[0.08] bg-white p-4"
+                className="report-card rounded-2xl border border-black/[0.08] bg-white p-3"
               >
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <p className="text-base font-semibold tracking-[-0.01em]">{row.relation.name}</p>
@@ -386,7 +510,7 @@ export default function KorridorReport() {
                     {feasibility.label}
                   </span>
                 </div>
-                <div className="mt-3 grid grid-cols-4 gap-4 text-sm">
+                <div className="mt-2 grid grid-cols-4 gap-4 text-sm">
                   <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-[#9b9ba0]">
                       <Route className="mr-1 inline h-3.5 w-3.5" />
@@ -431,7 +555,28 @@ export default function KorridorReport() {
                     </p>
                   </div>
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-[#9b9ba0]">
+                {(() => {
+                  const entry = (relationTrends.get(row.relation.name) || []).find(
+                    (candidate) => candidate.trend,
+                  );
+                  if (!entry) return null;
+                  return (
+                    <p className="mt-1.5 text-sm text-[#6e6e73]">
+                      Gemessener Realtrend (12 Mon.):{" "}
+                      <span className="font-semibold text-[#1d1d1f]">
+                        {entry.trend!.trendPctP50 > 0 ? "+" : ""}
+                        {entry.trend!.trendPctP50.toLocaleString("de-DE")} %
+                      </span>{" "}
+                      <span className="text-[11px]">
+                        (p10 {entry.trend!.trendPctP10.toLocaleString("de-DE")} % · p90{" "}
+                        {entry.trend!.trendPctP90 > 0 ? "+" : ""}
+                        {entry.trend!.trendPctP90.toLocaleString("de-DE")} % · Zählstelle{" "}
+                        {entry.station.name}, {entry.station.strasse}, Chronos-2)
+                      </span>
+                    </p>
+                  );
+                })()}
+                <p className="mt-1.5 text-xs leading-relaxed text-[#9b9ba0]">
                   {feasibility.description}
                 </p>
               </div>
@@ -513,6 +658,19 @@ export default function KorridorReport() {
                 Strecke, mindestens 20 km) und auf Straßen-km skaliert – eine Näherung, keine
                 Routenführung.
               </li>
+              {trendData && (
+                <li>
+                  Realtrend & Tagesgang: BASt-Stundenwerte 2016–2023 der nächstgelegenen
+                  Dauerzählstellen; 12-Monats-Trend mit Amazon Chronos-2, backtested gegen das
+                  zurückgehaltene letzte Jahr (80-%-Band deckte{" "}
+                  {((trendData.metadata.meanCoverage80 || 0) * 100).toLocaleString("de-DE", {
+                    maximumFractionDigits: 1,
+                  })}{" "}
+                  % ab, {trendData.metadata.stationsBacktested} Stationen). Die Punktprognose liegt
+                  auf dem Niveau der Saisonfigur – belastbar ist das Band, nicht die einzelne
+                  Zahl.
+                </li>
+              )}
               <li>Der E-Lkw-Hochlauf selbst ist nicht modelliert.</li>
             </ul>
           </div>
