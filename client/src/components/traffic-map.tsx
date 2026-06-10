@@ -1,4 +1,15 @@
 import { useMemo, useState } from "react";
+import { GERMANY_PATH } from "./germany-outline";
+
+// Dezente Orientierungsstädte — bewusst wenige, damit die Datenebenen führen.
+const ANCHOR_CITIES: { name: string; lon: number; lat: number }[] = [
+  { name: "Hamburg", lon: 9.99, lat: 53.55 },
+  { name: "Berlin", lon: 13.4, lat: 52.52 },
+  { name: "Köln", lon: 6.96, lat: 50.94 },
+  { name: "Frankfurt", lon: 8.68, lat: 50.11 },
+  { name: "München", lon: 11.58, lat: 48.14 },
+  { name: "Leipzig", lon: 12.37, lat: 51.34 },
+];
 
 // Equirektangulare Projektion, auf Deutschland zugeschnitten. Die Karte kommt
 // ohne Tiles und Geometrien aus: 429 Regions-Zentroiden bilden die Silhouette.
@@ -93,6 +104,7 @@ export default function TrafficMap({
   pins = [],
   variant = "light",
   pinMode = false,
+  showCities = false,
   onMapClick,
   selectedRegionId,
   selectedEdgeId,
@@ -109,6 +121,7 @@ export default function TrafficMap({
   variant?: "light" | "dark";
   /** Im Pin-Modus setzt jeder Karten-Klick einen Standort statt zu selektieren. */
   pinMode?: boolean;
+  showCities?: boolean;
   onMapClick?: (lon: number, lat: number) => void;
   selectedRegionId: string;
   selectedEdgeId: number | null;
@@ -119,7 +132,11 @@ export default function TrafficMap({
   const dark = variant === "dark";
   const palette = dark
     ? {
-        backdropDot: "#34383f",
+        landFill: "#1b1e24",
+        landStroke: "rgba(255,255,255,0.14)",
+        landGlow: "rgba(13,187,200,0.05)",
+        cityText: "rgba(255,255,255,0.32)",
+        backdropDot: "#2b2f36",
         edgeCasing: "rgba(13,187,200,0.16)",
         edge: "#19c8d4",
         edgeSelected: "#7ef0f7",
@@ -130,7 +147,11 @@ export default function TrafficMap({
         legendText: "text-white/55",
       }
     : {
-        backdropDot: "#e3e4e8",
+        landFill: "#f1f2f5",
+        landStroke: "#d8dae0",
+        landGlow: "rgba(10,153,164,0.04)",
+        cityText: "#a3a4aa",
+        backdropDot: "#e0e2e7",
         edgeCasing: "white",
         edge: "#0A99A4",
         edgeSelected: "#06737b",
@@ -168,10 +189,41 @@ export default function TrafficMap({
           onMapClick(Math.round(lon * 10000) / 10000, Math.round(lat * 10000) / 10000);
         }}
       >
+        {/* Landmasse: echter Umriss, darunter ein weicher Außenschein. */}
+        <path d={GERMANY_PATH} fill="none" stroke={palette.landGlow} strokeWidth={7} />
+        <path
+          d={GERMANY_PATH}
+          fill={palette.landFill}
+          stroke={palette.landStroke}
+          strokeWidth={0.8}
+          strokeLinejoin="round"
+        />
+
         {backdrop.map(([lon, lat], index) => {
           const [x, y] = project(lon, lat);
-          return <circle key={index} cx={x} cy={y} r={1.7} fill={palette.backdropDot} />;
+          return <circle key={index} cx={x} cy={y} r={1.2} fill={palette.backdropDot} />;
         })}
+
+        {showCities &&
+          ANCHOR_CITIES.map((city) => {
+            const [x, y] = project(city.lon, city.lat);
+            return (
+              <g key={city.name} pointerEvents="none">
+                <circle cx={x} cy={y} r={1.6} fill={palette.cityText} />
+                <text
+                  x={x + 4}
+                  y={y - 3}
+                  fontSize={7}
+                  letterSpacing={0.8}
+                  fontWeight={600}
+                  fill={palette.cityText}
+                  style={{ textTransform: "uppercase" }}
+                >
+                  {city.name.toUpperCase()}
+                </text>
+              </g>
+            );
+          })}
 
         {proxyChargers.map(([lon, lat], index) => {
           const [x, y] = project(lon, lat);

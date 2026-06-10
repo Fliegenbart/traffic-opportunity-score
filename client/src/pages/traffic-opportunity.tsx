@@ -1020,6 +1020,7 @@ export default function TrafficOpportunity() {
                 routes={mapRoutes}
                 pins={mapPins}
                 variant="dark"
+                showCities
                 pinMode={activeTab === "standort"}
                 onMapClick={(lon, lat) => addPin(lon, lat)}
                 selectedRegionId={selected.region.id}
