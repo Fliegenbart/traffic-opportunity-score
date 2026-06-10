@@ -35,6 +35,53 @@ export interface SiteAssessment {
   edge: { edgeId: number; label: string; km: number; trucksPerDay: number; whiteSpot: boolean } | null;
   hub: { name: string; km: number } | null;
   region: { id: string; name: string; score: number; rank: number; km: number } | null;
+  substation: { km: number; kv: number } | null;
+}
+
+// E-Lkw-Hochlauf-Szenarien für die Erlös-Schätzung. Bewusst Szenarien,
+// keine Prognose — der Hochlauf ist politik- und flottengetrieben.
+export interface RampScenario {
+  id: string;
+  label: string;
+  evShare: number;
+}
+
+export const RAMP_SCENARIOS: RampScenario[] = [
+  { id: "konservativ", label: "Konservativ", evShare: 0.04 },
+  { id: "basis", label: "Basis", evShare: 0.08 },
+  { id: "ambitioniert", label: "Ambitioniert", evShare: 0.15 },
+];
+
+export const REVENUE_ASSUMPTIONS = {
+  /** Anteil vorbeifahrender E-Lkw, der an diesem Standort lädt. */
+  stopShare: 0.02,
+  /** Durchschnittliche Energiemenge je Ladevorgang (kWh). */
+  avgChargeKwh: 250,
+  /** Rohmarge je verkaufter kWh (€). */
+  marginPerKwh: 0.15,
+} as const;
+
+export interface RevenueEstimate {
+  scenario: RampScenario;
+  chargesPerDay: number;
+  energyMwhPerDay: number;
+  marginEurPerYear: number;
+}
+
+export function estimateSiteRevenue(trucksPerDay: number): RevenueEstimate[] {
+  return RAMP_SCENARIOS.map((scenario) => {
+    const chargesPerDay =
+      trucksPerDay * scenario.evShare * REVENUE_ASSUMPTIONS.stopShare;
+    const energyKwhPerDay = chargesPerDay * REVENUE_ASSUMPTIONS.avgChargeKwh;
+    return {
+      scenario,
+      chargesPerDay: Math.round(chargesPerDay * 10) / 10,
+      energyMwhPerDay: Math.round(energyKwhPerDay / 100) / 10,
+      marginEurPerYear: Math.round(
+        energyKwhPerDay * REVENUE_ASSUMPTIONS.marginPerKwh * 365,
+      ),
+    };
+  });
 }
 
 export const SITE_SIGNAL_LABELS: Record<SiteSignal, string> = {
@@ -68,6 +115,7 @@ export function assessSite(
   edges: SiteEdgeInput[],
   liveHubs: SiteHubInput[],
   regions: SiteRegionInput[],
+  substations: [number, number, number][] = [],
 ): SiteAssessment {
   let bestEdge: SiteEdgeInput | null = null;
   let bestEdgeKm = Infinity;
@@ -100,6 +148,16 @@ export function assessSite(
     if (km < bestRegionKm) {
       bestRegionKm = km;
       bestRegion = region;
+    }
+  }
+
+  let bestSub: [number, number, number] | null = null;
+  let bestSubKm = Infinity;
+  for (const sub of substations) {
+    const km = distanceKm(point, { lon: sub[0], lat: sub[1] });
+    if (km < bestSubKm) {
+      bestSubKm = km;
+      bestSub = sub;
     }
   }
 
@@ -139,6 +197,11 @@ export function assessSite(
       `Region ${bestRegion.name}: Score ${bestRegion.score}, Platz ${bestRegion.rank} von 120.`,
     );
   }
+  if (bestSub) {
+    reasons.push(
+      `Nächstes Umspannwerk (≥110 kV) in ${Math.round(bestSubKm * 10) / 10} km — Netzanschluss-Proxy, ersetzt keine Prüfung beim Netzbetreiber.`,
+    );
+  }
 
   return {
     signal,
@@ -162,6 +225,9 @@ export function assessSite(
           rank: bestRegion.rank,
           km: Math.round(bestRegionKm),
         }
+      : null,
+    substation: bestSub
+      ? { km: Math.round(bestSubKm * 10) / 10, kv: bestSub[2] }
       : null,
   };
 }

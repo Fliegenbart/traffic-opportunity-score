@@ -38,6 +38,8 @@ print(f"Stationen: {len(zst_set)}")
 weekly = defaultdict(lambda: [0.0, 0])
 # Tagesgang: (zst, daytype, stunde) -> [summe, anzahl]  daytype: werktag/samstag/sonntag
 profile = defaultdict(lambda: [0.0, 0])
+# Richtungssplit (Profil-Jahre): zst -> [summe_r1, summe_r2]
+direction = defaultdict(lambda: [0.0, 0.0])
 
 
 def daytype(wotag: int) -> str:
@@ -90,6 +92,8 @@ for year in YEARS:
                     p = profile[(zst, daytype(int(parts[i_wot])), hour)]
                     p[0] += total
                     p[1] += 1
+                    direction[zst][0] += l1
+                    direction[zst][1] += l2
                 kept += 1
     print(f"{year}: {kept} Stundenwerte übernommen", flush=True)
 
@@ -107,5 +111,12 @@ for (zst, dt, hour), (total, count) in profile.items():
         profiles_out[zst][dt][hour - 1] = round(total / count, 1)
 
 (OUT / "profiles.json").write_text(json.dumps(profiles_out, indent=1), encoding="utf-8")
+
+directions_out = {
+    zst: {"r1Share": round(r1 / (r1 + r2), 3)}
+    for zst, (r1, r2) in direction.items()
+    if r1 + r2 > 0
+}
+(OUT / "directions.json").write_text(json.dumps(directions_out, indent=1), encoding="utf-8")
 print(f"Wochen-Zeilen: {len(weekly)}, Stationen mit Profil: {len(profiles_out)}")
 print("FERTIG")

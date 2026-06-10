@@ -18,12 +18,17 @@ Live: https://truckonomics.vercel.app
   Reihenfolge: erst Validierung, dann Generator.
 - Standort-Check (4. Workspace-Tab): bis zu 3 Standorte per Karten-Klick oder Ortssuche
   (Nominatim) setzen → Ampel-Bewertung aus nächster Hotspot-Strecke, Lade-Lücke und
-  Regions-Score (Logik in `shared/standort-check.ts`, Test: `npm run test:standort`),
+  Regions-Score, plus Netzanschluss-Proxy (nächstes Umspannwerk ≥110 kV aus OSM,
+  `python3 scripts/build_substations_de.py` → `client/public/data/substations-de.json`)
+  und Erlös-Szenarien (E-Lkw-Hochlauf konservativ/Basis/ambitioniert, Annahmen deklariert) (Logik in `shared/standort-check.ts`, Test: `npm run test:standort`),
   Vergleichstabelle und Lead-Formular (POST an `/api/leads`, tenant `standort-check`).
 - Deep-Links: `?region=<id>`, `?strecke=<edgeId>`, `?korridor=<originId-destId>`,
   `?standorte=<lon,lat;lon,lat>` und `?tab=` werden beim Laden übernommen und bei Auswahl
   in die URL gespiegelt.
 - Embed-Modus: `?embed=1` blendet Navigation und CTA aus (für Präsentationen/iFrames).
+- Korridor-Report: Routen laufen über OSRM/OpenStreetMap (echte Straßen-km und
+  Ladelücken ±10 km entlang der Route; Fallback Luftlinie, gekennzeichnet). Kostenmodell
+  inkl. THG-Quotenerlös und Sensitivitäts-Spanne (Diesel ±0,15 €/l, Strom +0,10/−0,05 €/kWh).
 - Korridor-Report: personalisierte 4-Seiten-Analyse für Logistiker (eTruckathon-Funnel).
   Konfiguration je Kunde unter `client/public/data/reports/<id>.json` (siehe `demo.json`),
   Ansicht unter `/korridor-report?id=<id>`, PDF per

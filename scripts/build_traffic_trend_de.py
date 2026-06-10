@@ -20,6 +20,12 @@ def main() -> None:
     mapping = json.loads((EXTERNAL / "hotspot-bast-stations.json").read_text(encoding="utf-8"))
     trends = json.loads((EXTERNAL / "trend_results.json").read_text(encoding="utf-8"))
     profiles = json.loads((EXTERNAL / "profiles.json").read_text(encoding="utf-8"))
+    directions_path = EXTERNAL / "directions.json"
+    directions = (
+        json.loads(directions_path.read_text(encoding="utf-8"))
+        if directions_path.exists()
+        else {}
+    )
 
     edges: dict[str, dict] = {}
     for entry in mapping["mapping"]:
@@ -37,6 +43,7 @@ def main() -> None:
                 "name": station["name"],
                 "strasse": station["strasse"],
                 "distanceKm": entry["distanceKm"],
+                "directionShareR1": directions.get(zst, {}).get("r1Share"),
             },
             "profile": profile,
             "trend": station_result.get("trend"),

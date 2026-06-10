@@ -49,6 +49,58 @@ export interface CorridorChargingStats {
   maxGapKm: number;
 }
 
+// Lücken-Statistik entlang einer echten Routen-Polylinie (z. B. aus OSRM):
+// Lader im Puffer werden auf ihre Position entlang der Route projiziert.
+export function polylineChargingStats(
+  polyline: GeoPoint[],
+  hubs: GeoPoint[],
+  bufferKm = 10,
+): CorridorChargingStats {
+  if (polyline.length < 2) return { corridorKm: 0, hubsOnRoute: 0, maxGapKm: 0 };
+
+  const cumulative: number[] = [0];
+  for (let i = 1; i < polyline.length; i++) {
+    cumulative.push(cumulative[i - 1] + distanceKm(polyline[i - 1], polyline[i]));
+  }
+  const totalKm = cumulative[cumulative.length - 1];
+
+  const positionsKm: number[] = [];
+  for (const hub of hubs) {
+    let bestDist = Infinity;
+    let bestPos = 0;
+    for (let i = 1; i < polyline.length; i++) {
+      const a = polyline[i - 1];
+      const b = polyline[i];
+      const d = pointToSegmentKm(hub, a, b);
+      if (d < bestDist) {
+        bestDist = d;
+        // Position entlang des Segments über das Distanzverhältnis nähern.
+        const segLen = cumulative[i] - cumulative[i - 1];
+        const da = distanceKm(hub, a);
+        const db = distanceKm(hub, b);
+        const t = da + db > 0 ? da / (da + db) : 0;
+        bestPos = cumulative[i - 1] + Math.min(1, Math.max(0, t)) * segLen;
+      }
+    }
+    if (bestDist <= bufferKm) positionsKm.push(bestPos);
+  }
+
+  positionsKm.sort((a, b) => a - b);
+  let maxGapKm = 0;
+  let previous = 0;
+  for (const position of positionsKm) {
+    maxGapKm = Math.max(maxGapKm, position - previous);
+    previous = position;
+  }
+  maxGapKm = Math.max(maxGapKm, totalKm - previous);
+
+  return {
+    corridorKm: Math.round(totalKm),
+    hubsOnRoute: positionsKm.length,
+    maxGapKm: Math.round(maxGapKm),
+  };
+}
+
 // Luftlinien-Näherung: Lader im Korridor-Puffer werden auf die Strecke
 // projiziert; die größte Lücke zwischen zwei aufeinanderfolgenden
 // Lademöglichkeiten (inkl. Start und Ziel) ist die kritische Kennzahl.

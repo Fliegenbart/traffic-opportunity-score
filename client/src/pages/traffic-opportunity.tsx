@@ -17,7 +17,12 @@ import TrafficMap, {
   type MapPin,
   type MapRoute,
 } from "@/components/traffic-map";
-import { assessSite, type SiteSignal } from "@shared/standort-check";
+import {
+  REVENUE_ASSUMPTIONS,
+  assessSite,
+  estimateSiteRevenue,
+  type SiteSignal,
+} from "@shared/standort-check";
 import {
   calculateTrafficOpportunityScore,
   classifyTrafficOpportunity,
@@ -143,7 +148,13 @@ interface ChargingData {
 }
 
 interface EdgeTrend {
-  station: { zst: string; name: string; strasse: string; distanceKm: number };
+  station: {
+    zst: string;
+    name: string;
+    strasse: string;
+    distanceKm: number;
+    directionShareR1?: number | null;
+  };
   profile: Record<"werktag" | "samstag" | "sonntag", number[]> | null;
   trend: {
     lastYearWeeklyAvg: number;
@@ -498,6 +509,7 @@ export default function TrafficOpportunity() {
   const [data, setData] = useState<TrafficOpportunityData | null>(null);
   const [charging, setCharging] = useState<ChargingData | null>(null);
   const [trendData, setTrendData] = useState<TrendData | null>(null);
+  const [substations, setSubstations] = useState<[number, number, number][]>([]);
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState(initialParams.region);
@@ -559,6 +571,13 @@ export default function TrafficOpportunity() {
       .then((response) => (response.ok ? (response.json() as Promise<TrendData>) : null))
       .then((payload) => {
         if (active && payload) setTrendData(payload);
+      })
+      .catch(() => undefined);
+
+    fetch("/data/substations-de.json")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { points: [number, number, number][] } | null) => {
+        if (active && payload) setSubstations(payload.points);
       })
       .catch(() => undefined);
 
@@ -778,10 +797,10 @@ export default function TrafficOpportunity() {
   const assessments = useMemo(() => {
     const result = new Map<string, ReturnType<typeof assessSite>>();
     for (const pin of pins) {
-      result.set(pin.id, assessSite(pin, mapEdges, liveHubs, siteRegions));
+      result.set(pin.id, assessSite(pin, mapEdges, liveHubs, siteRegions, substations));
     }
     return result;
-  }, [pins, mapEdges, liveHubs, siteRegions]);
+  }, [pins, mapEdges, liveHubs, siteRegions, substations]);
 
   const addPin = (lon: number, lat: number, label = "") => {
     setPins((current) => {
@@ -1177,6 +1196,8 @@ export default function TrafficOpportunity() {
                             {selectedEdgeTrend.station.strasse}),{" "}
                             {selectedEdgeTrend.station.distanceKm.toLocaleString("de-DE")} km
                             entfernt
+                            {selectedEdgeTrend.station.directionShareR1 != null &&
+                              ` · Richtungssplit ${Math.round(selectedEdgeTrend.station.directionShareR1 * 100)} / ${Math.round((1 - selectedEdgeTrend.station.directionShareR1) * 100)}`}
                             {selectedEdgeTrend.trend && " · Chronos-2-Forecast, backtested"}
                           </p>
                         </div>
@@ -1559,7 +1580,7 @@ export default function TrafficOpportunity() {
                           </li>
                         ))}
                       </ul>
-                      <div className="mt-4 grid grid-cols-3 gap-4 border-t border-white/10 pt-4">
+                      <div className="mt-4 grid grid-cols-2 gap-4 border-t border-white/10 pt-4 sm:grid-cols-4">
                         <DetailStat
                           label="Verkehr nebenan"
                           value={
@@ -1591,6 +1612,19 @@ export default function TrafficOpportunity() {
                               : undefined
                           }
                         />
+                        <DetailStat
+                          label="Netz-Proxy"
+                          value={
+                            activeAssessment.substation
+                              ? `${activeAssessment.substation.km.toLocaleString("de-DE")} km`
+                              : "—"
+                          }
+                          sub={
+                            activeAssessment.substation
+                              ? `Umspannwerk ${activeAssessment.substation.kv} kV`
+                              : undefined
+                          }
+                        />
                       </div>
                       {activePinTrend?.profile?.werktag && (
                         <div className="mt-4 border-t border-white/10 pt-4">
@@ -1612,6 +1646,45 @@ export default function TrafficOpportunity() {
                               );
                             })}
                           </div>
+                        </div>
+                      )}
+                      {activeAssessment.edge && activeAssessment.edge.km <= 25 && (
+                        <div className="mt-4 border-t border-white/10 pt-4">
+                          <p className="text-[11px] uppercase tracking-[0.12em] text-white/40">
+                            Erlöspotenzial halböffentlicher Ladepark (Modellrechnung)
+                          </p>
+                          <table className="mt-2 w-full text-sm">
+                            <tbody>
+                              {estimateSiteRevenue(activeAssessment.edge.trucksPerDay).map(
+                                (row) => (
+                                  <tr
+                                    key={row.scenario.id}
+                                    className="border-t border-white/5 first:border-0"
+                                  >
+                                    <td className="py-1.5 pr-3 text-white/60">
+                                      {row.scenario.label}{" "}
+                                      <span className="text-white/35">
+                                        ({Math.round(row.scenario.evShare * 100)} % E-Lkw)
+                                      </span>
+                                    </td>
+                                    <td className="py-1.5 pr-3 text-white/60 tabular-nums">
+                                      {row.chargesPerDay.toLocaleString("de-DE")} Ladungen/Tag
+                                    </td>
+                                    <td className="py-1.5 text-right font-semibold text-white tabular-nums">
+                                      ≈ {formatCompact(row.marginEurPerYear)} €/Jahr
+                                    </td>
+                                  </tr>
+                                ),
+                              )}
+                            </tbody>
+                          </table>
+                          <p className="mt-2 text-xs leading-relaxed text-white/35">
+                            Szenarien für den E-Lkw-Anteil am Verkehr (keine Prognose);
+                            Annahmen: {Math.round(REVENUE_ASSUMPTIONS.stopShare * 100)} %
+                            Anhaltequote, {REVENUE_ASSUMPTIONS.avgChargeKwh} kWh/Ladung,{" "}
+                            {REVENUE_ASSUMPTIONS.marginPerKwh.toLocaleString("de-DE")} €/kWh
+                            Marge.
+                          </p>
                         </div>
                       )}
                       <p className="mt-3 text-xs leading-relaxed text-white/35">

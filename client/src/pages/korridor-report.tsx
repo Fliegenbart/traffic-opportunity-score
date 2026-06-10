@@ -20,7 +20,42 @@ import {
   type EvaluatedRelation,
   type ReportAssumptions,
   type ReportRelation,
+  type RouteGeometry,
 } from "@shared/korridor-report";
+
+// OSRM-Demo-Server: echte Straßenrouten (Pkw-Profil — auf Autobahnen für
+// Distanz/Verlauf ausreichend). Fällt bei Nichterreichbarkeit auf die
+// Luftlinien-Näherung zurück.
+const osrmCache = new Map<string, RouteGeometry | null>();
+
+async function fetchRoute(
+  a: { lon: number; lat: number },
+  b: { lon: number; lat: number },
+): Promise<RouteGeometry | null> {
+  const key = `${a.lon},${a.lat};${b.lon},${b.lat}`;
+  if (osrmCache.has(key)) return osrmCache.get(key) ?? null;
+  try {
+    const response = await fetch(
+      `https://router.project-osrm.org/route/v1/driving/${key}?overview=simplified&geometries=geojson`,
+    );
+    if (!response.ok) throw new Error(String(response.status));
+    const data = (await response.json()) as {
+      routes?: { distance: number; geometry: { coordinates: [number, number][] } }[];
+    };
+    const best = data.routes?.[0];
+    const route = best
+      ? {
+          km: Math.round(best.distance / 1000),
+          polyline: best.geometry.coordinates.map(([lon, lat]) => ({ lon, lat })),
+        }
+      : null;
+    osrmCache.set(key, route);
+    return route;
+  } catch {
+    osrmCache.set(key, null);
+    return null;
+  }
+}
 
 interface ReportConfig {
   id: string;
@@ -138,6 +173,7 @@ export default function KorridorReport() {
   const [traffic, setTraffic] = useState<TrafficDataSlice | null>(null);
   const [charging, setCharging] = useState<ChargingSlice | null>(null);
   const [trendData, setTrendData] = useState<TrendSlice | null>(null);
+  const [routes, setRoutes] = useState<Record<string, RouteGeometry>>({});
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -175,15 +211,44 @@ export default function KorridorReport() {
     [charging],
   );
 
+  // Echte Routen nachladen — sequenziell, um den OSRM-Demo-Server zu schonen.
+  useEffect(() => {
+    if (!config || !traffic) return;
+    let active = true;
+    const regionsLookup = new Map(traffic.regions.map((region) => [region.id, region]));
+    (async () => {
+      for (const relation of config.relations) {
+        const origin = regionsLookup.get(relation.originRegionId);
+        const destination = regionsLookup.get(relation.destinationRegionId);
+        if (!origin || !destination) continue;
+        const route = await fetchRoute(origin, destination);
+        if (!active) return;
+        if (route) {
+          setRoutes((current) => ({ ...current, [relation.name]: route }));
+        }
+      }
+    })();
+    return () => {
+      active = false;
+    };
+  }, [config, traffic]);
+
   const evaluated = useMemo(() => {
     if (!config || !traffic) return [];
     const regionsById = new Map(traffic.regions.map((region) => [region.id, region]));
     return config.relations
       .map((relation) =>
-        evaluateRelation(relation, regionsById, traffic.corridors, liveHubs, assumptions),
+        evaluateRelation(
+          relation,
+          regionsById,
+          traffic.corridors,
+          liveHubs,
+          assumptions,
+          routes[relation.name],
+        ),
       )
       .filter((value): value is EvaluatedRelation => value !== null);
-  }, [config, traffic, liveHubs, assumptions]);
+  }, [config, traffic, liveHubs, assumptions, routes]);
 
   const totals = useMemo(() => aggregateReport(evaluated), [evaluated]);
 
@@ -198,6 +263,7 @@ export default function KorridorReport() {
       const origin = regionsById.get(relation.originRegionId);
       const destination = regionsById.get(relation.destinationRegionId);
       if (!origin || !destination) return [];
+      const route = routes[relation.name];
       return [
         {
           label: relation.name,
@@ -207,10 +273,11 @@ export default function KorridorReport() {
           aLat: origin.lat,
           bLon: destination.lon,
           bLat: destination.lat,
+          path: route?.polyline.map((p): [number, number] => [p.lon, p.lat]),
         },
       ];
     });
-  }, [config, regionsById]);
+  }, [config, regionsById, routes]);
 
   // Gemessene Zählstellen je Relation: Hotspot-Kanten mit Trenddaten, deren
   // Mittelpunkt im Korridor-Puffer der Relation liegt (gleiche Logik wie Ladeparks).
@@ -387,9 +454,9 @@ export default function KorridorReport() {
             }
           />
           <KpiTile
-            label="Energie- & Mautvorteil"
+            label="Energie-, Maut- & THG-Vorteil"
             value={`≈ ${formatEur(totals.annualSavingEur)}/Jahr`}
-            detail="Vereinfachtes Modell, Annahmen auf der letzten Seite."
+            detail={`Sensitivitäts-Spanne ${formatEur(evaluated.reduce((sum, r) => sum + r.annualSavingLowEur, 0))} – ${formatEur(evaluated.reduce((sum, r) => sum + r.annualSavingHighEur, 0))}; Annahmen auf der letzten Seite.`}
           />
           <KpiTile
             label="CO₂-Einsparung"
@@ -442,7 +509,11 @@ export default function KorridorReport() {
             <p key={row.relation.name} className="text-sm text-[#6e6e73]">
               <span className="font-semibold text-[#1d1d1f]">{row.relation.name}</span> ·{" "}
               {formatNumber(row.distanceKm)} km{" "}
-              {row.distanceSource === "korridor" ? "(Straßenroute)" : "(Luftlinie × 1,25)"} ·{" "}
+              {row.distanceSource === "route"
+                ? "(OSRM-Route)"
+                : row.distanceSource === "korridor"
+                  ? "(Straßenroute)"
+                  : "(Luftlinie × 1,25)"} ·{" "}
               {row.relation.tripsPerWeek} Fahrten/Woche
             </p>
           ))}
@@ -551,7 +622,8 @@ export default function KorridorReport() {
                     </p>
                     <p className="mt-1 font-semibold">≈ {formatEur(row.annualSavingEur)}</p>
                     <p className="text-xs text-[#6e6e73]">
-                      {formatNumber(row.annualKm)} km · {row.annualCo2SavedTons} t CO₂
+                      Spanne {formatEur(row.annualSavingLowEur)}–{formatEur(row.annualSavingHighEur)} ·{" "}
+                      {row.annualCo2SavedTons} t CO₂
                     </p>
                   </div>
                 </div>
@@ -622,6 +694,13 @@ export default function KorridorReport() {
                   <td className="text-right">{formatEurPerKm(assumptions.tollAdvantagePerKm)}</td>
                 </tr>
                 <tr>
+                  <td className="text-[#6e6e73]">THG-Quotenerlös</td>
+                  <td className="text-right">
+                    {assumptions.thgBonusPerKwh.toLocaleString("de-DE", { minimumFractionDigits: 2 })}{" "}
+                    €/kWh (konservativ)
+                  </td>
+                </tr>
+                <tr>
                   <td className="text-[#6e6e73]">CO₂ Diesel / Strommix</td>
                   <td className="text-right">
                     {assumptions.dieselCo2KgPerL.toLocaleString("de-DE")} kg/l ·{" "}
@@ -635,8 +714,9 @@ export default function KorridorReport() {
               </tbody>
             </table>
             <p className="mt-3 text-xs leading-relaxed text-[#9b9ba0]">
-              Reines Energie- und Mautkosten-Modell, ohne Anschaffung, Wartung und Restwert. Die
-              Vollkostenrechnung je Fahrzeugprofil liefert der Truckonomics TCO-Rechner.
+              Energie-, Maut- und THG-Modell ohne Anschaffung, Wartung und Restwert — die
+              Vollkostenrechnung liefert der TCO-Rechner. Sensitivitäts-Spanne: Diesel ±0,15 €/l,
+              öffentlicher Strom +0,10/−0,05 €/kWh, THG-Erlös 0 bis voll.
             </p>
           </div>
 
@@ -654,9 +734,10 @@ export default function KorridorReport() {
                 nur verifizierte Parks zählen in die Lücken-Berechnung.
               </li>
               <li>
-                Ladelücken werden über die Luftlinie berechnet (Korridor-Puffer ±15 % der
-                Strecke, mindestens 20 km) und auf Straßen-km skaliert – eine Näherung, keine
-                Routenführung.
+                Routen: echte Straßenführung via OSRM/OpenStreetMap (Pkw-Profil; auf
+                Autobahnen für Distanz und Verlauf ausreichend); Ladelücken dann ±10 km
+                entlang der Route. Ohne Routing-Dienst: Luftlinien-Näherung (Puffer ±15 %,
+                mind. 20 km), entsprechend gekennzeichnet.
               </li>
               {trendData && (
                 <li>

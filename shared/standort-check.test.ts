@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { assessSite } from "./standort-check";
+import { assessSite, estimateSiteRevenue } from "./standort-check";
 
 // A2 bei Peine: Kante quer, Punkt direkt daneben.
 const edges = [
@@ -40,3 +40,23 @@ assert.ok(ab.edge!.km > 25);
 const ohneHubs = assessSite({ lon: 10.2, lat: 52.33 }, edges, [], regions);
 assert.equal(ohneHubs.signal, "stark");
 assert.equal(ohneHubs.hub, null);
+
+// Umspannwerk-Proxy
+const mitSub = assessSite(
+  { lon: 10.2, lat: 52.33 },
+  edges,
+  farHub,
+  regions,
+  [[10.25, 52.34, 220]],
+);
+assert.ok(mitSub.substation && mitSub.substation.km < 5);
+assert.equal(mitSub.substation!.kv, 220);
+assert.equal(mitSub.reasons.length, 4);
+
+// Erlös-Szenarien: monoton steigend mit evShare
+const revenue = estimateSiteRevenue(30000);
+assert.equal(revenue.length, 3);
+assert.ok(revenue[0].marginEurPerYear < revenue[1].marginEurPerYear);
+assert.ok(revenue[1].marginEurPerYear < revenue[2].marginEurPerYear);
+// Basis: 30000*0.08*0.02 = 48 Ladungen * 250 kWh * 0,15 € * 365 ≈ 657 T€
+assert.ok(Math.abs(revenue[1].marginEurPerYear - 657000) < 1000);

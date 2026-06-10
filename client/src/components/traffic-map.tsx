@@ -79,6 +79,8 @@ export interface MapRoute {
   aLat: number;
   bLon: number;
   bLat: number;
+  /** Echte Routen-Geometrie (z. B. OSRM); ohne sie wird die Luftlinie gezeichnet. */
+  path?: [number, number][];
 }
 
 interface TooltipState {
@@ -341,20 +343,38 @@ export default function TrafficMap({
         {routes.map((route, index) => {
           const [x1, y1] = project(route.aLon, route.aLat);
           const [x2, y2] = project(route.bLon, route.bLat);
+          const lineColor = dark ? "rgba(255,255,255,0.85)" : "#1d1d1f";
           return (
             <g key={`route-${index}`}>
-              <line
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="#1d1d1f"
-                strokeWidth={1.6}
-                strokeDasharray="5 4"
-                opacity={0.85}
-              />
-              <circle cx={x1} cy={y1} r={3} fill="#1d1d1f" />
-              <circle cx={x2} cy={y2} r={3} fill="#1d1d1f" />
+              {route.path && route.path.length > 1 ? (
+                <path
+                  d={route.path
+                    .map(([lon, lat], i) => {
+                      const [x, y] = project(lon, lat);
+                      return `${i === 0 ? "M" : "L"}${x.toFixed(1)} ${y.toFixed(1)}`;
+                    })
+                    .join("")}
+                  fill="none"
+                  stroke={lineColor}
+                  strokeWidth={1.6}
+                  strokeDasharray="5 4"
+                  strokeLinejoin="round"
+                  opacity={0.85}
+                />
+              ) : (
+                <line
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke={lineColor}
+                  strokeWidth={1.6}
+                  strokeDasharray="5 4"
+                  opacity={0.85}
+                />
+              )}
+              <circle cx={x1} cy={y1} r={3} fill={lineColor} />
+              <circle cx={x2} cy={y2} r={3} fill={lineColor} />
             </g>
           );
         })}
@@ -490,7 +510,9 @@ export default function TrafficMap({
               className="inline-block h-0 w-6 border-t-2 border-dashed border-[#1d1d1f]"
               aria-hidden
             />
-            Ihre Relation (Luftlinie)
+            {routes.some((route) => route.path)
+              ? "Ihre Relation (Straßenroute)"
+              : "Ihre Relation (Luftlinie)"}
           </span>
         )}
         {chargers.length > 0 && (
