@@ -27,6 +27,7 @@ export interface MapEdge {
   bLon: number;
   bLat: number;
   trucks2030: number;
+  whiteSpot?: boolean;
 }
 
 export interface MapRegion {
@@ -77,6 +78,7 @@ export default function TrafficMap({
   chargers = [],
   proxyChargers = [],
   routes = [],
+  variant = "light",
   selectedRegionId,
   selectedEdgeId,
   onSelectRegion,
@@ -88,12 +90,37 @@ export default function TrafficMap({
   chargers?: MapCharger[];
   proxyChargers?: [number, number][];
   routes?: MapRoute[];
+  variant?: "light" | "dark";
   selectedRegionId: string;
   selectedEdgeId: number | null;
   onSelectRegion: (id: string) => void;
   onSelectEdge: (id: number) => void;
 }) {
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
+  const dark = variant === "dark";
+  const palette = dark
+    ? {
+        backdropDot: "#34383f",
+        edgeCasing: "rgba(13,187,200,0.16)",
+        edge: "#19c8d4",
+        edgeSelected: "#7ef0f7",
+        whiteSpotEdge: "#e8a13a",
+        regionStroke: "#17181c",
+        chargerFill: "#a78bfa",
+        chargerStroke: "#17181c",
+        legendText: "text-white/55",
+      }
+    : {
+        backdropDot: "#e3e4e8",
+        edgeCasing: "white",
+        edge: "#0A99A4",
+        edgeSelected: "#06737b",
+        whiteSpotEdge: "#d99000",
+        regionStroke: "white",
+        chargerFill: "#7c3aed",
+        chargerStroke: "white",
+        legendText: "text-[#6e6e73]",
+      };
 
   const maxEdgeTrucks = useMemo(
     () => Math.max(1, ...edges.map((edge) => edge.trucks2030)),
@@ -115,7 +142,7 @@ export default function TrafficMap({
       >
         {backdrop.map(([lon, lat], index) => {
           const [x, y] = project(lon, lat);
-          return <circle key={index} cx={x} cy={y} r={1.7} fill="#e3e4e8" />;
+          return <circle key={index} cx={x} cy={y} r={1.7} fill={palette.backdropDot} />;
         })}
 
         {proxyChargers.map(([lon, lat], index) => {
@@ -126,17 +153,21 @@ export default function TrafficMap({
         {regions.map((region) => {
           const [x, y] = project(region.lon, region.lat);
           const selected = region.id === selectedRegionId;
-          const radius = 3 + Math.sqrt(region.trucks2030 / maxRegionTrucks) * 8.5;
+          const radius = dark
+            ? 2.5 + Math.sqrt(region.trucks2030 / maxRegionTrucks) * 6.5
+            : 3 + Math.sqrt(region.trucks2030 / maxRegionTrucks) * 8.5;
           return (
             <circle
               key={region.id}
               cx={x}
               cy={y}
               r={radius}
-              fill={scoreColor(region.score)}
-              stroke={selected ? "#1d1d1f" : "white"}
+              // Im Dark-Hero gehört Amber den Lade-Lücken — Regionen bleiben
+              // dort einfarbig und treten zurück.
+              fill={dark ? "#3d8b95" : scoreColor(region.score)}
+              stroke={selected ? (dark ? "white" : "#1d1d1f") : palette.regionStroke}
               strokeWidth={selected ? 1.8 : 0.9}
-              opacity={selected ? 0.95 : 0.78}
+              opacity={selected ? 0.95 : dark ? 0.5 : 0.78}
               className="cursor-pointer"
               onClick={() => onSelectRegion(region.id)}
               onMouseEnter={() =>
@@ -166,24 +197,37 @@ export default function TrafficMap({
           const sy2 = midY + (y2 - midY) * stretch;
           const selected = edge.edgeId === selectedEdgeId;
           const width = 2 + (edge.trucks2030 / maxEdgeTrucks) * 3.6;
+          const baseColor = edge.whiteSpot ? palette.whiteSpotEdge : palette.edge;
           return (
             <g key={edge.edgeId}>
+              {dark && (
+                <line
+                  x1={sx1}
+                  y1={sy1}
+                  x2={sx2}
+                  y2={sy2}
+                  stroke={baseColor}
+                  strokeWidth={width + 6}
+                  strokeLinecap="round"
+                  opacity={selectedEdgeId === null || selected ? 0.18 : 0.06}
+                />
+              )}
               <line
                 x1={sx1}
                 y1={sy1}
                 x2={sx2}
                 y2={sy2}
-                stroke="white"
+                stroke={palette.edgeCasing}
                 strokeWidth={width + 2.2}
                 strokeLinecap="round"
-                opacity={selectedEdgeId === null || selected ? 0.9 : 0.35}
+                opacity={selectedEdgeId === null || selected ? 0.9 : 0.3}
               />
               <line
                 x1={sx1}
                 y1={sy1}
                 x2={sx2}
                 y2={sy2}
-                stroke={selected ? "#06737b" : "#0A99A4"}
+                stroke={selected ? palette.edgeSelected : baseColor}
                 strokeWidth={selected ? width + 1.2 : width}
                 strokeLinecap="round"
                 opacity={selectedEdgeId === null || selected ? 0.95 : 0.35}
@@ -274,8 +318,8 @@ export default function TrafficMap({
             <path
               key={charger.id}
               d={`M ${x} ${y - r} L ${x + r} ${y} L ${x} ${y + r} L ${x - r} ${y} Z`}
-              fill={live ? "#7c3aed" : "white"}
-              stroke={live ? "white" : "#7c3aed"}
+              fill={live ? palette.chargerFill : palette.chargerStroke}
+              stroke={live ? palette.chargerStroke : palette.chargerFill}
               strokeWidth={1.1}
               opacity={0.95}
               className="cursor-pointer"
@@ -303,17 +347,31 @@ export default function TrafficMap({
         </div>
       )}
 
-      <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[#6e6e73]">
+      <div
+        className={`mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs ${palette.legendText}`}
+      >
         {edges.length > 0 && (
           <span className="inline-flex items-center gap-2">
-            <span className="inline-block h-1 w-6 rounded-full bg-[#0A99A4]" />
+            <span
+              className="inline-block h-1 w-6 rounded-full"
+              style={{ background: palette.edge }}
+            />
             Hotspot-Strecke (Breite = Lkw-Verkehr 2030)
+          </span>
+        )}
+        {edges.some((edge) => edge.whiteSpot) && (
+          <span className="inline-flex items-center gap-2">
+            <span
+              className="inline-block h-1 w-6 rounded-full"
+              style={{ background: palette.whiteSpotEdge }}
+            />
+            Lade-Lücke (kein Lkw-Ladepark ≤ 25 km)
           </span>
         )}
         {regions.length > 0 && (
           <span className="inline-flex items-center gap-2">
             <span className="inline-block h-3 w-3 rounded-full bg-[#0DBBC8]" />
-            Region (Größe = Verkehr, Farbe = Score)
+            {dark ? "Region (Größe = Verkehr)" : "Region (Größe = Verkehr, Farbe = Score)"}
           </span>
         )}
         {routes.length > 0 && (
@@ -327,7 +385,10 @@ export default function TrafficMap({
         )}
         {chargers.length > 0 && (
           <span className="inline-flex items-center gap-2">
-            <span className="inline-block h-3 w-3 rotate-45 bg-[#7c3aed]" />
+            <span
+              className="inline-block h-3 w-3 rotate-45"
+              style={{ background: palette.chargerFill }}
+            />
             Lkw-Ladepark (verifiziert; Umriss = angekündigt)
           </span>
         )}

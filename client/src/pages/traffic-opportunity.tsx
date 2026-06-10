@@ -5,16 +5,13 @@ import {
   ArrowLeft,
   ArrowRight,
   BadgeCheck,
-  BarChart3,
   Building2,
   ExternalLink,
   Gauge,
-  MapPin,
   PlugZap,
   Route,
   Search,
   TrendingUp,
-  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import TrafficMap, { type MapCharger } from "@/components/traffic-map";
@@ -283,33 +280,10 @@ function ScoreDial({ score }: { score: number }) {
         background: `conic-gradient(#0A99A4 ${score * 3.6}deg, rgba(10,153,164,0.13) 0deg)`,
       }}
     >
-      <div className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-white shadow-sm">
+      <div className="flex h-28 w-28 flex-col items-center justify-center rounded-full bg-white">
         <span className="text-4xl font-semibold tracking-[-0.04em] text-[#1d1d1f]">{score}</span>
         <span className="text-xs font-medium text-[#6e6e73]">/ 100</span>
       </div>
-    </div>
-  );
-}
-
-function MetricCard({
-  icon: Icon,
-  label,
-  value,
-  detail,
-}: {
-  icon: IconComponent;
-  label: string;
-  value: string;
-  detail: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-sm">
-      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0DBBC8]/12 text-[#0A99A4]">
-        <Icon className="h-5 w-5" />
-      </div>
-      <p className="mt-5 text-sm font-medium text-[#6e6e73]">{label}</p>
-      <p className="mt-2 text-3xl font-semibold tracking-[-0.03em] text-[#1d1d1f]">{value}</p>
-      <p className="mt-2 text-sm leading-relaxed text-[#6e6e73]">{detail}</p>
     </div>
   );
 }
@@ -547,20 +521,6 @@ export default function TrafficOpportunity() {
     [scoredRegions],
   );
 
-  const mapEdges = useMemo(
-    () =>
-      (data?.edgeHotspots || []).map((edge) => ({
-        edgeId: edge.edgeId,
-        label: edgeLabel(edge),
-        aLon: edge.aLon,
-        aLat: edge.aLat,
-        bLon: edge.bLon,
-        bLat: edge.bLat,
-        trucks2030: edge.trucks2030,
-      })),
-    [data],
-  );
-
   const mapChargers = useMemo<MapCharger[]>(
     () =>
       (charging?.verified || []).map((hub) => ({
@@ -611,6 +571,21 @@ export default function TrafficOpportunity() {
     return count;
   }, [edgeCharging]);
 
+  const mapEdges = useMemo(
+    () =>
+      (data?.edgeHotspots || []).map((edge) => ({
+        edgeId: edge.edgeId,
+        label: edgeLabel(edge),
+        aLon: edge.aLon,
+        aLat: edge.aLat,
+        bLon: edge.bLon,
+        bLat: edge.bLat,
+        trucks2030: edge.trucks2030,
+        whiteSpot: edgeCharging.get(edge.edgeId)?.whiteSpot ?? false,
+      })),
+    [data, edgeCharging],
+  );
+
   if (error) return <ErrorState />;
   if (!data || !selected) return <LoadingState />;
 
@@ -623,20 +598,17 @@ export default function TrafficOpportunity() {
   const mediumShare = mediumDistance / data.summary.deTrucks2030;
   const visibleEdges = showAllEdges ? data.edgeHotspots : data.edgeHotspots.slice(0, 12);
   const validation = data.metadata.validation;
-  const datasetKb = Math.max(1, Math.round(data.metadata.datasetBytes / 1024));
-  const rawGb = data.metadata.rawDatasetBytes / 1024 ** 3;
 
   return (
     <div className="min-h-screen bg-[#fbfbfd] text-[#1d1d1f]">
-      <header className="relative overflow-hidden bg-[#1d1d1f] text-white">
+      <header className="relative overflow-hidden bg-[#141519] text-white">
         <div
-          className="absolute inset-0 opacity-80"
+          className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(circle at 80% 16%, rgba(13,187,200,0.30), transparent 30%), radial-gradient(circle at 18% 82%, rgba(10,153,164,0.22), transparent 26%), linear-gradient(135deg, rgba(29,29,31,0.98), rgba(29,29,31,0.78))",
+              "radial-gradient(ellipse 60% 45% at 72% 38%, rgba(13,187,200,0.10), transparent 70%), radial-gradient(ellipse 40% 35% at 15% 85%, rgba(124,58,237,0.06), transparent 70%)",
           }}
         />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#fbfbfd] to-transparent" />
         <div className="relative mx-auto flex max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-12">
           {!embed && (
             <nav className="flex flex-wrap items-center justify-between gap-4">
@@ -663,101 +635,104 @@ export default function TrafficOpportunity() {
             </nav>
           )}
 
-          <div className="grid items-center gap-10 py-12 lg:grid-cols-[0.95fr_1.05fr] lg:py-14">
+          <div className="grid items-center gap-12 py-12 lg:grid-cols-[5fr_7fr] lg:py-16">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0DBBC8]">
-                Traffic Opportunity Score
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#0DBBC8]">
+                Traffic Opportunity Score · Deutschland
               </p>
-              <h1 className="mt-4 max-w-3xl text-4xl font-semibold leading-[1.05] tracking-[-0.02em] sm:text-5xl lg:text-6xl">
+              <h1 className="mt-5 text-4xl font-bold leading-[1.04] tracking-[-0.025em] sm:text-5xl xl:text-[3.4rem]">
                 Lkw-Laden entscheidet sich an Strecken, nicht an Landkreisen.
               </h1>
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/72 sm:text-xl">
-                Wo bündelt sich der Lkw-Verkehr 2030 auf deutschen Straßen? Diese Analyse zeigt die
-                stärksten Streckenabschnitte, Korridore und Quell-/Zielregionen für
-                halböffentliches Lkw-Laden – auf Basis modellierter Verkehrsflüsse, gegen reale
-                Zähldaten geprüft.
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/65">
+                Die Karte zeigt, wo sich der Lkw-Verkehr 2030 bündelt – und wo entlang der
+                stärksten Abschnitte noch kein Lkw-Ladepark steht. Türkis ist Verkehr.{" "}
+                <span className="font-semibold text-[#e8a13a]">Amber ist Gelegenheit.</span>
               </p>
-              <div className="mt-7 flex flex-wrap gap-x-5 gap-y-3 text-sm text-white/72">
+              <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-white/55">
+                <span className="inline-flex items-center gap-2">
+                  <BadgeCheck className="h-4 w-4 text-[#0DBBC8]" />
+                  Gegen {validation ? validation.stationCount : "reale"} BASt-Zählstellen geprüft
+                </span>
                 <span className="inline-flex items-center gap-2">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#0DBBC8]" />
                   Standortlogik für E.ON, Tankstellen und Autohöfe
                 </span>
-                <span className="inline-flex items-center gap-2">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#0DBBC8]" />
-                  Quelle: Mendeley / ETISplus
-                </span>
-                {validation && (
-                  <span className="inline-flex items-center gap-2">
-                    <BadgeCheck className="h-4 w-4 text-[#0DBBC8]" />
-                    Gegen {validation.stationCount} BASt-Zählstellen geprüft
-                  </span>
-                )}
               </div>
             </div>
 
-            <div className="rounded-[2rem] border border-white/12 bg-white/[0.08] p-4 shadow-2xl backdrop-blur sm:p-5">
-              <div className="rounded-[1.5rem] bg-[#fbfbfd] p-4 text-[#1d1d1f] sm:p-5">
-                <TrafficMap
-                  backdrop={data.backdrop}
-                  edges={mapEdges}
-                  regions={mapRegions}
-                  chargers={mapChargers}
-                  selectedRegionId={selected.region.id}
-                  selectedEdgeId={selectedEdgeId}
-                  onSelectRegion={(id) => setSelectedRegionId(id)}
-                  onSelectEdge={(id) =>
-                    setSelectedEdgeId((current) => (current === id ? null : id))
-                  }
-                />
-              </div>
+            <TrafficMap
+              backdrop={data.backdrop}
+              edges={mapEdges}
+              regions={mapRegions}
+              chargers={mapChargers}
+              variant="dark"
+              selectedRegionId={selected.region.id}
+              selectedEdgeId={selectedEdgeId}
+              onSelectRegion={(id) => setSelectedRegionId(id)}
+              onSelectEdge={(id) =>
+                setSelectedEdgeId((current) => (current === id ? null : id))
+              }
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6 border-t border-white/10 py-8 lg:grid-cols-4">
+            <div>
+              <p className="text-3xl font-bold tracking-[-0.02em] tabular-nums sm:text-4xl">
+                {formatCompact(data.summary.deTrucks2030)}
+              </p>
+              <p className="mt-1.5 text-xs uppercase tracking-[0.14em] text-white/45">
+                Lkw-Fahrten mit DE-Bezug 2030
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold tracking-[-0.02em] tabular-nums sm:text-4xl">
+                {charging ? (
+                  <>
+                    {whiteSpotCount}
+                    <span className="text-white/40"> / {data.edgeHotspots.length}</span>
+                  </>
+                ) : (
+                  formatNumber(data.summary.deRegionCount)
+                )}
+              </p>
+              <p className="mt-1.5 text-xs uppercase tracking-[0.14em] text-white/45">
+                {charging
+                  ? `Hotspots ohne Lkw-Ladepark (${WHITE_SPOT_KM} km)`
+                  : "Deutsche Regionen"}
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold tracking-[-0.02em] tabular-nums sm:text-4xl">
+                {validation
+                  ? new Intl.NumberFormat("de-DE", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(validation.spearman)
+                  : formatNumber(data.summary.deRegionCount)}
+              </p>
+              <p className="mt-1.5 text-xs uppercase tracking-[0.14em] text-white/45">
+                {validation
+                  ? `Korrelation mit ${validation.stationCount} BASt-Zählstellen`
+                  : "Deutsche Regionen"}
+              </p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold tracking-[-0.02em] tabular-nums sm:text-4xl">
+                {formatPercent(mediumShare * 100)}
+              </p>
+              <p className="mt-1.5 text-xs uppercase tracking-[0.14em] text-white/45">
+                Verkehr im E-Lkw-Fenster 150–600 km
+              </p>
             </div>
           </div>
         </div>
       </header>
 
-      <section className="border-y border-black/[0.06] bg-white">
-        <div className="mx-auto grid max-w-7xl gap-4 px-6 py-6 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12">
-          <MetricCard
-            icon={Truck}
-            label="Lkw-Fahrten mit DE-Bezug 2030"
-            value={formatCompact(data.summary.deTrucks2030)}
-            detail="Alle modellierten Fahrten mit Start oder Ziel in Deutschland."
-          />
-          <MetricCard
-            icon={MapPin}
-            label="Deutsche Regionen"
-            value={formatNumber(data.summary.deRegionCount)}
-            detail="NUTS-3-Regionen mit verwertbarem Verkehrssignal."
-          />
-          <MetricCard
-            icon={Route}
-            label="E-Lkw-Distanzfit"
-            value={formatPercent(mediumShare * 100)}
-            detail="Anteil der 150–600-km-Strecken: ideale Länge für öffentliches Laden."
-          />
-          {charging ? (
-            <MetricCard
-              icon={PlugZap}
-              label="Lade-Lücken auf Hotspots"
-              value={`${whiteSpotCount} von ${data.edgeHotspots.length}`}
-              detail={`Hotspot-Strecken ohne verifizierten Lkw-Ladepark im ${WHITE_SPOT_KM}-km-Umkreis.`}
-            />
-          ) : (
-            <MetricCard
-              icon={BarChart3}
-              label="Browser-Datensatz"
-              value={`${datasetKb} KB`}
-              detail={`Aus ${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 }).format(rawGb)} GB Rohdaten aufbereitet.`}
-            />
-          )}
-        </div>
-      </section>
-
       <main className="mx-auto max-w-7xl space-y-10 px-6 py-10 sm:px-8 lg:px-12">
-        <section className="rounded-[1.5rem] border border-black/[0.08] bg-white p-6 shadow-sm sm:p-8">
+        <section className="rounded-lg border border-black/[0.08] bg-white p-6 sm:p-8">
           <div className="mb-6">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0A99A4]">
-              Strecken-Hotspots
+              01 · Strecken-Hotspots
             </p>
             <h2 className="mt-2 text-3xl font-semibold tracking-[-0.02em]">
               Die stärksten Streckenabschnitte im deutschen Netz
@@ -783,7 +758,7 @@ export default function TrafficOpportunity() {
                       current === edge.edgeId ? null : edge.edgeId,
                     )
                   }
-                  className={`rounded-2xl border p-5 text-left transition ${
+                  className={`rounded-lg border p-5 text-left transition ${
                     isSelected
                       ? "border-[#0A99A4] bg-[#0A99A4]/[0.06] ring-2 ring-[#0DBBC8]/25"
                       : "border-black/[0.06] bg-[#fbfbfd] hover:border-[#0A99A4]/40"
@@ -847,10 +822,10 @@ export default function TrafficOpportunity() {
         </section>
 
         <section className="grid gap-8 xl:grid-cols-[1fr_390px]">
-          <div className="rounded-[1.5rem] border border-black/[0.08] bg-white p-6 shadow-sm sm:p-8">
+          <div className="rounded-lg border border-black/[0.08] bg-white p-6 sm:p-8">
             <div className="mb-6">
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0A99A4]">
-                Top-Korridore
+                02 · Top-Korridore
               </p>
               <h2 className="mt-2 text-3xl font-semibold tracking-[-0.02em]">
                 Verbindungen mit dem größten Ladepotenzial
@@ -885,9 +860,9 @@ export default function TrafficOpportunity() {
                 return (
                 <div
                   key={`${corridor.originRegionId}-${corridor.destinationRegionId}-${index}`}
-                  className="grid gap-4 rounded-2xl border border-black/[0.06] bg-[#fbfbfd] p-4 sm:grid-cols-[64px_1fr] md:grid-cols-[64px_1fr_170px]"
+                  className="grid gap-4 rounded-lg border border-black/[0.06] bg-[#fbfbfd] p-4 sm:grid-cols-[64px_1fr] md:grid-cols-[64px_1fr_170px]"
                 >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-xl font-semibold text-[#0A99A4] shadow-sm">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white text-xl font-semibold text-[#0A99A4]">
                     {score.score}
                   </div>
                   <div>
@@ -945,7 +920,7 @@ export default function TrafficOpportunity() {
           </div>
 
           <aside className="space-y-8">
-            <div className="rounded-[1.5rem] border border-black/[0.08] bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-black/[0.08] bg-white p-6">
               <h2 className="text-xl font-semibold tracking-[-0.02em]">
                 Wichtigste Länderverbindungen
               </h2>
@@ -976,7 +951,7 @@ export default function TrafficOpportunity() {
               </div>
             </div>
 
-            <div className="rounded-[1.5rem] border border-black/[0.08] bg-white p-6 shadow-sm">
+            <div className="rounded-lg border border-black/[0.08] bg-white p-6">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="mt-1 h-5 w-5 shrink-0 text-[#0A99A4]" />
                 <div>
@@ -1004,7 +979,7 @@ export default function TrafficOpportunity() {
             </div>
 
             {validation && (
-              <div className="rounded-[1.5rem] border border-[#0A99A4]/25 bg-[#0A99A4]/[0.05] p-6 shadow-sm">
+              <div className="rounded-lg border border-[#0A99A4]/25 bg-[#0A99A4]/[0.05] p-6">
                 <div className="flex items-start gap-3">
                   <BadgeCheck className="mt-1 h-5 w-5 shrink-0 text-[#0A99A4]" />
                   <div>
@@ -1040,7 +1015,7 @@ export default function TrafficOpportunity() {
             )}
 
             {charging && (
-              <div className="rounded-[1.5rem] border border-black/[0.08] bg-white p-6 shadow-sm">
+              <div className="rounded-lg border border-black/[0.08] bg-white p-6">
                 <div className="flex items-start gap-3">
                   <PlugZap className="mt-1 h-5 w-5 shrink-0 text-[#7c3aed]" />
                   <div>
@@ -1066,7 +1041,7 @@ export default function TrafficOpportunity() {
         </section>
 
         <section className="grid gap-8 lg:grid-cols-[370px_1fr]">
-          <aside className="h-fit rounded-[1.5rem] border border-black/[0.08] bg-white p-5 shadow-sm">
+          <aside className="h-fit rounded-lg border border-black/[0.08] bg-white p-5">
             <div>
               <h2 className="text-xl font-semibold tracking-[-0.02em]">Region auswählen</h2>
               <p className="mt-2 text-sm leading-relaxed text-[#6e6e73]">
@@ -1074,7 +1049,7 @@ export default function TrafficOpportunity() {
                 zeigen, wo er sich bündelt.
               </p>
             </div>
-            <label className="mt-5 flex min-h-11 items-center gap-3 rounded-xl border border-black/10 bg-[#fbfbfd] px-4 text-sm focus-within:border-[#0A99A4] focus-within:ring-4 focus-within:ring-[#0DBBC8]/15">
+            <label className="mt-5 flex min-h-11 items-center gap-3 rounded-lg border border-black/10 bg-[#fbfbfd] px-4 text-sm focus-within:border-[#0A99A4] focus-within:ring-4 focus-within:ring-[#0DBBC8]/15">
               <Search className="h-4 w-4 text-[#6e6e73]" />
               <input
                 value={query}
@@ -1089,7 +1064,7 @@ export default function TrafficOpportunity() {
                   key={region.id}
                   type="button"
                   onClick={() => setSelectedRegionId(region.id)}
-                  className={`flex w-full items-center justify-between gap-3 rounded-xl px-3 py-3 text-left transition ${
+                  className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-3 text-left transition ${
                     region.id === selected.region.id
                       ? "bg-[#0A99A4] text-white"
                       : "hover:bg-[#f5f5f7]"
@@ -1113,11 +1088,11 @@ export default function TrafficOpportunity() {
           </aside>
 
           <section className="space-y-8">
-            <div className="rounded-[1.5rem] border border-black/[0.08] bg-white p-6 shadow-sm sm:p-8">
+            <div className="rounded-lg border border-black/[0.08] bg-white p-6 sm:p-8">
               <div className="flex flex-col gap-8 xl:flex-row xl:items-start xl:justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#0A99A4]">
-                    Region im Detail
+                    03 · Region im Detail
                   </p>
                   <h2 className="mt-2 text-4xl font-semibold tracking-[-0.03em]">
                     {selected.region.name}
@@ -1131,12 +1106,7 @@ export default function TrafficOpportunity() {
                 </div>
                 <div className="flex items-center gap-5">
                   <ScoreDial score={selected.score.score} />
-                  <div>
-                    <ScorePill score={selected.score.score} />
-                    <p className="mt-3 text-sm leading-relaxed text-[#6e6e73]">
-                      {selectedClassification.label}
-                    </p>
-                  </div>
+                  <ScorePill score={selected.score.score} />
                 </div>
               </div>
 
@@ -1169,7 +1139,7 @@ export default function TrafficOpportunity() {
             </div>
 
             <div className="grid gap-5 md:grid-cols-2">
-              <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-sm">
+              <div className="rounded-lg border border-black/[0.08] bg-white p-5">
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0DBBC8]/12 text-[#0A99A4]">
                   <TrendingUp className="h-5 w-5" />
                 </div>
@@ -1181,7 +1151,7 @@ export default function TrafficOpportunity() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-sm">
+              <div className="rounded-lg border border-black/[0.08] bg-white p-5">
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0DBBC8]/12 text-[#0A99A4]">
                   <Route className="h-5 w-5" />
                 </div>
@@ -1218,7 +1188,7 @@ export default function TrafficOpportunity() {
         </section>
 
         {!embed && (
-          <section className="rounded-[2rem] bg-[#1d1d1f] p-8 text-white sm:p-12">
+          <section className="rounded-lg bg-[#1d1d1f] p-8 text-white sm:p-12">
             <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
               <div>
                 <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">
