@@ -38,6 +38,15 @@ export interface MapRegion {
   score: number;
 }
 
+export interface MapCharger {
+  id: string;
+  name: string;
+  lon: number;
+  lat: number;
+  status: "live" | "announced";
+  type: "mcs" | "hpc";
+}
+
 interface TooltipState {
   x: number;
   y: number;
@@ -55,6 +64,8 @@ export default function TrafficMap({
   backdrop,
   edges,
   regions,
+  chargers = [],
+  proxyChargers = [],
   selectedRegionId,
   selectedEdgeId,
   onSelectRegion,
@@ -63,6 +74,8 @@ export default function TrafficMap({
   backdrop: [number, number][];
   edges: MapEdge[];
   regions: MapRegion[];
+  chargers?: MapCharger[];
+  proxyChargers?: [number, number][];
   selectedRegionId: string;
   selectedEdgeId: number | null;
   onSelectRegion: (id: string) => void;
@@ -91,6 +104,11 @@ export default function TrafficMap({
         {backdrop.map(([lon, lat], index) => {
           const [x, y] = project(lon, lat);
           return <circle key={index} cx={x} cy={y} r={1.7} fill="#e3e4e8" />;
+        })}
+
+        {proxyChargers.map(([lon, lat], index) => {
+          const [x, y] = project(lon, lat);
+          return <circle key={`p-${index}`} cx={x} cy={y} r={1.1} fill="#7c3aed" opacity={0.22} />;
         })}
 
         {regions.map((region) => {
@@ -179,6 +197,30 @@ export default function TrafficMap({
             </g>
           );
         })}
+
+        {chargers.map((charger) => {
+          const [x, y] = project(charger.lon, charger.lat);
+          const r = charger.type === "mcs" ? 5 : 3.8;
+          const live = charger.status === "live";
+          return (
+            <path
+              key={charger.id}
+              d={`M ${x} ${y - r} L ${x + r} ${y} L ${x} ${y + r} L ${x - r} ${y} Z`}
+              fill={live ? "#7c3aed" : "white"}
+              stroke={live ? "white" : "#7c3aed"}
+              strokeWidth={1.1}
+              opacity={0.95}
+              className="cursor-pointer"
+              onMouseEnter={() =>
+                setTooltip({
+                  x,
+                  y,
+                  label: `${charger.name}${live ? "" : " (angekündigt)"}`,
+                })
+              }
+            />
+          );
+        })}
       </svg>
 
       {tooltip && (
@@ -202,6 +244,12 @@ export default function TrafficMap({
           <span className="inline-block h-3 w-3 rounded-full bg-[#0DBBC8]" />
           Region (Größe = Verkehr, Farbe = Score)
         </span>
+        {chargers.length > 0 && (
+          <span className="inline-flex items-center gap-2">
+            <span className="inline-block h-3 w-3 rotate-45 bg-[#7c3aed]" />
+            Lkw-Ladepark (verifiziert; Umriss = angekündigt)
+          </span>
+        )}
       </div>
     </div>
   );

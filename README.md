@@ -19,6 +19,15 @@ Live: https://truckonomics.vercel.app
 - Deep-Links: `?region=<id>` und `?strecke=<edgeId>` werden beim Laden übernommen und bei Auswahl
   in die URL gespiegelt.
 - Embed-Modus: `?embed=1` blendet Navigation und CTA aus (für Präsentationen/iFrames).
+- Lkw-Ladeparks: `python3 scripts/build_truck_charging_de.py` erzeugt
+  `client/public/data/truck-charging-de.json` aus dem BNetzA-Ladesäulenregister
+  (CSV nach `data/external/bnetza_ladesaeulen.csv` laden; Link auf bundesnetzagentur.de unter
+  E-Mobilität → Download und Kontakt) plus der handkuratierten Liste
+  `curated/truck-charging-de.json` (Quelle + Prüfdatum je Eintrag). Verifizierte Hubs
+  (Milence, Aral pulse MCS, Daimler TruckCharge, E.ON Drive/MAN, Lkw-geflaggte
+  Register-Einträge) erscheinen als Rauten auf der Karte; die App rechnet daraus
+  Weiße-Flecken-Badges je Hotspot-Strecke und Ladelücken je Korridor
+  (Geo-Helfer in `shared/geo.ts`, Test: `npm run test:geo`).
 
 ## Technik
 

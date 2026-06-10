@@ -10,18 +10,20 @@ import {
   ExternalLink,
   Gauge,
   MapPin,
+  PlugZap,
   Route,
   Search,
   TrendingUp,
   Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import TrafficMap from "@/components/traffic-map";
+import TrafficMap, { type MapCharger } from "@/components/traffic-map";
 import {
   calculateTrafficOpportunityScore,
   classifyTrafficOpportunity,
   type TrafficOpportunityScore,
 } from "@shared/traffic-opportunity";
+import { corridorChargingStats, distanceKm } from "@shared/geo";
 
 interface RegionCorridorLink {
   direction: "outbound" | "inbound";
@@ -54,9 +56,13 @@ interface TrafficOpportunityCorridor {
   originRegionId: string;
   originRegion: string;
   originCountry: string;
+  originLon: number;
+  originLat: number;
   destinationRegionId: string;
   destinationRegion: string;
   destinationCountry: string;
+  destinationLon: number;
+  destinationLat: number;
   totalDistanceKm: number;
   trucks2010: number;
   trucks2019: number;
@@ -109,6 +115,34 @@ interface ValidationInfo {
   pearsonLog10: number;
   methodNote: string;
 }
+
+interface ChargingHub {
+  id: string;
+  name: string;
+  operator: string;
+  type: "mcs" | "hpc";
+  status: "live" | "announced";
+  lon: number;
+  lat: number;
+  chargePoints: number;
+  maxKw: number;
+  source: string;
+  coordsApprox: boolean;
+}
+
+interface ChargingData {
+  schemaVersion: number;
+  metadata: {
+    generatedAt: string;
+    bnetzaDataDate: string;
+    sources: string[];
+    methodNote: string;
+  };
+  verified: ChargingHub[];
+  proxy: { lon: number; lat: number; chargePoints: number; maxKw: number }[];
+}
+
+const WHITE_SPOT_KM = 25;
 
 interface TrafficOpportunityData {
   schemaVersion: number;
@@ -386,6 +420,7 @@ function ErrorState() {
 export default function TrafficOpportunity() {
   const initialParams = useMemo(readUrlParams, []);
   const [data, setData] = useState<TrafficOpportunityData | null>(null);
+  const [charging, setCharging] = useState<ChargingData | null>(null);
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState(initialParams.region);
@@ -419,6 +454,14 @@ export default function TrafficOpportunity() {
       .catch(() => {
         if (active) setError(true);
       });
+
+    // Ladepark-Layer ist optional: Ohne die Datei läuft die Seite ohne ihn.
+    fetch("/data/truck-charging-de.json")
+      .then((response) => (response.ok ? (response.json() as Promise<ChargingData>) : null))
+      .then((payload) => {
+        if (active && payload) setCharging(payload);
+      })
+      .catch(() => undefined);
 
     return () => {
       active = false;
@@ -515,6 +558,56 @@ export default function TrafficOpportunity() {
     [data],
   );
 
+  const mapChargers = useMemo<MapCharger[]>(
+    () =>
+      (charging?.verified || []).map((hub) => ({
+        id: hub.id,
+        name: hub.name,
+        lon: hub.lon,
+        lat: hub.lat,
+        status: hub.status,
+        type: hub.type,
+      })),
+    [charging],
+  );
+
+  const liveHubs = useMemo(
+    () => (charging?.verified || []).filter((hub) => hub.status === "live"),
+    [charging],
+  );
+
+  // Pro Hotspot-Kante: nächster Lkw-Ladepark in Betrieb (Luftlinie ab Mitte).
+  const edgeCharging = useMemo(() => {
+    const result = new Map<number, { name: string; km: number; whiteSpot: boolean }>();
+    if (!data || liveHubs.length === 0) return result;
+    for (const edge of data.edgeHotspots) {
+      const mid = { lon: (edge.aLon + edge.bLon) / 2, lat: (edge.aLat + edge.bLat) / 2 };
+      let bestKm = Infinity;
+      let bestName = "";
+      for (const hub of liveHubs) {
+        const km = distanceKm(mid, hub);
+        if (km < bestKm) {
+          bestKm = km;
+          bestName = hub.name;
+        }
+      }
+      result.set(edge.edgeId, {
+        name: bestName,
+        km: Math.round(bestKm),
+        whiteSpot: bestKm > WHITE_SPOT_KM,
+      });
+    }
+    return result;
+  }, [data, liveHubs]);
+
+  const whiteSpotCount = useMemo(() => {
+    let count = 0;
+    edgeCharging.forEach((entry) => {
+      if (entry.whiteSpot) count += 1;
+    });
+    return count;
+  }, [edgeCharging]);
+
   if (error) return <ErrorState />;
   if (!data || !selected) return <LoadingState />;
 
@@ -605,6 +698,7 @@ export default function TrafficOpportunity() {
                   backdrop={data.backdrop}
                   edges={mapEdges}
                   regions={mapRegions}
+                  chargers={mapChargers}
                   selectedRegionId={selected.region.id}
                   selectedEdgeId={selectedEdgeId}
                   onSelectRegion={(id) => setSelectedRegionId(id)}
@@ -658,15 +752,23 @@ export default function TrafficOpportunity() {
             </h2>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-[#6e6e73]">
               Hier verdichtet sich der Lkw-Verkehr – das sind die Suchräume für konkrete
-              Ladestandorte. Jeder Abschnitt zeigt, welche Verbindungen ihn am stärksten nutzen.
-              Klick auf eine Karte markiert die Strecke oben in der Übersicht.
+              Ladestandorte. Jeder Abschnitt zeigt, welche Verbindungen ihn am stärksten nutzen
+              und wie weit der nächste verifizierte Lkw-Ladepark entfernt ist.
             </p>
+            {charging && whiteSpotCount > 0 && (
+              <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800">
+                <AlertTriangle className="h-4 w-4" />
+                {whiteSpotCount} von {data.edgeHotspots.length} Hotspot-Strecken ohne
+                Lkw-Ladepark im {WHITE_SPOT_KM}-km-Umkreis
+              </p>
+            )}
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
             {visibleEdges.map((edge) => {
               const isSelected = edge.edgeId === selectedEdgeId;
               const crossBorder = edge.aCountry !== edge.bCountry;
+              const chargingInfo = edgeCharging.get(edge.edgeId);
               return (
                 <button
                   key={edge.edgeId}
@@ -689,6 +791,11 @@ export default function TrafficOpportunity() {
                         Grenzraum {edge.aCountry}/{edge.bCountry}
                       </span>
                     )}
+                    {chargingInfo?.whiteSpot && (
+                      <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-800">
+                        Weißer Fleck
+                      </span>
+                    )}
                   </div>
                   <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-[#6e6e73]">
                     <span className="font-semibold text-[#1d1d1f]">
@@ -699,6 +806,19 @@ export default function TrafficOpportunity() {
                     </span>
                     <span>{formatNumber(edge.distanceKm)} km Abschnitt</span>
                   </div>
+                  {chargingInfo && (
+                    <p
+                      className={`mt-2 text-sm ${
+                        chargingInfo.whiteSpot
+                          ? "font-semibold text-amber-700"
+                          : "text-[#6e6e73]"
+                      }`}
+                    >
+                      {chargingInfo.whiteSpot
+                        ? `Kein Lkw-Ladepark im Umkreis – nächster: ${chargingInfo.name}, ${formatNumber(chargingInfo.km)} km`
+                        : `Nächster Lkw-Ladepark: ${chargingInfo.name} · ${formatNumber(chargingInfo.km)} km`}
+                    </p>
+                  )}
                   {edge.topFlows.length > 0 && (
                     <p className="mt-3 text-xs leading-relaxed text-[#9b9ba0]">
                       Stärkste Verbindungen:{" "}
@@ -740,7 +860,16 @@ export default function TrafficOpportunity() {
             </div>
 
             <div className="space-y-3">
-              {scoredCorridors.map(({ corridor, score }, index) => (
+              {scoredCorridors.map(({ corridor, score }, index) => {
+                const stats =
+                  liveHubs.length > 0 && corridor.originLon !== 0 && corridor.destinationLon !== 0
+                    ? corridorChargingStats(
+                        { lon: corridor.originLon, lat: corridor.originLat },
+                        { lon: corridor.destinationLon, lat: corridor.destinationLat },
+                        liveHubs,
+                      )
+                    : null;
+                return (
                 <div
                   key={`${corridor.originRegionId}-${corridor.destinationRegionId}-${index}`}
                   className="grid gap-4 rounded-2xl border border-black/[0.06] bg-[#fbfbfd] p-4 sm:grid-cols-[64px_1fr] md:grid-cols-[64px_1fr_170px]"
@@ -769,6 +898,13 @@ export default function TrafficOpportunity() {
                       {formatCompact(corridor.trucks2030)} Lkw 2030 · Wachstum{" "}
                       {formatPercent(score.growthPercent)}
                     </p>
+                    {stats && (
+                      <p className="mt-1 text-sm text-[#6e6e73]">
+                        {stats.hubsOnRoute > 0
+                          ? `${stats.hubsOnRoute} Lkw-Ladepark${stats.hubsOnRoute > 1 ? "s" : ""} im Korridor · größte Ladelücke ≈ ${formatNumber(stats.maxGapKm)} km`
+                          : `Noch kein Lkw-Ladepark im Korridor (Luftlinie ±10 km)`}
+                      </p>
+                    )}
                   </div>
                   <div className="self-center sm:col-start-2 md:col-start-3">
                     <ComponentBar
@@ -779,7 +915,8 @@ export default function TrafficOpportunity() {
                     />
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -873,6 +1010,30 @@ export default function TrafficOpportunity() {
                       BASt-Zählstellen ansehen
                       <ExternalLink className="h-4 w-4" />
                     </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {charging && (
+              <div className="rounded-[1.5rem] border border-black/[0.08] bg-white p-6 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <PlugZap className="mt-1 h-5 w-5 shrink-0 text-[#7c3aed]" />
+                  <div>
+                    <h2 className="text-xl font-semibold tracking-[-0.02em]">
+                      Lkw-Ladepark-Datenbasis
+                    </h2>
+                    <p className="mt-3 text-sm leading-relaxed text-[#6e6e73]">
+                      {liveHubs.length} verifizierte Lkw-Ladeparks in Betrieb (Milence, Aral
+                      pulse, Daimler TruckCharge, E.ON Drive/MAN u. a.), dazu{" "}
+                      {charging.verified.length - liveHubs.length} angekündigte. Quelle:
+                      BNetzA-Ladesäulenregister (Stand{" "}
+                      {new Date(charging.metadata.bnetzaDataDate).toLocaleDateString("de-DE")})
+                      und Betreiber-Pressemitteilungen, je Standort dokumentiert.
+                    </p>
+                    <p className="mt-3 text-xs leading-relaxed text-[#9b9ba0]">
+                      {charging.metadata.methodNote}
+                    </p>
                   </div>
                 </div>
               </div>
