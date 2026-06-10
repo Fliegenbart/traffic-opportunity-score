@@ -167,6 +167,8 @@ export default function KorridorReport() {
       return [
         {
           label: relation.name,
+          aLabel: origin.name.split(",")[0].trim(),
+          bLabel: destination.name.split(",")[0].trim(),
           aLon: origin.lon,
           aLat: origin.lat,
           bLon: destination.lon,
@@ -330,9 +332,9 @@ export default function KorridorReport() {
           Ihre Korridore im Verkehrs- und Ladebild
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#6e6e73]">
-          Gestrichelte Linien: Ihre Relationen (Luftlinie). Türkis: die stärksten
-          Lkw-Verkehrsabschnitte Deutschlands 2030. Violette Rauten: verifizierte Lkw-Ladeparks
-          (Umriss = angekündigt).
+          Gestrichelte Linien: Ihre Relationen (Luftlinie). Violette Rauten: verifizierte
+          Lkw-Ladeparks (Umriss = angekündigt). Nur Parks in Betrieb zählen in die
+          Lücken-Berechnung.
         </p>
         <div className="mx-auto mt-5 w-[136mm] rounded-2xl border border-black/[0.08] bg-[#fbfbfd] p-4">
           <TrafficMap

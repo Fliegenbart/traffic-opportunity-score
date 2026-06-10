@@ -49,6 +49,8 @@ export interface MapCharger {
 
 export interface MapRoute {
   label: string;
+  aLabel?: string;
+  bLabel?: string;
   aLon: number;
   aLat: number;
   bLon: number;
@@ -229,6 +231,41 @@ export default function TrafficMap({
           );
         })}
 
+        {(() => {
+          // Endpunkt-Labels: gleiche Orte (z. B. Hamburg in drei Relationen)
+          // nur einmal beschriften.
+          const seen = new Set<string>();
+          const labels: { x: number; y: number; text: string }[] = [];
+          for (const route of routes) {
+            for (const [lon, lat, text] of [
+              [route.aLon, route.aLat, route.aLabel],
+              [route.bLon, route.bLat, route.bLabel],
+            ] as const) {
+              if (!text) continue;
+              const key = `${lon.toFixed(2)},${lat.toFixed(2)}`;
+              if (seen.has(key)) continue;
+              seen.add(key);
+              const [x, y] = project(lon, lat);
+              labels.push({ x, y, text });
+            }
+          }
+          return labels.map((label) => (
+            <text
+              key={label.text}
+              x={label.x + 5}
+              y={label.y - 4}
+              fontSize={8.5}
+              fontWeight={600}
+              fill="#1d1d1f"
+              stroke="white"
+              strokeWidth={2.5}
+              paintOrder="stroke"
+            >
+              {label.text}
+            </text>
+          ));
+        })()}
+
         {chargers.map((charger) => {
           const [x, y] = project(charger.lon, charger.lat);
           const r = charger.type === "mcs" ? 5 : 3.8;
@@ -267,14 +304,27 @@ export default function TrafficMap({
       )}
 
       <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-[#6e6e73]">
-        <span className="inline-flex items-center gap-2">
-          <span className="inline-block h-1 w-6 rounded-full bg-[#0A99A4]" />
-          Hotspot-Strecke (Breite = Lkw-Verkehr 2030)
-        </span>
-        <span className="inline-flex items-center gap-2">
-          <span className="inline-block h-3 w-3 rounded-full bg-[#0DBBC8]" />
-          Region (Größe = Verkehr, Farbe = Score)
-        </span>
+        {edges.length > 0 && (
+          <span className="inline-flex items-center gap-2">
+            <span className="inline-block h-1 w-6 rounded-full bg-[#0A99A4]" />
+            Hotspot-Strecke (Breite = Lkw-Verkehr 2030)
+          </span>
+        )}
+        {regions.length > 0 && (
+          <span className="inline-flex items-center gap-2">
+            <span className="inline-block h-3 w-3 rounded-full bg-[#0DBBC8]" />
+            Region (Größe = Verkehr, Farbe = Score)
+          </span>
+        )}
+        {routes.length > 0 && (
+          <span className="inline-flex items-center gap-2">
+            <span
+              className="inline-block h-0 w-6 border-t-2 border-dashed border-[#1d1d1f]"
+              aria-hidden
+            />
+            Ihre Relation (Luftlinie)
+          </span>
+        )}
         {chargers.length > 0 && (
           <span className="inline-flex items-center gap-2">
             <span className="inline-block h-3 w-3 rotate-45 bg-[#7c3aed]" />

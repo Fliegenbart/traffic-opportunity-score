@@ -323,7 +323,7 @@ function ComponentBar({
   label: string;
   value: number;
   description: string;
-  explainer: string;
+  explainer?: string;
 }) {
   return (
     <div title={explainer}>
@@ -340,7 +340,9 @@ function ComponentBar({
           style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
         />
       </div>
-      <p className="mt-1.5 text-xs leading-relaxed text-[#9b9ba0]">{explainer}</p>
+      {explainer && (
+        <p className="mt-1.5 text-xs leading-relaxed text-[#9b9ba0]">{explainer}</p>
+      )}
     </div>
   );
 }
@@ -426,6 +428,7 @@ export default function TrafficOpportunity() {
   const [selectedRegionId, setSelectedRegionId] = useState(initialParams.region);
   const [selectedEdgeId, setSelectedEdgeId] = useState<number | null>(initialParams.edge);
   const [showAllEdges, setShowAllEdges] = useState(false);
+  const [showAllCorridors, setShowAllCorridors] = useState(false);
   const embed = initialParams.embed;
 
   useEffect(() => {
@@ -732,12 +735,21 @@ export default function TrafficOpportunity() {
             value={formatPercent(mediumShare * 100)}
             detail="Anteil der 150–600-km-Strecken: ideale Länge für öffentliches Laden."
           />
-          <MetricCard
-            icon={BarChart3}
-            label="Browser-Datensatz"
-            value={`${datasetKb} KB`}
-            detail={`Aus ${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 }).format(rawGb)} GB Rohdaten aufbereitet.`}
-          />
+          {charging ? (
+            <MetricCard
+              icon={PlugZap}
+              label="Lade-Lücken auf Hotspots"
+              value={`${whiteSpotCount} von ${data.edgeHotspots.length}`}
+              detail={`Hotspot-Strecken ohne verifizierten Lkw-Ladepark im ${WHITE_SPOT_KM}-km-Umkreis.`}
+            />
+          ) : (
+            <MetricCard
+              icon={BarChart3}
+              label="Browser-Datensatz"
+              value={`${datasetKb} KB`}
+              detail={`Aus ${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 1 }).format(rawGb)} GB Rohdaten aufbereitet.`}
+            />
+          )}
         </div>
       </section>
 
@@ -755,13 +767,6 @@ export default function TrafficOpportunity() {
               Ladestandorte. Jeder Abschnitt zeigt, welche Verbindungen ihn am stärksten nutzen
               und wie weit der nächste verifizierte Lkw-Ladepark entfernt ist.
             </p>
-            {charging && whiteSpotCount > 0 && (
-              <p className="mt-3 inline-flex items-center gap-2 rounded-full bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-800">
-                <AlertTriangle className="h-4 w-4" />
-                {whiteSpotCount} von {data.edgeHotspots.length} Hotspot-Strecken ohne
-                Lkw-Ladepark im {WHITE_SPOT_KM}-km-Umkreis
-              </p>
-            )}
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -807,16 +812,9 @@ export default function TrafficOpportunity() {
                     <span>{formatNumber(edge.distanceKm)} km Abschnitt</span>
                   </div>
                   {chargingInfo && (
-                    <p
-                      className={`mt-2 text-sm ${
-                        chargingInfo.whiteSpot
-                          ? "font-semibold text-amber-700"
-                          : "text-[#6e6e73]"
-                      }`}
-                    >
-                      {chargingInfo.whiteSpot
-                        ? `Kein Lkw-Ladepark im Umkreis – nächster: ${chargingInfo.name}, ${formatNumber(chargingInfo.km)} km`
-                        : `Nächster Lkw-Ladepark: ${chargingInfo.name} · ${formatNumber(chargingInfo.km)} km`}
+                    <p className="mt-2 text-sm text-[#6e6e73]">
+                      Nächster Lkw-Ladepark: {chargingInfo.name} ·{" "}
+                      {formatNumber(chargingInfo.km)} km
                     </p>
                   )}
                   {edge.topFlows.length > 0 && (
@@ -857,16 +855,31 @@ export default function TrafficOpportunity() {
               <h2 className="mt-2 text-3xl font-semibold tracking-[-0.02em]">
                 Verbindungen mit dem größten Ladepotenzial
               </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#6e6e73]">
+                Distanzfit: Strecken zwischen 150 und 600 km passen am besten zu öffentlichem
+                E-Lkw-Laden. Ladelücken werden über den Luftlinien-Korridor (±15 % Puffer) aus
+                verifizierten Lkw-Ladeparks berechnet.
+              </p>
             </div>
 
             <div className="space-y-3">
-              {scoredCorridors.map(({ corridor, score }, index) => {
+              {(showAllCorridors ? scoredCorridors : scoredCorridors.slice(0, 8)).map(({ corridor, score }, index) => {
+                const straightKm =
+                  corridor.originLon !== 0 && corridor.destinationLon !== 0
+                    ? distanceKm(
+                        { lon: corridor.originLon, lat: corridor.originLat },
+                        { lon: corridor.destinationLon, lat: corridor.destinationLat },
+                      )
+                    : 0;
+                // Auf Kurzstrecken lädt niemand unterwegs — die Lücken-Zeile
+                // wäre dort nur Rauschen.
                 const stats =
-                  liveHubs.length > 0 && corridor.originLon !== 0 && corridor.destinationLon !== 0
+                  liveHubs.length > 0 && straightKm >= 150
                     ? corridorChargingStats(
                         { lon: corridor.originLon, lat: corridor.originLat },
                         { lon: corridor.destinationLon, lat: corridor.destinationLat },
                         liveHubs,
+                        Math.max(20, straightKm * 0.15),
                       )
                     : null;
                 return (
@@ -902,7 +915,7 @@ export default function TrafficOpportunity() {
                       <p className="mt-1 text-sm text-[#6e6e73]">
                         {stats.hubsOnRoute > 0
                           ? `${stats.hubsOnRoute} Lkw-Ladepark${stats.hubsOnRoute > 1 ? "s" : ""} im Korridor · größte Ladelücke ≈ ${formatNumber(stats.maxGapKm)} km`
-                          : `Noch kein Lkw-Ladepark im Korridor (Luftlinie ±10 km)`}
+                          : "Noch kein Lkw-Ladepark im Korridor"}
                       </p>
                     )}
                   </div>
@@ -910,13 +923,24 @@ export default function TrafficOpportunity() {
                     <ComponentBar
                       label="Distanzfit"
                       value={score.components.distanceFit}
-                      description="Streckenlänge"
-                      explainer={`${formatNumber(corridor.totalDistanceKm)} km – Strecken zwischen 150 und 600 km passen am besten zu öffentlichem E-Lkw-Laden.`}
+                      description={`${formatNumber(corridor.totalDistanceKm)} km`}
                     />
                   </div>
                 </div>
                 );
               })}
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <Button
+                variant="outline"
+                className="rounded-full"
+                onClick={() => setShowAllCorridors((value) => !value)}
+              >
+                {showAllCorridors
+                  ? "Weniger anzeigen"
+                  : `Alle ${scoredCorridors.length} Korridore anzeigen`}
+              </Button>
             </div>
           </div>
 
