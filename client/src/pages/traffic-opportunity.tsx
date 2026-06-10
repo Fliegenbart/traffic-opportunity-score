@@ -710,7 +710,6 @@ export default function TrafficOpportunity() {
 
   const selectedClassification = classifyTrafficOpportunity(selected.score.score);
   const selectedRank = regionRank.get(selected.region.id) || 0;
-  const topPairs = data.countryPairs.slice(0, 8);
   const mediumDistance =
     (data.summary.distanceBuckets2030["150-300 km"] || 0) +
     (data.summary.distanceBuckets2030["300-600 km"] || 0);
@@ -1444,38 +1443,6 @@ export default function TrafficOpportunity() {
               </div>
             )}
 
-            <div className="rounded-lg border border-black/[0.08] bg-white p-6">
-              <h3 className="text-lg font-semibold tracking-[-0.02em]">
-                Wichtigste Länderverbindungen
-              </h3>
-              <div className="mt-4 space-y-2.5">
-                {topPairs.map((pair) => (
-                  <div key={`${pair.originCountry}-${pair.destinationCountry}`}>
-                    <div className="mb-1 flex items-center justify-between gap-3 text-sm">
-                      <span className="font-semibold">
-                        {pair.originCountry}
-                        {" → "}
-                        {pair.destinationCountry}
-                      </span>
-                      <span className="text-[#6e6e73] tabular-nums">
-                        {formatCompact(pair.trucks2030)}
-                      </span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-[#f0f0f2]">
-                      <div
-                        className="h-full rounded-full bg-[#0A99A4]"
-                        style={{
-                          width: `${Math.max(
-                            8,
-                            Math.min(100, (pair.trucks2030 / topPairs[0].trucks2030) * 100),
-                          )}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
 
