@@ -16,7 +16,12 @@ Live: https://truckonomics.vercel.app
   mit den BASt-Autobahn-Dauerzählstellen (Schwerverkehrs-DTV) und schreibt
   `data/external/bast-validation.json`; der Generator bettet das Ergebnis in die App-JSON ein.
   Reihenfolge: erst Validierung, dann Generator.
-- Deep-Links: `?region=<id>` und `?strecke=<edgeId>` werden beim Laden übernommen und bei Auswahl
+- Standort-Check (4. Workspace-Tab): bis zu 3 Standorte per Karten-Klick oder Ortssuche
+  (Nominatim) setzen → Ampel-Bewertung aus nächster Hotspot-Strecke, Lade-Lücke und
+  Regions-Score (Logik in `shared/standort-check.ts`, Test: `npm run test:standort`),
+  Vergleichstabelle und Lead-Formular (POST an `/api/leads`, tenant `standort-check`).
+- Deep-Links: `?region=<id>`, `?strecke=<edgeId>`, `?korridor=<originId-destId>`,
+  `?standorte=<lon,lat;lon,lat>` und `?tab=` werden beim Laden übernommen und bei Auswahl
   in die URL gespiegelt.
 - Embed-Modus: `?embed=1` blendet Navigation und CTA aus (für Präsentationen/iFrames).
 - Korridor-Report: personalisierte 4-Seiten-Analyse für Logistiker (eTruckathon-Funnel).

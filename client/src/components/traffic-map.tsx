@@ -19,6 +19,18 @@ export function project(lon: number, lat: number): [number, number] {
   ];
 }
 
+export function unproject(x: number, y: number): [number, number] {
+  return [x / (LON_SCALE * SCALE) + MIN_LON, MAX_LAT - y / SCALE];
+}
+
+export interface MapPin {
+  id: string;
+  lon: number;
+  lat: number;
+  index: number;
+  active?: boolean;
+}
+
 export interface MapEdge {
   edgeId: number;
   label: string;
@@ -78,7 +90,10 @@ export default function TrafficMap({
   chargers = [],
   proxyChargers = [],
   routes = [],
+  pins = [],
   variant = "light",
+  pinMode = false,
+  onMapClick,
   selectedRegionId,
   selectedEdgeId,
   onSelectRegion,
@@ -90,7 +105,11 @@ export default function TrafficMap({
   chargers?: MapCharger[];
   proxyChargers?: [number, number][];
   routes?: MapRoute[];
+  pins?: MapPin[];
   variant?: "light" | "dark";
+  /** Im Pin-Modus setzt jeder Karten-Klick einen Standort statt zu selektieren. */
+  pinMode?: boolean;
+  onMapClick?: (lon: number, lat: number) => void;
   selectedRegionId: string;
   selectedEdgeId: number | null;
   onSelectRegion: (id: string) => void;
@@ -135,10 +154,19 @@ export default function TrafficMap({
     <div className="relative">
       <svg
         viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-        className="h-auto w-full"
+        className={`h-auto w-full ${pinMode ? "cursor-crosshair" : ""}`}
         role="img"
         aria-label="Karte der Lkw-Verkehrs-Hotspots in Deutschland"
         onMouseLeave={() => setTooltip(null)}
+        onClick={(event) => {
+          if (!pinMode || !onMapClick) return;
+          const svg = event.currentTarget;
+          const rect = svg.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * MAP_WIDTH;
+          const y = ((event.clientY - rect.top) / rect.height) * MAP_HEIGHT;
+          const [lon, lat] = unproject(x, y);
+          onMapClick(Math.round(lon * 10000) / 10000, Math.round(lat * 10000) / 10000);
+        }}
       >
         {backdrop.map(([lon, lat], index) => {
           const [x, y] = project(lon, lat);
@@ -168,8 +196,10 @@ export default function TrafficMap({
               stroke={selected ? (dark ? "white" : "#1d1d1f") : palette.regionStroke}
               strokeWidth={selected ? 1.8 : 0.9}
               opacity={selected ? 0.95 : dark ? 0.5 : 0.78}
-              className="cursor-pointer"
-              onClick={() => onSelectRegion(region.id)}
+              className={pinMode ? undefined : "cursor-pointer"}
+              onClick={() => {
+                if (!pinMode) onSelectRegion(region.id);
+              }}
               onMouseEnter={() =>
                 setTooltip({
                   x,
@@ -240,8 +270,10 @@ export default function TrafficMap({
                 stroke="transparent"
                 strokeWidth={11}
                 strokeLinecap="round"
-                className="cursor-pointer"
-                onClick={() => onSelectEdge(edge.edgeId)}
+                className={pinMode ? undefined : "cursor-pointer"}
+                onClick={() => {
+                  if (!pinMode) onSelectEdge(edge.edgeId);
+                }}
                 onMouseEnter={() =>
                   setTooltip({
                     x: midX,
@@ -331,6 +363,32 @@ export default function TrafficMap({
                 })
               }
             />
+          );
+        })}
+
+        {pins.map((pin) => {
+          const [x, y] = project(pin.lon, pin.lat);
+          return (
+            <g key={pin.id}>
+              <circle
+                cx={x}
+                cy={y}
+                r={8}
+                fill={pin.active ? "#e8a13a" : "white"}
+                stroke={pin.active ? "white" : "#1d1d1f"}
+                strokeWidth={1.6}
+              />
+              <text
+                x={x}
+                y={y + 3.2}
+                textAnchor="middle"
+                fontSize={9}
+                fontWeight={700}
+                fill={pin.active ? "#3a2a08" : "#1d1d1f"}
+              >
+                {pin.index}
+              </text>
+            </g>
           );
         })}
       </svg>
