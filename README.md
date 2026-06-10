@@ -26,6 +26,15 @@ Live: https://truckonomics.vercel.app
   Bewertungslogik in `shared/korridor-report.ts` (Test: `npm run test:report`):
   Machbarkeits-Ampel je Relation (Reichweite vs. größte Ladelücke), vereinfachtes
   Energie- und Mautkosten-Modell mit ausgewiesenen Annahmen, CO₂-Einsparung.
+- Realtrend & Tagesgang (Chronos-2): Pipeline in drei Schritten —
+  (1) lokal `python3 scripts/map_hotspots_to_bast_stations.py` (Hotspot-Kante → nächste
+  BASt-Dauerzählstelle), (2) auf dem Chronos-Server (`/opt/truckonomics-trend/`, eigenes venv)
+  `server_extract_bast_series.py` (lädt bast.de/videos/<jahr>_A_S.zip 2016–2023, baut
+  Wochenreihen + Tagesgang-Profile) und `server_chronos_trend.py` (Chronos-2-Backtest gegen
+  Saisonal-Naiv + 52-Wochen-Forecast mit Quantilband), (3) Ergebnisse per scp nach
+  `data/external/` und `python3 scripts/build_traffic_trend_de.py` →
+  `client/public/data/traffic-trend-de.json`. Backtest-Stand: Punktprognose ≈ Saisonfigur
+  (Median-Skill −0,007), 80-%-Band deckt 79,7 % ab — kommuniziert wird deshalb Band + Profil.
 - Lkw-Ladeparks: `python3 scripts/build_truck_charging_de.py` erzeugt
   `client/public/data/truck-charging-de.json` aus dem BNetzA-Ladesäulenregister
   (CSV nach `data/external/bnetza_ladesaeulen.csv` laden; Link auf bundesnetzagentur.de unter

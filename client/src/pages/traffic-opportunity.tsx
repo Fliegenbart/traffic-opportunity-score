@@ -137,6 +137,41 @@ interface ChargingData {
   proxy: { lon: number; lat: number; chargePoints: number; maxKw: number }[];
 }
 
+interface EdgeTrend {
+  station: { zst: string; name: string; strasse: string; distanceKm: number };
+  profile: Record<"werktag" | "samstag" | "sonntag", number[]> | null;
+  trend: {
+    lastYearWeeklyAvg: number;
+    trendPctP10: number;
+    trendPctP50: number;
+    trendPctP90: number;
+    contextWeeks: number;
+  } | null;
+  backtest: {
+    maeChronos: number;
+    maeNaive: number;
+    skill: number | null;
+    coverage80: number;
+    holdoutWeeks: number;
+  } | null;
+}
+
+interface TrendData {
+  schemaVersion: number;
+  metadata: {
+    model: string;
+    horizonWeeks: number;
+    stationsBacktested: number;
+    medianSkillVsSeasonalNaive: number | null;
+    stationsBeatingNaive: number;
+    meanCoverage80: number | null;
+    source: string;
+    sourceUrl: string;
+    methodNote: string;
+  };
+  edges: Record<string, EdgeTrend>;
+}
+
 const WHITE_SPOT_KM = 25;
 
 interface TrafficOpportunityData {
@@ -421,6 +456,7 @@ export default function TrafficOpportunity() {
   const initialParams = useMemo(readUrlParams, []);
   const [data, setData] = useState<TrafficOpportunityData | null>(null);
   const [charging, setCharging] = useState<ChargingData | null>(null);
+  const [trendData, setTrendData] = useState<TrendData | null>(null);
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState(initialParams.region);
@@ -462,11 +498,18 @@ export default function TrafficOpportunity() {
         if (active) setError(true);
       });
 
-    // Ladepark-Layer ist optional: Ohne die Datei läuft die Seite ohne ihn.
+    // Ladepark- und Trend-Layer sind optional: Ohne die Dateien läuft die Seite ohne sie.
     fetch("/data/truck-charging-de.json")
       .then((response) => (response.ok ? (response.json() as Promise<ChargingData>) : null))
       .then((payload) => {
         if (active && payload) setCharging(payload);
+      })
+      .catch(() => undefined);
+
+    fetch("/data/traffic-trend-de.json")
+      .then((response) => (response.ok ? (response.json() as Promise<TrendData>) : null))
+      .then((payload) => {
+        if (active && payload) setTrendData(payload);
       })
       .catch(() => undefined);
 
@@ -681,6 +724,9 @@ export default function TrafficOpportunity() {
   ];
 
   const selectedEdgeCharging = selectedEdge ? edgeCharging.get(selectedEdge.edgeId) : undefined;
+  const selectedEdgeTrend = selectedEdge
+    ? trendData?.edges[String(selectedEdge.edgeId)]
+    : undefined;
 
   const corridorStats = (() => {
     if (!selectedCorridor || liveHubs.length === 0) return null;
@@ -898,6 +944,78 @@ export default function TrafficOpportunity() {
                             )
                             .join(" · ")}
                         </p>
+                      )}
+
+                      {selectedEdgeTrend && (
+                        <div className="mt-5 border-t border-white/10 pt-4">
+                          {selectedEdgeTrend.profile?.werktag && (
+                            <div>
+                              <div className="flex items-baseline justify-between gap-3">
+                                <p className="text-[11px] uppercase tracking-[0.12em] text-white/40">
+                                  Tagesgang Werktag (Lkw/h, gemessen)
+                                </p>
+                                <p className="text-xs text-white/35 tabular-nums">
+                                  max{" "}
+                                  {formatNumber(
+                                    Math.max(...selectedEdgeTrend.profile.werktag),
+                                  )}
+                                </p>
+                              </div>
+                              <div className="mt-2 flex h-12 items-end gap-[2px]">
+                                {selectedEdgeTrend.profile.werktag.map((value, hour) => {
+                                  const max = Math.max(
+                                    ...selectedEdgeTrend.profile!.werktag,
+                                    1,
+                                  );
+                                  return (
+                                    <div
+                                      key={hour}
+                                      className="flex-1 rounded-sm bg-[#0DBBC8]"
+                                      style={{
+                                        height: `${Math.max(4, (value / max) * 100)}%`,
+                                        opacity: 0.4 + 0.6 * (value / max),
+                                      }}
+                                      title={`${hour}–${hour + 1} Uhr: ${formatNumber(value)} Lkw/h`}
+                                    />
+                                  );
+                                })}
+                              </div>
+                              <div className="mt-1 flex justify-between text-[10px] text-white/30">
+                                <span>0 Uhr</span>
+                                <span>12 Uhr</span>
+                                <span>24 Uhr</span>
+                              </div>
+                            </div>
+                          )}
+                          {selectedEdgeTrend.trend && (
+                            <p className="mt-3 text-sm text-white/60">
+                              Realtrend 12 Monate:{" "}
+                              <span
+                                className={`font-semibold ${
+                                  selectedEdgeTrend.trend.trendPctP50 >= 0
+                                    ? "text-[#5fd9e2]"
+                                    : "text-[#e8a13a]"
+                                }`}
+                              >
+                                {selectedEdgeTrend.trend.trendPctP50 >= 0 ? "+" : ""}
+                                {formatPercent(selectedEdgeTrend.trend.trendPctP50)}
+                              </span>{" "}
+                              <span className="text-white/40">
+                                (p10 {selectedEdgeTrend.trend.trendPctP10 > 0 ? "+" : ""}
+                                {formatPercent(selectedEdgeTrend.trend.trendPctP10)} · p90{" "}
+                                {selectedEdgeTrend.trend.trendPctP90 > 0 ? "+" : ""}
+                                {formatPercent(selectedEdgeTrend.trend.trendPctP90)})
+                              </span>
+                            </p>
+                          )}
+                          <p className="mt-1.5 text-xs text-white/35">
+                            Zählstelle {selectedEdgeTrend.station.name} (
+                            {selectedEdgeTrend.station.strasse}),{" "}
+                            {selectedEdgeTrend.station.distanceKm.toLocaleString("de-DE")} km
+                            entfernt
+                            {selectedEdgeTrend.trend && " · Chronos-2-Forecast, backtested"}
+                          </p>
+                        </div>
                       )}
                     </div>
                   ) : (
@@ -1285,6 +1403,42 @@ export default function TrafficOpportunity() {
                     <p className="mt-2.5 text-xs leading-relaxed text-[#9b9ba0]">
                       {charging.metadata.methodNote}
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {trendData && (
+              <div className="rounded-lg border border-black/[0.08] bg-white p-6">
+                <div className="flex items-start gap-3">
+                  <Gauge className="mt-1 h-5 w-5 shrink-0 text-[#0A99A4]" />
+                  <div>
+                    <h3 className="text-lg font-semibold tracking-[-0.02em]">
+                      Realtrend & Tagesgang (Chronos-2)
+                    </h3>
+                    <p className="mt-2.5 text-sm leading-relaxed text-[#6e6e73]">
+                      {Object.keys(trendData.edges).length} Hotspot-Strecken sind mit realen
+                      Stundenmessungen der nächstgelegenen BASt-Dauerzählstelle (2016–2023)
+                      hinterlegt. Den 12-Monats-Trend prognostiziert Amazon Chronos-2 –
+                      backtested gegen das zurückgehaltene letzte Jahr: Das 80-%-Band deckte{" "}
+                      {formatPercent((trendData.metadata.meanCoverage80 || 0) * 100)} der
+                      Realität ab ({trendData.metadata.stationsBacktested} Stationen).
+                    </p>
+                    <p className="mt-2.5 text-xs leading-relaxed text-[#9b9ba0]">
+                      Ehrlichkeitshinweis: Die Punktprognose ist auf dem Niveau der einfachen
+                      Saisonfigur (Median-Skill ≈ 0) – der Mehrwert liegt im kalibrierten
+                      Unsicherheitsband und in den gemessenen Tagesgang-Profilen, nicht in
+                      einer „besseren Zahl". {trendData.metadata.methodNote}
+                    </p>
+                    <a
+                      href={trendData.metadata.sourceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#0A99A4]"
+                    >
+                      BASt-Stundenwerte ansehen
+                      <ExternalLink className="h-4 w-4" />
+                    </a>
                   </div>
                 </div>
               </div>
