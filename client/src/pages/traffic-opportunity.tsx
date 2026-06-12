@@ -752,23 +752,36 @@ export default function TrafficOpportunity() {
     [data, edgeCharging],
   );
 
-  // Der ausgewählte Korridor erscheint als gestrichelte Route auf der Karte.
+  // Korridore-Tab: ohne Auswahl alle Top-Korridore als feine Linien,
+  // mit Auswahl nur der gewählte (hervorgehoben, mit Labels).
   const mapRoutes = useMemo<MapRoute[]>(() => {
-    if (activeTab !== "korridore" || !selectedCorridor) return [];
-    const { corridor } = selectedCorridor;
-    if (corridor.originLon === 0 || corridor.destinationLon === 0) return [];
-    return [
-      {
-        label: `${corridor.originRegion} → ${corridor.destinationRegion}`,
-        aLabel: shortName(corridor.originRegion),
-        bLabel: shortName(corridor.destinationRegion),
+    if (activeTab !== "korridore") return [];
+    if (selectedCorridor) {
+      const { corridor } = selectedCorridor;
+      if (corridor.originLon === 0 || corridor.destinationLon === 0) return [];
+      return [
+        {
+          label: `${corridor.originRegion} → ${corridor.destinationRegion}`,
+          aLabel: shortName(corridor.originRegion),
+          bLabel: shortName(corridor.destinationRegion),
+          aLon: corridor.originLon,
+          aLat: corridor.originLat,
+          bLon: corridor.destinationLon,
+          bLat: corridor.destinationLat,
+        },
+      ];
+    }
+    return scoredCorridors
+      .filter(({ corridor }) => corridor.originLon !== 0 && corridor.destinationLon !== 0)
+      .map(({ corridor }) => ({
+        label: "",
         aLon: corridor.originLon,
         aLat: corridor.originLat,
         bLon: corridor.destinationLon,
         bLat: corridor.destinationLat,
-      },
-    ];
-  }, [activeTab, selectedCorridor]);
+        subtle: true,
+      }));
+  }, [activeTab, selectedCorridor, scoredCorridors]);
 
   const selectedEdge = useMemo(
     () => data?.edgeHotspots.find((edge) => edge.edgeId === selectedEdgeId) || null,

@@ -106,6 +106,8 @@ export interface MapRoute {
   bLat: number;
   /** Echte Routen-Geometrie (z. B. OSRM); ohne sie wird die Luftlinie gezeichnet. */
   path?: [number, number][];
+  /** Dezente Darstellung (Korridor-Übersicht ohne Auswahl). */
+  subtle?: boolean;
 }
 
 interface TooltipState {
@@ -375,6 +377,14 @@ export default function TrafficMap({
           const coreR = 0.9 + norm * 0.7;
           const lineW = 0.8 + norm * 1.3;
           const inDelay = edge.whiteSpot ? 1.5 + rnd * 0.5 : 1.0 + inN * 0.35 + rnd * 0.1;
+          // Richtungsstrich: ehrliche Richtung, aber visuelle Mindestlänge —
+          // dünn und ohne runde Kappen, damit Strecken als Strecken lesbar sind.
+          const segLen = Math.hypot(x2 - x1, y2 - y1) || 1;
+          const stretch = Math.max(1, (7 + norm * 4) / segLen);
+          const sx1 = midX + (x1 - midX) * stretch;
+          const sy1 = midY + (y1 - midY) * stretch;
+          const sx2 = midX + (x2 - midX) * stretch;
+          const sy2 = midY + (y2 - midY) * stretch;
           const flowDur = 10.5 / (1.2 + norm * 2.2);
           const anim = dark
             ? {
@@ -404,22 +414,22 @@ export default function TrafficMap({
                 }}
               />
               <line
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
+                x1={sx1}
+                y1={sy1}
+                x2={sx2}
+                y2={sy2}
                 stroke={color}
                 strokeWidth={lineW}
-                opacity={edge.whiteSpot ? 0.95 : 0.5}
+                opacity={edge.whiteSpot ? 0.95 : 0.55}
                 data-anim
                 style={anim ? { animation: anim.tick } : undefined}
               />
               {!edge.whiteSpot && (
                 <line
-                  x1={x1}
-                  y1={y1}
-                  x2={x2}
-                  y2={y2}
+                  x1={sx1}
+                  y1={sy1}
+                  x2={sx2}
+                  y2={sy2}
                   stroke="#7deef5"
                   strokeWidth={0.7 + norm * 1.0}
                   strokeDasharray="1.4 2.1"
@@ -527,13 +537,21 @@ export default function TrafficMap({
                   x2={x2}
                   y2={y2}
                   stroke={lineColor}
-                  strokeWidth={1.6}
-                  strokeDasharray="5 4"
-                  opacity={0.85}
+                  strokeWidth={route.subtle ? 0.7 : 1.6}
+                  strokeDasharray={route.subtle ? "2 2.6" : "5 4"}
+                  opacity={route.subtle ? 0.35 : 0.85}
+                  data-anim
+                  style={
+                    dark && !route.subtle ? { animation: "tmDash 1.4s linear infinite" } : undefined
+                  }
                 />
               )}
-              <circle cx={x1} cy={y1} r={3} fill={lineColor} />
-              <circle cx={x2} cy={y2} r={3} fill={lineColor} />
+              {!route.subtle && (
+                <>
+                  <circle cx={x1} cy={y1} r={route.path ? 1.8 : 3} fill={lineColor} />
+                  <circle cx={x2} cy={y2} r={route.path ? 1.8 : 3} fill={lineColor} />
+                </>
+              )}
             </g>
           );
         })}
