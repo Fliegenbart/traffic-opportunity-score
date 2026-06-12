@@ -132,6 +132,9 @@ export default function TrafficMap({
   variant = "light",
   pinMode = false,
   showCities = false,
+  textureEmphasis = false,
+  edgeDim = 1,
+  chargerDim = 1,
   onMapClick,
   selectedRegionId,
   selectedEdgeId,
@@ -149,6 +152,11 @@ export default function TrafficMap({
   /** Im Pin-Modus setzt jeder Karten-Klick einen Standort statt zu selektieren. */
   pinMode?: boolean;
   showCities?: boolean;
+  /** Hebt die Regions-Punkttextur hervor (Tab „Regionen"). */
+  textureEmphasis?: boolean;
+  /** Tab-abhängige Grundsichtbarkeit der Ebenen (Prototyp: segDim/parkDim). */
+  edgeDim?: number;
+  chargerDim?: number;
   onMapClick?: (lon: number, lat: number) => void;
   selectedRegionId: string;
   selectedEdgeId: number | null;
@@ -237,8 +245,8 @@ export default function TrafficMap({
           </radialGradient>
         </defs>
 
-        {/* Landmasse: echter Umriss, darunter ein weicher Außenschein. */}
-        <path d={GERMANY_PATH} fill="none" stroke={palette.landGlow} strokeWidth={7} />
+        {/* Landmasse: echter Umriss. */}
+        {!dark && <path d={GERMANY_PATH} fill="none" stroke={palette.landGlow} strokeWidth={7} />}
         <path
           d={GERMANY_PATH}
           fill={palette.landFill}
@@ -249,7 +257,7 @@ export default function TrafficMap({
           d={GERMANY_PATH}
           fill="none"
           stroke={palette.landStroke}
-          strokeWidth={0.8}
+          strokeWidth={dark ? 0.55 : 0.8}
           strokeLinejoin="round"
           pathLength={1}
           data-anim
@@ -267,7 +275,15 @@ export default function TrafficMap({
         <g data-anim style={dark ? { animation: "tmFade 0.8s ease 0.55s both" } : undefined}>
           {backdrop.map(([lon, lat], index) => {
             const [x, y] = project(lon, lat);
-            return <circle key={index} cx={x} cy={y} r={1.2} fill={palette.backdropDot} />;
+            return (
+              <circle
+                key={index}
+                cx={x}
+                cy={y}
+                r={dark ? (textureEmphasis ? 0.75 : 0.55) : 1.0}
+                fill={textureEmphasis ? "#3c424c" : palette.backdropDot}
+              />
+            );
           })}
         </g>
 
@@ -281,12 +297,12 @@ export default function TrafficMap({
                 data-anim
                 style={dark ? { animation: "tmFade 0.6s ease 1.1s both" } : undefined}
               >
-                <circle cx={x} cy={y} r={1.6} fill={palette.cityText} />
                 <text
-                  x={x + 4}
-                  y={y - 3}
-                  fontSize={7}
-                  letterSpacing={0.8}
+                  x={x}
+                  y={y}
+                  textAnchor="middle"
+                  fontSize={4.3}
+                  letterSpacing={0.7}
                   fontWeight={600}
                   fill={palette.cityText}
                   style={{ textTransform: "uppercase" }}
@@ -372,7 +388,7 @@ export default function TrafficMap({
           return (
             <g
               key={edge.edgeId}
-              style={{ opacity: dimmed ? 0.15 : 1, transition: "opacity 0.35s ease" }}
+              style={{ opacity: dimmed ? 0.15 : edgeDim, transition: "opacity 0.35s ease" }}
             >
               <circle
                 cx={midX}
@@ -559,16 +575,17 @@ export default function TrafficMap({
 
         {chargers.map((charger, index) => {
           const [x, y] = project(charger.lon, charger.lat);
-          const r = charger.type === "mcs" ? 3.6 : 2.7;
+          const r = charger.type === "mcs" ? 3.1 : 2.3;
           const live = charger.status === "live";
           const rnd = hash01(index + 7919);
+          const chargerOpacity = selectedEdgeId !== null ? 0.2 : chargerDim;
           return (
-            <g key={charger.id}>
+            <g key={charger.id} style={{ opacity: chargerOpacity, transition: "opacity 0.35s ease" }}>
               {dark && live && (
                 <circle
                   cx={x}
                   cy={y}
-                  r={4}
+                  r={3.4}
                   fill="none"
                   stroke={palette.chargerFill}
                   strokeWidth={0.5}
@@ -583,9 +600,9 @@ export default function TrafficMap({
               )}
               <path
                 d={`M ${x} ${y - r} L ${x + r} ${y} L ${x} ${y + r} L ${x - r} ${y} Z`}
-                fill={live ? palette.chargerFill : palette.chargerStroke}
-                stroke={live ? palette.chargerStroke : palette.chargerFill}
-                strokeWidth={0.8}
+                fill={live ? palette.chargerFill : (dark ? "#141519" : "white")}
+                stroke={live ? (dark ? "#141519" : "white") : palette.chargerFill}
+                strokeWidth={0.7}
                 opacity={0.95}
                 className="cursor-pointer"
                 data-anim
@@ -629,18 +646,18 @@ export default function TrafficMap({
               <circle
                 cx={x}
                 cy={y}
-                r={8}
+                r={4.4}
                 fill={pin.active ? "#e8a13a" : "white"}
-                stroke={pin.active ? "white" : "#1d1d1f"}
-                strokeWidth={1.6}
+                stroke="rgba(20,21,25,0.9)"
+                strokeWidth={0.7}
               />
               <text
                 x={x}
-                y={y + 3.2}
+                y={y + 1.6}
                 textAnchor="middle"
-                fontSize={9}
+                fontSize={4.6}
                 fontWeight={700}
-                fill={pin.active ? "#3a2a08" : "#1d1d1f"}
+                fill="#141519"
               >
                 {pin.index}
               </text>

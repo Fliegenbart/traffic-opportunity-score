@@ -931,7 +931,7 @@ export default function TrafficOpportunity() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse 60% 45% at 72% 30%, rgba(13,187,200,0.09), transparent 70%), radial-gradient(ellipse 40% 35% at 15% 85%, rgba(124,58,237,0.05), transparent 70%)",
+              "radial-gradient(ellipse 60% 45% at 72% 18%, rgba(13,187,200,0.04), transparent 70%)",
           }}
         />
         <div className="relative mx-auto flex max-w-7xl flex-col px-6 py-6 sm:px-8 lg:px-12">
@@ -1034,12 +1034,15 @@ export default function TrafficOpportunity() {
               <TrafficMap
                 backdrop={data.backdrop}
                 edges={mapEdges}
-                regions={mapRegions}
+                regions={activeTab === "regionen" ? mapRegions : []}
                 chargers={mapChargers}
                 routes={mapRoutes}
                 pins={mapPins}
                 variant="dark"
                 showCities
+                textureEmphasis={activeTab === "regionen"}
+                edgeDim={{ strecken: 1, korridore: 0.5, regionen: 0.4, standort: 0.85 }[activeTab]}
+                chargerDim={{ strecken: 1, korridore: 0.6, regionen: 0.8, standort: 0.85 }[activeTab]}
                 pinMode={activeTab === "standort"}
                 onMapClick={(lon, lat) => addPin(lon, lat)}
                 selectedRegionId={selected.region.id}
