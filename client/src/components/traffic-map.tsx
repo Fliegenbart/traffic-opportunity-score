@@ -110,6 +110,13 @@ export interface MapRoute {
   subtle?: boolean;
 }
 
+export interface NetworkLayer {
+  id: string;
+  width: number;
+  opacity: number;
+  d: string;
+}
+
 interface TooltipState {
   x: number;
   y: number;
@@ -131,6 +138,7 @@ export default function TrafficMap({
   proxyChargers = [],
   routes = [],
   pins = [],
+  network = [],
   variant = "light",
   pinMode = false,
   showCities = false,
@@ -150,6 +158,8 @@ export default function TrafficMap({
   proxyChargers?: [number, number][];
   routes?: MapRoute[];
   pins?: MapPin[];
+  /** Verkehrsnetz als gebündelte Adern-Pfade (Bühne hinter den Hotspots). */
+  network?: NetworkLayer[];
   variant?: "light" | "dark";
   /** Im Pin-Modus setzt jeder Karten-Klick einen Standort statt zu selektieren. */
   pinMode?: boolean;
@@ -176,6 +186,7 @@ export default function TrafficMap({
         landGlow: "rgba(13,187,200,0.05)",
         cityText: "rgba(255,255,255,0.32)",
         backdropDot: "#2b2f36",
+        network: "#19c8d4",
         edgeCasing: "rgba(13,187,200,0.16)",
         edge: "#19c8d4",
         edgeSelected: "#7ef0f7",
@@ -191,6 +202,7 @@ export default function TrafficMap({
         landGlow: "rgba(10,153,164,0.04)",
         cityText: "#a3a4aa",
         backdropDot: "#e0e2e7",
+        network: "#0A99A4",
         edgeCasing: "white",
         edge: "#0A99A4",
         edgeSelected: "#06737b",
@@ -274,7 +286,7 @@ export default function TrafficMap({
           }
         />
 
-        <g data-anim style={dark ? { animation: "tmFade 0.8s ease 0.55s both" } : undefined}>
+        <g data-anim style={dark ? { animation: "tmFade 0.8s ease 0.5s both" } : undefined}>
           {backdrop.map(([lon, lat], index) => {
             const [x, y] = project(lon, lat);
             return (
@@ -282,12 +294,32 @@ export default function TrafficMap({
                 key={index}
                 cx={x}
                 cy={y}
-                r={dark ? (textureEmphasis ? 0.75 : 0.55) : 1.0}
+                r={dark ? (textureEmphasis ? 0.75 : 0.45) : 1.0}
                 fill={textureEmphasis ? "#3c424c" : palette.backdropDot}
               />
             );
           })}
         </g>
+
+        {/* Verkehrsnetz als gebündelte Adern: dünn/dunkel → dick/hell ∝ Verkehr.
+            Das zusammenhängende Netz ist die Bühne; die Hotspots sitzen darauf. */}
+        {network.map((layer, i) => (
+          <path
+            key={layer.id}
+            d={layer.d}
+            fill="none"
+            stroke={palette.network}
+            strokeWidth={layer.width}
+            strokeOpacity={layer.opacity}
+            strokeLinecap="round"
+            data-anim
+            style={
+              dark
+                ? { animation: `tmFade 0.9s ease ${(0.55 + i * 0.12).toFixed(2)}s both` }
+                : undefined
+            }
+          />
+        ))}
 
         {showCities &&
           ANCHOR_CITIES.map((city) => {
@@ -373,7 +405,15 @@ export default function TrafficMap({
           const selected = edge.edgeId === selectedEdgeId;
           const dimmed = selectedEdgeId !== null && !selected;
           const color = edge.whiteSpot ? palette.whiteSpotEdge : palette.edge;
-          const glowR = 2.6 + norm * 4.6;
+          const hasNetwork = network.length > 0;
+          // Auf dem Netz treten versorgte Hotspots zurück (das Netz zeigt den
+          // Verkehr schon); die amber Lade-Lücken führen die Aufmerksamkeit.
+          const glowR = edge.whiteSpot
+            ? 2.9 + norm * 4.8
+            : hasNetwork
+              ? 1.5 + norm * 2.2
+              : 2.6 + norm * 4.6;
+          const glowOpacity = edge.whiteSpot ? 0.92 : hasNetwork ? 0.42 : 0.62;
           const coreR = 0.9 + norm * 0.7;
           const lineW = 0.8 + norm * 1.3;
           const inDelay = edge.whiteSpot ? 1.5 + rnd * 0.5 : 1.0 + inN * 0.35 + rnd * 0.1;
@@ -405,7 +445,7 @@ export default function TrafficMap({
                 cy={midY}
                 r={glowR}
                 fill={edge.whiteSpot ? "url(#tmGlowAmber)" : "url(#tmGlowCyan)"}
-                opacity={edge.whiteSpot ? 0.9 : 0.62}
+                opacity={glowOpacity}
                 data-anim
                 style={{
                   transformBox: "fill-box",

@@ -68,20 +68,57 @@ export interface RevenueEstimate {
   marginEurPerYear: number;
 }
 
+function marginEurPerYear(trucksPerDay: number, evShare: number): number {
+  const energyKwhPerDay =
+    trucksPerDay * evShare * REVENUE_ASSUMPTIONS.stopShare * REVENUE_ASSUMPTIONS.avgChargeKwh;
+  return energyKwhPerDay * REVENUE_ASSUMPTIONS.marginPerKwh * 365;
+}
+
 export function estimateSiteRevenue(trucksPerDay: number): RevenueEstimate[] {
   return RAMP_SCENARIOS.map((scenario) => {
     const chargesPerDay =
       trucksPerDay * scenario.evShare * REVENUE_ASSUMPTIONS.stopShare;
-    const energyKwhPerDay = chargesPerDay * REVENUE_ASSUMPTIONS.avgChargeKwh;
     return {
       scenario,
       chargesPerDay: Math.round(chargesPerDay * 10) / 10,
-      energyMwhPerDay: Math.round(energyKwhPerDay / 100) / 10,
-      marginEurPerYear: Math.round(
-        energyKwhPerDay * REVENUE_ASSUMPTIONS.marginPerKwh * 365,
-      ),
+      energyMwhPerDay: Math.round((chargesPerDay * REVENUE_ASSUMPTIONS.avgChargeKwh) / 100) / 10,
+      marginEurPerYear: Math.round(marginEurPerYear(trucksPerDay, scenario.evShare)),
     };
   });
+}
+
+// Hochlauf-Fächer: Der E-Lkw-Anteil wächst von einem kleinen Startwert (2026)
+// beschleunigend zum Szenario-Ziel (2030) und darüber hinaus. Bewusst Szenarien,
+// keine Prognose — die evShare-Zielwerte sind die deklarierten Annahmen.
+export interface RampPoint {
+  year: number;
+  konservativ: number;
+  basis: number;
+  ambitioniert: number;
+}
+
+const RAMP_YEARS = [2026, 2027, 2028, 2029, 2030, 2031, 2032];
+const RAMP_START_FRACTION = 0.18; // Anteil des Ziels, der 2026 erreicht ist
+
+export function estimateRampPaths(trucksPerDay: number): {
+  points: RampPoint[];
+  maxMargin: number;
+} {
+  const points = RAMP_YEARS.map((year) => {
+    // 2026 → RAMP_START_FRACTION, 2030 → 1.0, danach leicht weiter bis 2032.
+    const t = (year - 2026) / (2030 - 2026);
+    const factor =
+      t <= 1 ? RAMP_START_FRACTION + (1 - RAMP_START_FRACTION) * t * t : 1 + (t - 1) * 0.5;
+    const margin = (evShare: number) =>
+      Math.round(marginEurPerYear(trucksPerDay, evShare * factor));
+    return {
+      year,
+      konservativ: margin(RAMP_SCENARIOS[0].evShare),
+      basis: margin(RAMP_SCENARIOS[1].evShare),
+      ambitioniert: margin(RAMP_SCENARIOS[2].evShare),
+    };
+  });
+  return { points, maxMargin: Math.max(...points.map((p) => p.ambitioniert), 1) };
 }
 
 export const SITE_SIGNAL_LABELS: Record<SiteSignal, string> = {

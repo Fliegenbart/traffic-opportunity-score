@@ -60,3 +60,14 @@ assert.ok(revenue[0].marginEurPerYear < revenue[1].marginEurPerYear);
 assert.ok(revenue[1].marginEurPerYear < revenue[2].marginEurPerYear);
 // Basis: 30000*0.08*0.02 = 48 Ladungen * 250 kWh * 0,15 € * 365 ≈ 657 T€
 assert.ok(Math.abs(revenue[1].marginEurPerYear - 657000) < 1000);
+
+// Hochlauf-Fächer: Pfade monoton, ambitioniert > basis > konservativ, 2030 < 2032
+import { estimateRampPaths } from "./standort-check";
+const ramp = estimateRampPaths(30000);
+assert.equal(ramp.points.length, 7);
+const p2030 = ramp.points.find((p) => p.year === 2030)!;
+const p2032 = ramp.points.find((p) => p.year === 2032)!;
+assert.ok(p2030.ambitioniert > p2030.basis && p2030.basis > p2030.konservativ);
+assert.ok(p2032.ambitioniert > p2030.ambitioniert);
+assert.ok(ramp.points[0].ambitioniert < p2030.ambitioniert);
+assert.equal(ramp.maxMargin, p2032.ambitioniert);

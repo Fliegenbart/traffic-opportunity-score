@@ -16,11 +16,13 @@ import TrafficMap, {
   type MapCharger,
   type MapPin,
   type MapRoute,
+  type NetworkLayer,
 } from "@/components/traffic-map";
 import {
+  RAMP_SCENARIOS,
   REVENUE_ASSUMPTIONS,
   assessSite,
-  estimateSiteRevenue,
+  estimateRampPaths,
   type SiteSignal,
 } from "@shared/standort-check";
 import {
@@ -504,12 +506,81 @@ function DetailStat({ label, value, sub }: { label: string; value: string; sub?:
   );
 }
 
+// Erlös-Szenarien als Hochlauf-Fächer: drei E-Lkw-Pfade über die Zeit,
+// die Spannweite zwischen konservativ und ambitioniert als gefülltes Band.
+function RampFan({ trucksPerDay }: { trucksPerDay: number }) {
+  const { points, maxMargin } = estimateRampPaths(trucksPerDay);
+  const W = 280;
+  const H = 116;
+  const padT = 10;
+  const padB = 18;
+  const padR = 8;
+  const padL = 4;
+  const minYear = points[0].year;
+  const maxYear = points[points.length - 1].year;
+  const x = (year: number) =>
+    padL + ((year - minYear) / (maxYear - minYear)) * (W - padL - padR);
+  const y = (value: number) => padT + (1 - value / maxMargin) * (H - padT - padB);
+  const line = (key: "konservativ" | "basis" | "ambitioniert") =>
+    points.map((p) => `${x(p.year).toFixed(1)} ${y(p[key]).toFixed(1)}`);
+  const band =
+    "M" +
+    line("ambitioniert").join("L") +
+    "L" +
+    points
+      .slice()
+      .reverse()
+      .map((p) => `${x(p.year).toFixed(1)} ${y(p.konservativ).toFixed(1)}`)
+      .join("L") +
+    "Z";
+  const eurCompact = (value: number) =>
+    new Intl.NumberFormat("de-DE", { notation: "compact", maximumFractionDigits: 1 }).format(value);
+  const last = points[points.length - 1];
+  const x2030 = x(2030);
+
+  return (
+    <div>
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label="Erlös-Hochlauf-Szenarien">
+        <defs>
+          <linearGradient id="rampBand" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0DBBC8" stopOpacity={0.28} />
+            <stop offset="100%" stopColor="#0DBBC8" stopOpacity={0.04} />
+          </linearGradient>
+        </defs>
+        {/* 2030-Markierung */}
+        <line x1={x2030} y1={padT} x2={x2030} y2={H - padB} stroke="rgba(255,255,255,0.12)" strokeWidth={0.6} strokeDasharray="2 2" />
+        <text x={x2030} y={H - 5} textAnchor="middle" fontSize={7} fill="rgba(255,255,255,0.4)">2030</text>
+        <text x={padL} y={H - 5} fontSize={7} fill="rgba(255,255,255,0.4)">{minYear}</text>
+        <text x={W - padR} y={H - 5} textAnchor="end" fontSize={7} fill="rgba(255,255,255,0.4)">{maxYear}</text>
+
+        <path d={band} fill="url(#rampBand)" />
+        <polyline points={line("ambitioniert").join(" ")} fill="none" stroke="#5fd9e2" strokeWidth={1.4} />
+        <polyline points={line("basis").join(" ")} fill="none" stroke="#0DBBC8" strokeWidth={1.4} strokeDasharray="3 2" />
+        <polyline points={line("konservativ").join(" ")} fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth={1.1} />
+
+        {/* Endpunkte mit Wert */}
+        <circle cx={x(last.year)} cy={y(last.ambitioniert)} r={2} fill="#5fd9e2" />
+        <circle cx={x(last.year)} cy={y(last.konservativ)} r={1.8} fill="rgba(255,255,255,0.55)" />
+      </svg>
+      <div className="mt-1 flex justify-between text-xs">
+        <span className="text-white/45">
+          Ambitioniert <span className="font-semibold text-[#5fd9e2]">≈ {eurCompact(last.ambitioniert)} €</span>
+        </span>
+        <span className="text-white/45">
+          Konservativ <span className="font-semibold text-white/70">≈ {eurCompact(last.konservativ)} €</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export default function TrafficOpportunity() {
   const initialParams = useMemo(readUrlParams, []);
   const [data, setData] = useState<TrafficOpportunityData | null>(null);
   const [charging, setCharging] = useState<ChargingData | null>(null);
   const [trendData, setTrendData] = useState<TrendData | null>(null);
   const [substations, setSubstations] = useState<[number, number, number][]>([]);
+  const [network, setNetwork] = useState<NetworkLayer[]>([]);
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState(initialParams.region);
@@ -578,6 +649,13 @@ export default function TrafficOpportunity() {
       .then((response) => (response.ok ? response.json() : null))
       .then((payload: { points: [number, number, number][] } | null) => {
         if (active && payload) setSubstations(payload.points);
+      })
+      .catch(() => undefined);
+
+    fetch("/data/network-de.json")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { layers: NetworkLayer[] } | null) => {
+        if (active && payload) setNetwork(payload.layers);
       })
       .catch(() => undefined);
 
@@ -1051,6 +1129,7 @@ export default function TrafficOpportunity() {
                 chargers={mapChargers}
                 routes={mapRoutes}
                 pins={mapPins}
+                network={network}
                 variant="dark"
                 showCities
                 textureEmphasis={activeTab === "regionen"}
@@ -1666,40 +1745,22 @@ export default function TrafficOpportunity() {
                       )}
                       {activeAssessment.edge && activeAssessment.edge.km <= 25 && (
                         <div className="mt-4 border-t border-white/10 pt-4">
-                          <p className="text-[11px] uppercase tracking-[0.12em] text-white/40">
-                            Erlöspotenzial halböffentlicher Ladepark (Modellrechnung)
-                          </p>
-                          <table className="mt-2 w-full text-sm">
-                            <tbody>
-                              {estimateSiteRevenue(activeAssessment.edge.trucksPerDay).map(
-                                (row) => (
-                                  <tr
-                                    key={row.scenario.id}
-                                    className="border-t border-white/5 first:border-0"
-                                  >
-                                    <td className="py-1.5 pr-3 text-white/60">
-                                      {row.scenario.label}{" "}
-                                      <span className="text-white/35">
-                                        ({Math.round(row.scenario.evShare * 100)} % E-Lkw)
-                                      </span>
-                                    </td>
-                                    <td className="py-1.5 pr-3 text-white/60 tabular-nums">
-                                      {row.chargesPerDay.toLocaleString("de-DE")} Ladungen/Tag
-                                    </td>
-                                    <td className="py-1.5 text-right font-semibold text-white tabular-nums">
-                                      ≈ {formatCompact(row.marginEurPerYear)} €/Jahr
-                                    </td>
-                                  </tr>
-                                ),
-                              )}
-                            </tbody>
-                          </table>
+                          <div className="flex items-baseline justify-between gap-3">
+                            <p className="text-[11px] uppercase tracking-[0.12em] text-white/40">
+                              Erlöspotenzial halböffentlicher Ladepark
+                            </p>
+                            <p className="text-[11px] text-white/35">Jahresmarge je E-Lkw-Hochlauf</p>
+                          </div>
+                          <div className="mt-2">
+                            <RampFan trucksPerDay={activeAssessment.edge.trucksPerDay} />
+                          </div>
                           <p className="mt-2 text-xs leading-relaxed text-white/35">
-                            Szenarien für den E-Lkw-Anteil am Verkehr (keine Prognose);
-                            Annahmen: {Math.round(REVENUE_ASSUMPTIONS.stopShare * 100)} %
-                            Anhaltequote, {REVENUE_ASSUMPTIONS.avgChargeKwh} kWh/Ladung,{" "}
-                            {REVENUE_ASSUMPTIONS.marginPerKwh.toLocaleString("de-DE")} €/kWh
-                            Marge.
+                            Drei Hochlauf-Szenarien für den E-Lkw-Anteil (Ziel 2030:{" "}
+                            {RAMP_SCENARIOS.map((s) => `${Math.round(s.evShare * 100)} %`).join(" / ")}
+                            ) — Szenarien, keine Prognose. Annahmen:{" "}
+                            {Math.round(REVENUE_ASSUMPTIONS.stopShare * 100)} % Anhaltequote,{" "}
+                            {REVENUE_ASSUMPTIONS.avgChargeKwh} kWh/Ladung,{" "}
+                            {REVENUE_ASSUMPTIONS.marginPerKwh.toLocaleString("de-DE")} €/kWh Marge.
                           </p>
                         </div>
                       )}
