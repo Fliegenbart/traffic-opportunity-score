@@ -3,6 +3,7 @@
 /node_modules/
 /output/
 /tmp/
+/docs/briefings/
 /.playwright-mcp/
 .env*.local
 *.tar.gz

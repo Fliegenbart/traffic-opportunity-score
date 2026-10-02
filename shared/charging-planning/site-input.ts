@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { findStationCandidates, loadPlanningData, stationProfiles } from "./data";
-import { matchTrafficEdge } from "./traffic";
-import { planningRequestSchema, type SourceRef } from "./contracts";
+import { planningRequestSchema } from "./contracts";
+import { resolveSiteTraffic, type BasisChoice, type PlanningData } from "../site-traffic.js";
+export { uniformSource, type BasisChoice, type PlanningData } from "../site-traffic.js";
 
 const percent = z.number().finite().min(0).max(100);
 const money = z.number().finite().min(0).max(100000000);
@@ -33,37 +33,12 @@ export const DEFAULT_SITE_INPUT: SiteInput = {
   replacementAmount: 200000, replacementYear: 2033, residualValue: 150000,
   lowSharePercent: 4, baseSharePercent: 8, highSharePercent: 15,
 };
-export type PlanningData = Awaited<ReturnType<typeof loadPlanningData>>;
 export type PlanningSite = { id: string; label: string; lon: number; lat: number };
-export type BasisChoice = { basis: "station"; stationId: string } | { basis: "model" };
-export const uniformSource: SourceRef = {
-  id: "uniform-hourly-assumption-v1", title: "Gleichmäßiges 24-Stunden-Profil ohne Wochenendabsenkung (Annahme)",
-  url: "https://github.com/Fliegenbart/traffic-opportunity-score", kind: "assumption", version: "1",
-  retrievedAt: "2026-10-02T00:00:00Z", observedThrough: "2026-10-02",
-  sha256: "5e4dbbf2b3110522c40261ca284b73d503f59061fdd3eb974cbc6dd5a2ab69ce",
-  license: "MIT", commercialUse: "allowed",
-};
 
 export function buildSiteRequest(site: PlanningSite, data: PlanningData, raw: SiteInput, choice?: BasisChoice) {
   const a = siteInputSchema.parse(raw);
-  const edge = matchTrafficEdge(site, data.network.edges, 10);
-  const candidates = findStationCandidates(site, data.bast.stations, 3);
-  const unavailable = (reason: string) => ({ request: null, reason, candidates, edge });
-  if (!choice) return unavailable("Bitte eine Verkehrsbasis wählen. Messstationen werden nicht automatisch einem Standort zugeordnet.");
-  const station = choice.basis === "station" ? candidates.find((c) => c.station.stationId === choice.stationId)?.station : undefined;
-  if (choice.basis === "station" && !station) return unavailable("Die gewählte Station hat kein vollständiges Profil innerhalb von 3 km.");
-  if (station && station.meanObservedTrucksPerHour === null) return unavailable("Die gewählte Station hat keine gültige mittlere Verkehrsmenge.");
-  if (choice.basis === "model" && !edge) return unavailable("Keine Modellstrecke innerhalb von 10 km. Es wird kein Verkehr erfunden.");
-  const uniformProfile = { source: uniformSource, vehicleClass: "truck" as const, matchStatus: "assumed" as const, weights: Array(24).fill(1) as number[] };
-  const profiles = station ? stationProfiles(station, data.bast.source) : { weekday: uniformProfile, saturday: uniformProfile, sunday: uniformProfile };
-  const traffic = station ? {
-    trucksPerDay: station.meanObservedTrucksPerHour! * 24, source: profiles.weekday.source,
-    ...(edge ? { contextSource: data.network.source, edgeId: edge.edge.edgeId } : {}),
-    referenceYear: Number(data.bast.period.end.slice(0, 4)), directionShareR1: station.directionShareR1, vehicleClass: station.vehicleClass,
-  } : {
-    trucksPerDay: edge!.edge.trucks2030 / 365, source: data.network.source, referenceYear: 2030,
-    edgeId: edge!.edge.edgeId, matchDistanceKm: edge!.distanceKm, vehicleClass: "truck" as const,
-  };
+  const { edge, candidates, traffic, profiles, reason } = resolveSiteTraffic(site, data, choice);
+  if (!traffic || !profiles) return { request: null, reason, candidates, edge, traffic, profiles };
   const request = planningRequestSchema.parse({
     schemaVersion: 1,
     site: { ...site, access: { status: a.access, directions: a.directions, note: "Standortübertragung und Zufahrt nach Nutzerannahmen; keine automatische Straßen- oder Grundstücksprüfung." },
@@ -82,5 +57,5 @@ export function buildSiteRequest(site: PlanningSite, data: PlanningData, raw: Si
       id, label, years: Array.from({ length: 10 }, (_, i) => ({ year: 2027 + i, evShare: share / 100 * Math.min((i + 1) / 4, 1), trafficMultiplier: 1 })),
     })),
   });
-  return { request, reason: null, candidates, edge };
+  return { request, reason: null, candidates, edge, traffic, profiles };
 }

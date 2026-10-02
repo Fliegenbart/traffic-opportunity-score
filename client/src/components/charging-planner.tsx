@@ -5,7 +5,8 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceLine, Responsiv
 const AXIS = { stroke: "#c5cdcf" };
 const TICK = { fontSize: 10, fill: "#667278" };
 const TOOLTIP_STYLE = { borderRadius: 6, border: "1px solid #dce1e1", fontSize: 12, boxShadow: "0 2px 8px rgba(32,36,38,0.08)" };
-import { canonicalJson, loadPlanningData } from "@shared/charging-planning";
+import { canonicalJson } from "@shared/charging-planning";
+import TrafficBasisSelect from "./traffic-basis-select";
 import { buildSiteRequest, DEFAULT_SITE_INPUT, siteInputSchema, type BasisChoice, type PlanningData, type PlanningSite, type SiteInput } from "@shared/charging-planning/site-input";
 import type { PlanEntry, WorkerReply } from "@/lib/charging-planning.worker";
 import "./site-economics.css";
@@ -59,19 +60,17 @@ const GAPS: Record<string, string> = {
   direction_split_assumed_constant_by_hour: "Richtungsanteil über alle Stunden konstant angenommen",
 };
 
-export default function ChargingPlanner({ sites, activeId, onSelect, registerDate }: {
+export default function ChargingPlanner({ sites, activeId, onSelect, registerDate, data, dataError, onRetry, choices, onBasisChange }: {
   sites: PlanningSite[]; activeId: string; onSelect: (id: string) => void; registerDate: string | null;
+  data?: PlanningData; dataError: string; onRetry: () => void;
+  choices: Record<string, BasisChoice | undefined>; onBasisChange: (id: string, choice?: BasisChoice) => void;
 }) {
-  const [data, setData] = useState<PlanningData>();
-  const [dataError, setDataError] = useState("");
-  const [retry, setRetry] = useState(0);
   const [draft, setDraft] = useState<Record<string, string | boolean>>(() => {
     try {
       const saved = siteInputSchema.safeParse(JSON.parse(localStorage.getItem(STORAGE_KEY) || "null"));
       return draftOf(saved.success ? saved.data : DEFAULT_SITE_INPUT);
     } catch { return draftOf(DEFAULT_SITE_INPUT); }
   });
-  const [choices, setChoices] = useState<Record<string, BasisChoice | undefined>>({});
   const [scenarioId, setScenarioId] = useState("base");
   const [yearIndex, setYearIndex] = useState(3);
   const [daytype, setDaytype] = useState<"weekday" | "saturday" | "sunday">("weekday");
@@ -105,12 +104,6 @@ export default function ChargingPlanner({ sites, activeId, onSelect, registerDat
     queue: referenceDays.reduce((max, d) => Math.max(max, d.hourly[hour].peakQueue), 0),
   }));
 
-  useEffect(() => {
-    let current = true;
-    setDataError("");
-    loadPlanningData().then((value) => { if (current) setData(value); }).catch(() => { if (current) setDataError("Planungsdaten konnten nicht geladen oder validiert werden. Es wird kein Ersatzdatensatz eingesetzt."); });
-    return () => { current = false; };
-  }, [retry]);
   useEffect(() => {
     if (!parsed.success) return;
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed.data)); setStorageStatus("Annahmen auf diesem Gerät gespeichert"); }
@@ -188,7 +181,7 @@ export default function ChargingPlanner({ sites, activeId, onSelect, registerDat
       </div></header>
       <div className="economics-evidence"><span>{data ? `${number(data.network.edges.length)} Modellstrecken` : "Planungsdaten laden …"}</span><span>BASt-Rohdaten: {data?.bast.period.end || "…"}</span><span>BNetzA: {registerDate || "nicht verfügbar"}</span><a href="#methodik">Datengrenzen</a></div>
       <p className="economics-notice"><AlertTriangle size={16} /> Szenariorechnung, keine validierte Nachfrage- oder Rentabilitätsprognose. Nahe Zählstellen bestätigen weder dieselbe Straße noch die Lkw-Zufahrt. Preise, Anhaltequote und Hochlauf sind Annahmen.</p>
-      {dataError && <p role="alert" className="economics-empty">{dataError} <button onClick={() => setRetry((n) => n + 1)}>Erneut laden</button></p>}
+      {dataError && <p role="alert" className="economics-empty">{dataError} <button onClick={onRetry}>Erneut laden</button></p>}
       <div className="economics-layout">
         <div className="economics-inputs">
           <div className="economics-section-heading"><h3>Annahmen</h3><span>Für alle Standorte gleich</span></div>
@@ -207,11 +200,7 @@ export default function ChargingPlanner({ sites, activeId, onSelect, registerDat
         </div>
         <div className="economics-results" aria-busy={busy}>
           <div className="economics-selection"><label htmlFor="planning-site">Standort</label><select id="planning-site" value={activeSite?.id || ""} onChange={(e) => onSelect(e.target.value)}>{sites.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
-          <label className="planning-select">Verkehrsbasis für diesen Standort<select id="planning-basis" value={choices[activeSite?.id]?.basis === "model" ? "model" : choices[activeSite?.id]?.basis === "station" ? `station:${(choices[activeSite.id] as { stationId: string }).stationId}` : ""} onChange={(e) => setChoices((c) => ({ ...c, [activeSite.id]: !e.target.value ? undefined : e.target.value === "model" ? { basis: "model" } : { basis: "station", stationId: e.target.value.slice(8) } }))} disabled={!data || !assumptions}>
-            <option value="">Verkehrsbasis auswählen</option>
-            {activeBasis?.candidates.map(({ station, distanceKm }) => <option key={station.stationId} value={`station:${station.stationId}`}>BASt {station.name} · {station.road} · {number(distanceKm, 1)} km · {station.vehicleClass === "truck" ? "Lkw" : "Schwerverkehr-Proxy"}</option>)}
-            {activeBasis?.edge && <option value="model">Modellstrecke 2030 + gleichmäßiges Profil (Annahme)</option>}
-          </select></label>
+          <TrafficBasisSelect id="planning-basis" context={activeBasis} choice={choices[activeSite?.id]} onChange={(choice) => onBasisChange(activeSite.id, choice)} />
           {choices[activeSite?.id]?.basis === "model" && <p className="economics-warning"><AlertTriangle size={15} /> Synthetische Verkehrsmenge, gleichmäßige Ankünfte an allen Wochentagen. Kein gemessenes Stundenprofil und keine Wochenendabsenkung.</p>}
           {plan && <div className="planning-source"><strong>{plan.input.traffic.source.kind === "measured" ? "Messung an Zählstation · Übertragung ungeprüft" : "Synthetisches Verkehrsmodell"}</strong><span>{number(plan.input.traffic.trucksPerDay)} {plan.input.traffic.vehicleClass === "truck" ? "Lkw" : "Schwerverkehr-Fahrzeuge"}/Tag · Referenz {plan.input.traffic.referenceYear}</span><a href={plan.input.traffic.source.url} target="_blank" rel="noreferrer">{plan.input.traffic.source.title}</a></div>}
           <div className="economics-scenarios" role="group" aria-label="Hochlaufszenario">{[["low", "Niedrig", draft.lowSharePercent], ["base", "Basis", draft.baseSharePercent], ["high", "Hoch", draft.highSharePercent]].map(([id, label, share]) => <button key={String(id)} aria-pressed={id === scenarioId} onClick={() => setScenarioId(String(id))}><span>{label}</span><strong>{share} % ab 2030</strong></button>)}</div>
@@ -234,7 +223,8 @@ export default function ChargingPlanner({ sites, activeId, onSelect, registerDat
       </div>
       {sites.length > 1 && <div className="economics-comparison economics-table-wrap"><table className="economics-table"><caption>Standortvergleich · {scenarioId === "base" ? "Basis" : scenarioId === "low" ? "Niedrig" : "Hoch"} · identische Betriebsannahmen, unterschiedliche Verkehrsbasis</caption><thead><tr><th>Standort</th><th>Quelle</th><th>Kapitalwert 2027–2036</th><th>Status</th></tr></thead><tbody>{sites.map((site) => {
         const entry = entries.find((e) => e.id === site.id); const s = entry?.plan?.scenarios.find((s) => s.id === scenarioId);
-        return <tr key={site.id} className={site.id === activeSite?.id ? "selected" : ""}><th><button onClick={() => onSelect(site.id)}>{site.label}</button></th><td>{entry?.plan?.input.traffic.source.kind === "measured" ? "Zählstation" : entry?.plan ? "Modell" : "Nicht gewählt"}</td><td>{s ? euro(s.finance.npv) : "Nicht berechnet"}</td><td>{busy ? "Berechnung läuft" : entry?.plan?.status === "blocked" ? "Gesperrt" : s ? "Szenario, ungeprüft" : entry?.error || "Verkehrsbasis fehlt"}</td></tr>;
+        const traffic = entry?.plan?.input.traffic;
+        return <tr key={site.id} className={site.id === activeSite?.id ? "selected" : ""}><th><button onClick={() => onSelect(site.id)}>{site.label}</button></th><td>{traffic ? `${traffic.source.kind === "measured" ? "Zählstation" : "Modell"} · ${traffic.referenceYear} · ${traffic.vehicleClass === "truck" ? "Lkw" : "Schwerverkehr"}` : "Nicht gewählt"}</td><td>{s ? euro(s.finance.npv) : "Nicht berechnet"}</td><td>{busy ? "Berechnung läuft" : entry?.plan?.status === "blocked" ? "Gesperrt" : s ? "Szenario, ungeprüft" : entry?.error || "Verkehrsbasis fehlt"}</td></tr>;
       })}</tbody></table></div>}
       <details className="economics-method"><summary>Rechenweg & Grenzen</summary><p>Verkehr × erreichbarer Anteil × E-Lkw-Anteil × Anhaltequote, ergänzt um Ankerkunden. BASt-Juli-Profile bestimmen die relativen Stunden- und Wochentagsanteile. Bei Modellwahl ist das Profil ausdrücklich gleichmäßig angenommen. Fünf-Minuten-Simulation mit gemeinsamer Netzgrenze, Wartezeit, Wechselzeit und Öffnungsfenstern; nicht abgeschlossene Ladungen werden nicht über Mitternacht übertragen.</p><p>Gewichtete Referenztage erhalten auch niedrige erwartete Nachfragemengen. Jahreswerte enthalten Hochlauf, echte Kalenderlängen, Preise, Kosten, Ersatzinvestition, Restwert und Abzinsung. Keine Steuern, Finanzierung, Förderung, Ladekurven, Jahreszeiteneffekte oder stochastischen Ausfälle. Chronos-2 wird ohne validierten Mehrwert nicht als Nachfragekorrektur eingesetzt. Quelldaten und Nutzungsrechte werden dokumentiert; Nutzerangaben sind keine externe Prüfung.</p></details>
       <p className="economics-export-status" role="status">{exportStatus}</p>

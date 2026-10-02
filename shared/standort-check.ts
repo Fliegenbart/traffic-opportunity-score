@@ -216,10 +216,10 @@ export function assessSite(
   if (bestEdge) {
     reasons.push(
       traffic === "hoch"
-        ? `Hotspot-Strecke „${bestEdge.label}" mit ≈ ${trucksPerDay.toLocaleString("de-DE")} Lkw/Tag nur ${Math.round(bestEdgeKm)} km entfernt.`
+        ? `Modellstrecke „${bestEdge.label}" mit ≈ ${trucksPerDay.toLocaleString("de-DE")} Lkw/Tag (synthetisch, 2030) in ${Math.round(bestEdgeKm)} km Luftlinie.`
         : traffic === "mittel"
-          ? `Nächste Hotspot-Strecke („${bestEdge.label}") liegt ${Math.round(bestEdgeKm)} km entfernt — solides, aber kein Spitzensignal.`
-          : `Keine der 60 stärksten Lkw-Strecken im ${EDGE_MID_KM}-km-Umkreis — das Verkehrssignal trägt hier allein keine Ladeinfrastruktur.`,
+          ? `Nächste Modellstrecke („${bestEdge.label}") liegt ${Math.round(bestEdgeKm)} km Luftlinie entfernt. Straßen- und Standortzuordnung ungeprüft.`
+          : `Keine der geladenen Modellstrecken im ${EDGE_MID_KM}-km-Umkreis. Daraus folgt kein Nachweis fehlender lokaler Nachfrage.`,
     );
   }
   if (bestHub) {
@@ -228,7 +228,7 @@ export function assessSite(
         ? `Im geladenen Register kein Lkw-Ladepark im ${HUB_FREE_KM}-km-Umkreis (nächster: ${bestHub.name}, ${Math.round(bestHubKm)} km). Bestand und Planungen vor Ort prüfen.`
         : competition === "moderat"
           ? `${bestHub.name} liegt ${Math.round(bestHubKm)} km entfernt — Koexistenz möglich, Einzugsgebiete prüfen.`
-          : `${bestHub.name} liegt nur ${Math.round(bestHubKm)} km entfernt — direkter Wettbewerb um dieselben Lkw.`,
+          : `${bestHub.name} liegt nur ${Math.round(bestHubKm)} km Luftlinie entfernt. Gemeinsames Einzugsgebiet und Kapazität sind ungeprüft.`,
     );
   } else {
     reasons.push("Ladepark-Daten fehlen. Der Wettbewerb ist unbekannt, nicht unbesetzt.");
@@ -240,7 +240,7 @@ export function assessSite(
   }
   if (bestSub) {
     reasons.push(
-      `Nächstes Umspannwerk (≥110 kV) in ${Math.round(bestSubKm * 10) / 10} km — Netzanschluss-Proxy, ersetzt keine Prüfung beim Netzbetreiber.`,
+      `Nächstes Umspannwerk (≥110 kV) in ${(Math.round(bestSubKm * 10) / 10).toLocaleString("de-DE")} km — Netzanschluss-Proxy, ersetzt keine Prüfung beim Netzbetreiber.`,
     );
   }
 

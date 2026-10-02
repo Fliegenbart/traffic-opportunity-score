@@ -1,22 +1,21 @@
 {
-  "name": "truckonomics",
+  "name": "traffic-opportunity-score",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
-  "homepage": "https://truckonomics.vercel.app",
+  "homepage": "https://traffic-opportunity-score.vercel.app",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "dev:vercel": "npx --yes vercel dev",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test:lifecycle": "npx --yes tsx shared/lifecycle.test.ts",
-    "test:readiness": "npx --yes tsx shared/readiness.test.ts",
+    "test:boundaries": "node --test scripts/test_project_boundaries.mjs",
     "test:traffic": "npx --yes tsx shared/traffic-opportunity.test.ts",
-    "test": "npm run test:lifecycle && npm run test:readiness && npm run test:traffic && npm run test:geo && npm run test:report && npm run test:standort",
+    "test": "npm run test:boundaries && npm run test:traffic && npm run test:geo && npm run test:report && npm run test:standort",
     "check": "tsc",
     "test:geo": "npx --yes tsx shared/geo.test.ts",
     "test:report": "npx --yes tsx shared/korridor-report.test.ts",
-    "test:standort": "npx --yes tsx shared/standort-check.test.ts && npx --yes tsx shared/site-economics.test.ts"
+    "test:standort": "npx --yes tsx shared/standort-check.test.ts && npx --yes tsx shared/site-economics.test.ts && node --import tsx shared/site-traffic.test.ts && node --import tsx shared/site-access.test.ts && node --import tsx shared/site-access-api.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

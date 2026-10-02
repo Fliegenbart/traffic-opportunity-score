@@ -10,7 +10,7 @@ const directory = mkdtempSync(join(root, "output", "planning-runtime-"));
 try {
   const compile = spawnSync(process.execPath, [join(root, "node_modules/typescript/bin/tsc"),
     "--outDir", directory, "--rootDir", root, "--module", "ESNext", "--moduleResolution", "Bundler",
-    "--target", "ES2022", "--types", "node", "--strict", "--skipLibCheck", "api/charging-plan.ts"],
+    "--target", "ES2022", "--types", "node", "--strict", "--skipLibCheck", "api/charging-plan.ts", "api/site-access.ts"],
   { cwd: root, encoding: "utf8" });
   assert.equal(compile.status, 0, compile.stdout + compile.stderr);
   // Native ESM, deliberately without tsx or bundler module-resolution shortcuts.
@@ -26,6 +26,9 @@ try {
   assert.equal(payload.scenarios[0].years.length, 10);
   assert.match(payload.fingerprint, /^[a-f0-9]{64}$/);
   await handler({ method: "GET", headers: {} }, response);
+  assert.equal(status, 405);
+  const { default: accessHandler } = await import(pathToFileURL(join(directory, "api/site-access.js")).href);
+  await accessHandler({ method: "GET", headers: {} }, response);
   assert.equal(status, 405);
   console.log("Compiled native ESM runtime: API imports, 10-year calculation and HTTP gates passed.");
 } finally { rmSync(directory, { recursive: true, force: true }); }

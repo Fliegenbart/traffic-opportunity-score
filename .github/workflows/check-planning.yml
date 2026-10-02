@@ -3,17 +3,16 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'shared/charging-planning/**'
-      - 'shared/geo.ts'
-      - 'api/charging-plan*'
+      - 'shared/**'
+      - 'client/src/**'
+      - 'api/**'
+      - 'scripts/test_project_boundaries.mjs'
+      - 'vercel.json'
+      - 'vite.config.ts'
       - 'scripts/*planning*'
       - 'scripts/run_charging_plan.ts'
       - 'scripts/test_charging_runtime.mjs'
       - 'client/public/data/planning/**'
-      - 'client/src/components/charging-planner*'
-      - 'client/src/components/site-economics.css'
-      - 'client/src/lib/charging-planning.worker.ts'
-      - 'client/src/pages/traffic-opportunity.tsx'
       - '.github/workflows/check-planning.yml'
       - 'package*.json'
       - 'tsconfig.json'

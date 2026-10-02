@@ -13,6 +13,11 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SiteEconomics from "@/components/charging-planner";
+import TrafficBasisSelect from "@/components/traffic-basis-select";
+import SiteEvidence from "@/components/site-evidence";
+import SiteAccessCheck from "@/components/site-access-check";
+import { loadPlanningData } from "@shared/charging-planning/data";
+import { resolveSiteTraffic, validateHotspotConsistency, type PlanningData, type BasisChoice } from "@shared/site-traffic";
 import { matchesRegionSearch } from "@shared/region-search";
 import TrafficMap, {
   type MapCharger,
@@ -20,10 +25,7 @@ import TrafficMap, {
   type MapRoute,
   type NetworkLayer,
 } from "@/components/traffic-map";
-import {
-  assessSite,
-  type SiteSignal,
-} from "@shared/standort-check";
+import { assessSite } from "@shared/standort-check";
 import {
   calculateTrafficOpportunityScore,
   classifyTrafficOpportunity,
@@ -245,13 +247,6 @@ function parsePins(raw: string): SitePin[] {
     })
     .filter((pin): pin is SitePin => pin !== null)
     .slice(0, MAX_PINS);
-}
-
-function signalBadgeClass(signal: SiteSignal) {
-  if (signal === "stark") return "bg-[#e1f0ef] text-[#087782]";
-  if (signal === "gut") return "bg-[#edf5f5] text-[#2a6f76]";
-  if (signal === "pruefen") return "bg-[#faf0df] text-[#7b5117]";
-  return "bg-[#eef0f0] text-[#536066]";
 }
 
 function formatNumber(value: number) {
@@ -485,6 +480,10 @@ export default function TrafficOpportunity() {
   const [trendData, setTrendData] = useState<TrendData | null>(null);
   const [substations, setSubstations] = useState<[number, number, number][]>([]);
   const [network, setNetwork] = useState<NetworkLayer[]>([]);
+  const [planningData, setPlanningData] = useState<PlanningData>();
+  const [planningDataError, setPlanningDataError] = useState("");
+  const [planningRetry, setPlanningRetry] = useState(0);
+  const [basisChoices, setBasisChoices] = useState<Record<string, BasisChoice | undefined>>({});
   const [error, setError] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedRegionId, setSelectedRegionId] = useState(initialParams.region);
@@ -510,6 +509,22 @@ export default function TrafficOpportunity() {
   useEffect(() => {
     document.title = "Traffic Opportunity Score – Truckonomics";
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    setPlanningData(undefined);
+    setPlanningDataError("");
+    loadPlanningData().then((value) => { if (active) setPlanningData(value); })
+      .catch(() => { if (active) setPlanningDataError("Gemeinsame Standortdaten konnten nicht geladen oder validiert werden. Kein Ersatz durch die Hotspot-Auswahl."); });
+    return () => { active = false; };
+  }, [planningRetry]);
+
+  const consistentPlanningData = useMemo(() => {
+    if (!planningData || !data) return undefined;
+    try { validateHotspotConsistency(data.edgeHotspots, planningData.network); return planningData; }
+    catch { return undefined; }
+  }, [data, planningData]);
+  const siteDataError = planningDataError || (data && planningData && !consistentPlanningData ? "Hotspot-Auswahl und Verkehrsnetz widersprechen sich. Standortberechnung gesperrt." : "");
 
   useEffect(() => {
     let active = true;
@@ -794,13 +809,21 @@ export default function TrafficOpportunity() {
     [scoredRegions],
   );
 
+  const siteTraffic = useMemo(() => {
+    const result = new Map<string, ReturnType<typeof resolveSiteTraffic>>();
+    if (consistentPlanningData) for (const pin of pins) result.set(pin.id, resolveSiteTraffic(pin, consistentPlanningData, basisChoices[pin.id]));
+    return result;
+  }, [pins, consistentPlanningData, basisChoices]);
+
   const assessments = useMemo(() => {
     const result = new Map<string, ReturnType<typeof assessSite>>();
     for (const pin of pins) {
-      result.set(pin.id, assessSite(pin, mapEdges, liveHubs, siteRegions, substations));
+      const edge = siteTraffic.get(pin.id)?.edge?.edge;
+      result.set(pin.id, assessSite(pin, edge ? [{ ...edge }] : [], liveHubs, siteRegions, substations));
     }
     return result;
-  }, [pins, mapEdges, liveHubs, siteRegions, substations]);
+  }, [pins, siteTraffic, liveHubs, siteRegions, substations]);
+  const changeBasis = (id: string, choice?: BasisChoice) => setBasisChoices((current) => ({ ...current, [id]: choice }));
 
   const addPin = (lon: number, lat: number, label = "") => {
     if (pins.length >= MAX_PINS) {
@@ -850,7 +873,8 @@ export default function TrafficOpportunity() {
       const summary = pins
         .map((pin, index) => {
           const a = assessments.get(pin.id);
-          return `Standort ${index + 1} (${pin.label || `${pin.lat}, ${pin.lon}`}): ${a?.label || "?"} — ${a?.reasons.join(" ") || ""}`;
+          const traffic = siteTraffic.get(pin.id)?.traffic;
+          return `Standort ${index + 1} (${pin.label || `${pin.lat}, ${pin.lon}`}): Verkehr ${traffic ? `${Math.round(traffic.trucksPerDay)} Fahrzeuge/Tag, ${traffic.source.kind}, Referenz ${traffic.referenceYear}, Quelle ${traffic.source.id}` : "nicht gewählt"}. Ladenachfrage nicht validiert, Lkw-Zufahrt ungeprüft, nicht investitionsreif. ${a?.reasons.join(" ") || ""}`;
         })
         .join("\n");
       const response = await fetch("/api/leads", {
@@ -901,9 +925,7 @@ export default function TrafficOpportunity() {
     active: pin.id === activePin?.id,
   }));
   const activeAssessment = activePin ? assessments.get(activePin.id) : undefined;
-  const activePinTrend = activeAssessment?.edge
-    ? trendData?.edges[String(activeAssessment.edge.edgeId)]
-    : undefined;
+  const activeTraffic = activePin ? siteTraffic.get(activePin.id) : undefined;
 
   const selectedEdgeCharging = selectedEdge ? edgeCharging.get(selectedEdge.edgeId) : undefined;
   const selectedEdgeTrend = selectedEdge
@@ -1521,9 +1543,7 @@ export default function TrafficOpportunity() {
 
                   {pins.length === 0 && (
                     <p className="rounded-lg border border-dashed border-[#c5cdcf] px-5 py-4 text-sm leading-relaxed text-[#5c676b]">
-                      Wo planst du Ladeinfrastruktur? Setze bis zu {MAX_PINS} Standorte per
-                      Karten-Klick oder Ortssuche — du bekommst sofort das Standort-Signal aus
-                      Verkehr, Lade-Lücke und Regions-Score.
+                      Noch kein Standort ausgewählt.
                     </p>
                   )}
 
@@ -1547,6 +1567,7 @@ export default function TrafficOpportunity() {
                             title="Standort entfernen"
                             onClick={() => {
                               setPins((current) => current.filter((p) => p.id !== pin.id));
+                              setBasisChoices((current) => { const next = { ...current }; delete next[pin.id]; return next; });
                               setPlaceError("");
                             }}
                             className="shrink-0 p-1 opacity-60 hover:opacity-100"
@@ -1560,20 +1581,11 @@ export default function TrafficOpportunity() {
 
                   {activePin && activeAssessment && (
                     <div className="rounded-lg border border-[#dce1e1] bg-white p-5">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-semibold ${signalBadgeClass(activeAssessment.signal)}`}
-                        >
-                          {activeAssessment.label}
-                        </span>
-                        {activeAssessment.edge?.whiteSpot && (
-                          <span className="rounded-full bg-[#faf0df] px-2.5 py-1 text-xs font-semibold text-[#8b570b]">
-                            Weißer Fleck
-                          </span>
-                        )}
-                      </div>
+                      <TrafficBasisSelect id="screening-basis" context={activeTraffic} choice={basisChoices[activePin.id]} onChange={(choice) => changeBasis(activePin.id, choice)} unavailable={siteDataError || (!consistentPlanningData ? "Standortdaten werden geladen" : undefined)} />
+                      {siteDataError && <button type="button" onClick={() => setPlanningRetry((n) => n + 1)} className="mt-2 text-xs font-semibold text-[#087782]">Erneut laden</button>}
+                      <SiteEvidence context={activeTraffic} networkSize={consistentPlanningData?.network.edges.length} />
                       <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-[#536066]">
-                        {activeAssessment.reasons.map((reason) => (
+                        {activeAssessment.reasons.filter((reason) => !reason.includes("Modellstrecke")).map((reason) => (
                           <li key={reason} className="flex gap-2">
                             <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[#0A99A4]" />
                             {reason}
@@ -1582,20 +1594,20 @@ export default function TrafficOpportunity() {
                       </ul>
                       <div className="mt-4 grid grid-cols-2 gap-4 border-t border-[#dce1e1] pt-4 sm:grid-cols-4">
                         <DetailStat
-                          label="Hotspot-Modell 2030"
+                          label="Modellkontext · Strecke"
                           value={
                             activeAssessment.edge
-                              ? `≈ ${formatNumber(activeAssessment.edge.trucksPerDay)}/Tag`
+                              ? `#${activeAssessment.edge.edgeId}`
                               : "—"
                           }
                           sub={
                             activeAssessment.edge
-                              ? `${activeAssessment.edge.km.toLocaleString("de-DE")} km zur Strecke`
-                              : undefined
+                              ? `${activeAssessment.edge.km.toLocaleString("de-DE")} km geometrisch`
+                              : consistentPlanningData ? "Keine Strecke ≤ 10 km" : "Zuordnung offen"
                           }
                         />
                         <DetailStat
-                          label="Nächster Lkw-Lader"
+                          label="Lkw-Lader · Luftlinie"
                           value={
                             activeAssessment.hub
                               ? `${activeAssessment.hub.km.toLocaleString("de-DE")} km`
@@ -1626,28 +1638,7 @@ export default function TrafficOpportunity() {
                           }
                         />
                       </div>
-                      {activePinTrend?.profile?.werktag && (
-                        <div className="mt-4 border-t border-[#dce1e1] pt-4">
-                          <p className="text-xs font-medium text-[#667278]">
-                            Historisches BASt-Profil (Werktag, Streckenzuordnung ungeprüft)
-                          </p>
-                          <div className="mt-2 flex h-9 items-end gap-[2px]">
-                            {activePinTrend.profile.werktag.map((value, hour) => {
-                              const max = Math.max(...activePinTrend.profile!.werktag, 1);
-                              return (
-                                <div
-                                  key={hour}
-                                  className="flex-1 rounded-sm bg-[#0A99A4]"
-                                  style={{
-                                    height: `${Math.max(5, (value / max) * 100)}%`,
-                                    opacity: 0.4 + 0.6 * (value / max),
-                                  }}
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
+                      <SiteAccessCheck key={`${activePin.id}:${activeTraffic?.edge?.edge.edgeId ?? "none"}`} site={{ ...activePin, label: activePin.label || "Standort" }} context={activeTraffic} />
                       {activePin && (
                         <div className="mt-4 border-t border-[#dce1e1] pt-4">
                           <a href="#wirtschaftlichkeit" className="inline-flex items-center gap-2 text-sm font-semibold text-[#087782]">Wirtschaftlichkeit berechnen <ArrowRight size={16} /></a>
@@ -1655,9 +1646,8 @@ export default function TrafficOpportunity() {
                         </div>
                       )}
                       <p className="mt-3 text-xs leading-relaxed text-[#667278]">
-                        Standort-Signal aus Verkehrsdaten, Ladepark-Register und Regions-Score —
-                        keine Bau-Empfehlung. Netzanschluss, Fläche und Genehmigung prüft der
-                        Readiness Check.
+                        Standort-Screening, keine Investitions- oder Bauempfehlung. Netzanschluss,
+                        Fläche und Genehmigung erfordern eine separate Prüfung.
                       </p>
                     </div>
                   )}
@@ -1671,18 +1661,15 @@ export default function TrafficOpportunity() {
                         <tbody>
                           {pins.map((pin, index) => {
                             const a = assessments.get(pin.id);
+                            const traffic = siteTraffic.get(pin.id)?.traffic;
                             return (
                               <tr key={pin.id} className="border-t border-[#e6eaea] first:border-0">
                                 <td className="py-2 pr-2 text-[#5c676b] tabular-nums">{index + 1}</td>
                                 <td className="py-2 pr-3">
-                                  <span
-                                    className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${signalBadgeClass(a?.signal || "schwach")}`}
-                                  >
-                                    {a?.label}
-                                  </span>
+                                  <span className="text-xs text-[#536066]">{traffic?.source.kind === "measured" ? "Messung · Zuordnung offen" : traffic ? "Modell · synthetisch" : "Quelle offen"}</span>
                                 </td>
                                 <td className="py-2 pr-3 text-[#536066] tabular-nums">
-                                  {a?.edge ? `≈ ${formatCompact(a.edge.trucksPerDay)}/Tag` : "—"}
+                                  {traffic ? `≈ ${formatNumber(traffic.trucksPerDay)} ${traffic.vehicleClass === "truck" ? "Lkw" : "SV"}/Tag · ${traffic.referenceYear}` : "—"}
                                 </td>
                                 <td className="py-2 text-[#536066] tabular-nums">
                                   {a?.hub ? `Lader ${Math.round(a.hub.km)} km` : "—"}
@@ -1692,6 +1679,7 @@ export default function TrafficOpportunity() {
                           })}
                         </tbody>
                       </table>
+                      <p className="mt-2 text-xs text-[#667278]">SV = Schwerverkehr, einschließlich anderer Fahrzeuge. Unterschiedliche Referenzjahre und Fahrzeugklassen sind nicht direkt vergleichbar; keine belastbare Standortrangfolge.</p>
                     </div>
                   )}
 
@@ -1708,6 +1696,11 @@ export default function TrafficOpportunity() {
           activeId={activePin?.id || ""}
           onSelect={setActivePinId}
           registerDate={charging?.metadata.bnetzaDataDate || null}
+          data={consistentPlanningData}
+          dataError={siteDataError}
+          onRetry={() => setPlanningRetry((n) => n + 1)}
+          choices={basisChoices}
+          onBasisChange={changeBasis}
         />
       )}
       {activeTab === "standort" && pins.length > 0 && !embed && (

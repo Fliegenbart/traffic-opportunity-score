@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import TrafficMap, { type MapCharger, type MapRoute } from "@/components/traffic-map";
 import { distanceKm, pointToSegmentKm } from "@shared/geo";
+import { validateRoutingConfig } from "@shared/site-access";
 import {
   DEFAULT_ASSUMPTIONS,
   FEASIBILITY_LABELS,
@@ -23,9 +24,8 @@ import {
   type RouteGeometry,
 } from "@shared/korridor-report";
 
-// OSRM-Demo-Server: echte Straßenrouten (Pkw-Profil — auf Autobahnen für
-// Distanz/Verlauf ausreichend). Fällt bei Nichterreichbarkeit auf die
-// Luftlinien-Näherung zurück.
+// Only an explicitly configured, commercially permitted routing service.
+// Without one, the report retains its labelled straight-line approximation.
 const osrmCache = new Map<string, RouteGeometry | null>();
 
 async function fetchRoute(
@@ -35,8 +35,12 @@ async function fetchRoute(
   const key = `${a.lon},${a.lat};${b.lon},${b.lat}`;
   if (osrmCache.has(key)) return osrmCache.get(key) ?? null;
   try {
+    const baseUrl = import.meta.env.VITE_CORRIDOR_ROUTING_BASE_URL;
+    if (!baseUrl) return null;
+    const routing = validateRoutingConfig({ baseUrl, profile: import.meta.env.VITE_CORRIDOR_ROUTING_PROFILE || "driving" });
     const response = await fetch(
-      `https://router.project-osrm.org/route/v1/driving/${key}?overview=simplified&geometries=geojson`,
+      `${routing.baseUrl}/route/v1/${routing.profile}/${key}?overview=simplified&geometries=geojson`,
+      { signal: AbortSignal.timeout(12000), redirect: "error" },
     );
     if (!response.ok) throw new Error(String(response.status));
     const data = (await response.json()) as {

@@ -1,10 +1,23 @@
-# Truckonomics
+# Traffic Opportunity Score
 
-Truckonomics ist ein Vercel-Projekt für einen deutschen TCO-Rechner für Diesel- und Elektro-LKW.
-Zusätzlich enthält das Projekt einen B2B DepotOne Readiness Check als Lead-Generation-Funnel für Depot-Elektrifizierung
-sowie den Traffic Opportunity Score (Startseite `/`): eine Strecken- und Regionsanalyse für halböffentliches Lkw-Laden.
+Dieses öffentliche Repository enthält die Strecken-, Regions- und Standortanalyse für
+halböffentliches Lkw-Laden in Deutschland sowie den Korridor-Report und die Ladepark-Planungsengine.
 
 Traffic-Opportunity-Projekt: https://traffic-opportunity-score.vercel.app
+
+## Getrennte Projekte
+
+| Tool | GitHub-Repository | Lokaler Checkout | Sichtbarkeit |
+| --- | --- | --- | --- |
+| Traffic Opportunity Score | `Fliegenbart/traffic-opportunity-score` | `~/Documents/Truckonomics` | öffentlich |
+| TCO-Rechner | `Fliegenbart/truckonomics` | `~/Documents/truckonomics-tco` | privat |
+| Depot Readiness Check | `Fliegenbart/DepotReadinessCheck` | `~/Documents/DepotReadinessCheck` | privat |
+
+TCO- und Readiness-Implementierungen sowie deren APIs gehören nicht in dieses Repository.
+Alte Seitenlinks `/tco`, `/embed` und `/depot-readiness` werden auf die jeweiligen Projekte
+weitergeleitet. Die Traffic-Einbettung bleibt über `?embed=1` verfügbar. Fremde API-Routen
+werden weder weitergeleitet noch durch die SPA beantwortet. `npm run test:boundaries`
+prüft diese Projektgrenzen; die Prüfung ist Teil von `npm test`.
 
 ## Traffic Opportunity Score
 
@@ -17,16 +30,20 @@ Traffic-Opportunity-Projekt: https://traffic-opportunity-score.vercel.app
   `data/external/bast-validation.json`; der Generator bettet das Ergebnis in die App-JSON ein.
   Reihenfolge: erst Validierung, dann Generator.
 - Standort-Check (4. Workspace-Tab): bis zu 3 Standorte per Karten-Klick oder Ortssuche
-  (Nominatim) setzen → Ampel-Bewertung aus nächster Hotspot-Strecke, Lade-Lücke und
-  Regions-Score, plus Netzanschluss-Proxy (nächstes Umspannwerk ≥110 kV aus OSM,
+  (Nominatim) setzen → getrennte Aussagen zu Verkehr, Ladebedarf und Evidenz.
+  Screening und Simulation verwenden dieselbe explizite Quellenwahl und das vollständige
+  Netz mit 2.964 Modellstrecken, nicht nur die 60 Hotspots. Stationsmessung und synthetisches
+  Modell werden nicht stillschweigend gemischt. Regions-Score und Netzanschluss-Proxy bleiben Kontext (nächstes Umspannwerk ≥110 kV aus OSM,
   `python3 scripts/build_substations_de.py` → `client/public/data/substations-de.json`)
-  und Wirtschaftlichkeitsszenarien 2030 (E-Lkw-Anteil konservativ/Basis/ambitioniert, Annahmen deklariert) (Logik in `shared/standort-check.ts` und `shared/site-economics.ts`, Test: `npm run test:standort`),
+  und Ladepark-Szenarien 2027–2036 (E-Lkw-Anteil Niedrig/Basis/Hoch, Annahmen deklariert)
+  (Logik in `shared/standort-check.ts` und `shared/charging-planning/`, Test: `npm run test:standort`
+  und `bash scripts/check_charging_planning.sh`),
   Vergleichstabelle und Lead-Formular (POST an `/api/leads`, tenant `standort-check`).
 - Deep-Links: `?region=<id>`, `?strecke=<edgeId>`, `?korridor=<originId-destId>`,
   `?standorte=<lon,lat;lon,lat>` und `?tab=` werden beim Laden übernommen und bei Auswahl
   in die URL gespiegelt.
 - Embed-Modus: `?embed=1` blendet Navigation und CTA aus (für Präsentationen/iFrames).
-- Korridor-Report: Routen laufen über OSRM/OpenStreetMap (echte Straßen-km und
+- Korridor-Report: Routen laufen nur über explizit konfigurierte, kommerziell freigegebene OSRM-kompatible Dienste (Straßen-km und
   Ladelücken ±10 km entlang der Route; Fallback Luftlinie, gekennzeichnet). Kostenmodell
   inkl. THG-Quotenerlös und Sensitivitäts-Spanne (Diesel ±0,15 €/l, Strom +0,10/−0,05 €/kWh).
 - Korridor-Report: personalisierte 4-Seiten-Analyse für Logistiker (eTruckathon-Funnel).
@@ -57,33 +74,38 @@ Traffic-Opportunity-Projekt: https://traffic-opportunity-score.vercel.app
 
 ## Technik
 
-### Investitionscheck für Ladepark-Betreiber
+### Szenariorechnung für Ladepark-Betreiber
 
 Im Standort-Check öffnet „Wirtschaftlichkeit berechnen“ den Szenariorechner.
 Eine ausgewählte Strecke kann über „Standort an dieser Strecke prüfen“ übernommen werden;
 die Streckenmitte ist eine Suchposition, keine bestätigte Zufahrt oder verfügbare Fläche.
 
 - Bis zu drei Standorte mit identischen, veränderbaren Annahmen vergleichen.
-- Nachfrage aus erreichbarem Verkehr, E-Lkw-Anteil und Anhaltequote, plus zusätzlichen Ankerkunden.
-- Kapazität als Minimum aus Ladeplätzen und Netzanschluss, einschließlich mittlerer Ladeleistung,
-  Öffnungszeit, Verfügbarkeit, Wechselzeit und Ladeverlusten.
-- Netto-Umsatz abzüglich Strombezug, variabler Kosten und Fixkosten; operativer Break-even
-  und einfache Amortisation bei konstantem Szenariojahr 2030.
-- Validierte Annahmen bleiben im lokalen Browser gespeichert (`traffic-opportunity:economics:v1`).
-  Standortlinks enthalten Koordinaten, nicht die individuellen Annahmen. Der CSV-Export enthält
-  alle Standorte, drei Szenarien, Annahmen, Quellenstand und Rechengrenzen.
-- Fehlende Ladepark-Daten gelten als unbekannter Wettbewerb. Ohne Modellstrecke im 25-km-Umkreis
-  gibt es keine Ertragsberechnung. Die Regionssuche akzeptiert Umlaute und Umschreibungen.
+- Explizite Verkehrsbasis: ausreichend vollständige BASt-Messstation innerhalb von 3 km
+  oder synthetische Modellkante innerhalb von 10 km mit angenommenem gleichmäßigem Tagesprofil.
+  Gemeinsame Quellenauflösung: `shared/site-traffic.ts`; Hotspot-Mengen und Koordinaten werden
+  gegen das vollständige Netz geprüft. Widersprüche sperren Standortberechnungen.
+  BASt-Tageswert ist der Mittelwert gültiger Stunden × 24, kein Jahres-DTV.
+- Nachfrage aus erreichbarem Verkehr, angenommenem E-Lkw-Anteil und Anhaltequote sowie Ankerkunden.
+- Fünf-Minuten-Simulation mit Ladeplätzen, Netzleistung, Warteschlange, Öffnungszeit,
+  Wechselzeiten und Ladeverlusten.
+- Jahrescashflows 2027–2036, Kapitalwert und diskontierte Amortisation einschließlich
+  Kostenentwicklung, Ersatzinvestitionen und Restwert.
+- Quellen, Modellversion und Eingaben sind über CSV/JSON und einen Fingerprint nachvollziehbar.
+  `/api/charging-plan` erlaubt einen Abgleich der Browser- und Serverrechnung.
+- Fehlende Netzleistung, unzugängliche Standorte oder ein benötigter, unbekannter Richtungssplit
+  sperren die Berechnung. Wettbewerb bleibt ohne Standortprüfung unbekannt.
 
 Die Startwerte sind illustrative Beispielannahmen, keine recherchierten Marktpreise.
-Ankunftsspitzen, Finanzierung, Steuern, Förderung, Abschreibung und Ersatzinvestitionen sind
-nicht modelliert. Chronos-2 skaliert die Wirtschaftlichkeit nicht: Der gespeicherte Lauf auf
-Zähldaten bis 2023 ist historisch und belegt keinen durchgängigen Vorteil gegenüber Saisonal-Naiv.
-Der Datenbestand wurde für diese Erweiterung nicht aktualisiert.
+Niedrig/Basis/Hoch sind keine Wahrscheinlichkeitsintervalle. Saisonabhängigkeit, reale Ladekurven,
+Ausfälle, Steuern und Finanzierung fehlen; die Ladenachfrage ist nicht empirisch validiert.
+Chronos-2 skaliert die Wirtschaftlichkeit nicht. Kein Ergebnis wird als investitionsreif ausgegeben.
 
-Frontend: `client/src/components/site-economics.tsx` und `site-economics.css`.
-Rechenlogik, Eingabevalidierung und CSV: `shared/site-economics.ts`.
-Regressionstests: `shared/site-economics.test.ts` (Teil von `npm test`).
+Frontend: `client/src/components/charging-planner.tsx`, Simulation im Web Worker.
+Rechenlogik: `shared/charging-planning/`. Der frühere Traffic-Tagesmittelrechner
+in `shared/site-economics.ts` bleibt als getestetes Legacy-Modul erhalten, ist aber nicht
+an die Oberfläche angebunden. Vollständiger Rechenvertrag und Datenstand:
+[Ladepark-Planungsengine](docs/charging-planning-engine.md).
 
 ### Stack
 
@@ -99,25 +121,56 @@ npm run dev:vercel
 ```
 
 `npm run dev:vercel` nutzt die Vercel CLI per `npx`, damit Frontend und `/api/*` lokal wie auf Vercel laufen.
-Fuer reine Frontend-Arbeit ohne API reicht `npm run dev`.
+Für reine Frontend-Arbeit ohne API reicht `npm run dev`.
 
 ## Deploy
 
-Das Projekt ist auf Vercel ausgelegt. Vercel fuehrt aus:
+Das Projekt ist auf Vercel ausgelegt. Vor dem Deployment muss `.vercel/project.json` auf
+`traffic-opportunity-score` zeigen, nicht auf den TCO-Rechner oder Depot Readiness Check.
+Vercel führt aus:
 
 ```bash
 npm run build
 ```
 
-Die statischen Dateien landen in `dist/public`. Alle nicht-API-Routen werden per `vercel.json` auf die App zurueckgeschrieben.
+Die statischen Dateien landen in `dist/public`. Nicht-API-Routen werden per `vercel.json`
+auf die App zurückgeschrieben; die drei alten Tool-Seiten werden vorher weitergeleitet.
 
 ## API-Endpunkte
 
-- `POST /api/calculate-tco`: berechnet den TCO-Vergleich.
-- `POST /api/leads`: nimmt Beratungsanfragen entgegen.
-- `POST /api/readiness-submit`: validiert den Depot Readiness Check, berechnet Score und Lead-Klasse und speichert die Submission.
-- `GET /api/readiness-export?format=json&token=...`: exportiert Readiness Leads als JSON.
-- `GET /api/readiness-export?format=csv&token=...`: exportiert Readiness Leads als CSV.
+- `POST /api/charging-plan`: validiert die Eingaben und berechnet Ladepark-Szenarien.
+- `POST /api/leads`: nimmt Standort- und Beratungsanfragen entgegen.
+- `POST /api/site-access`: vergleicht A→B und B→A mit/ohne Standort über einen konfigurierten Routingdienst.
+
+### Straßenprüfung anschließen
+
+Serverseitig `SITE_ROUTING_BASE_URL` auf den Basis-URL eines eigenen oder kommerziell
+freigegebenen OSRM-kompatiblen Dienstes setzen; optional `SITE_ROUTING_PROFILE` (Standard: `driving`).
+Für lokale Tests vor `npm run dev` als Umgebungsvariable setzen. Vite stellt nur diese
+neue API lokal bereit; für die übrigen APIs weiterhin `npm run dev:vercel` verwenden.
+Für Vercel dieselben Variablen serverseitig konfigurieren und neu deployen.
+Kein Dienst wird automatisch gebucht oder gestartet.
+
+Für den bestehenden Korridor-Report zusätzlich `VITE_CORRIDOR_ROUTING_BASE_URL` und optional
+`VITE_CORRIDOR_ROUTING_PROFILE` beim Build setzen. Diese Werte sind öffentlich und dürfen
+keine Zugangsdaten enthalten; der Dienst benötigt Browser-CORS. Authentifizierte Dienste
+benötigen einen eigenen serverseitigen Proxy. Die öffentlichen Demo-Hosts
+`router.project-osrm.org` und `routing.openstreetmap.de` werden abgewiesen.
+Grund: [OSRM-Demoserver-Richtlinie](https://github.com/Project-OSRM/osrm-backend/wiki/Demo-server)
+beschränkt die Nutzung auf angemessene nichtkommerzielle Fälle.
+
+Ohne Konfiguration: explizit `not_configured`, keine Abfrage eines Demoservers.
+Bei Timeout, fehlender Route, unplausiblen Werten oder zu großem Snapping: `unavailable`,
+keine scheinbare Teilerreichbarkeit. Maximaler Straßenabstand: Standort 100 m,
+Modell-Endpunkte 500 m. A/B sind Modell-Endpunkte, keine belegten Autobahnanschlüsse
+oder BASt-Richtungsanteile. Mehrzeit ist zusätzliche Fahrzeit, ohne Laden, Warten oder
+Live-Verkehr. Keine Umrechnung in einen automatischen erreichbaren Verkehrsanteil.
+Auch ein erfolgreicher Straßenvergleich bleibt `road_proxy` mit `truckAccessVerified=false`.
+Lkw-Abmessungen, Gewichte, Verbote, Zufahrt, Wendefläche und Öffnungszeiten bleiben offen.
+Vor kundenseitiger Nutzung sind Providerrechte, Profil, Netzstand, Zugangsschutz,
+Ratenbegrenzung und SLA zu prüfen. Ein anders benanntes Profil allein bestätigt keine Lkw-Tauglichkeit.
+
+Keine TCO-Berechnungs-, Readiness-Submit- oder Readiness-Export-API wird hier veröffentlicht.
 
 Für den Lead-Versand werden optional diese Environment Variables genutzt:
 
@@ -125,45 +178,21 @@ Für den Lead-Versand werden optional diese Environment Variables genutzt:
 - `LEAD_FROM_EMAIL`
 - `RESEND_API_KEY`
 
-Für den Depot Readiness Export wird benötigt:
+Optional schützt `SITE_PASSWORD` das Deployment über die bestehende Basic-Auth-Middleware.
+`ADMIN_EXPORT_TOKEN` und `READINESS_STORAGE_PATH` gehören ausschließlich ins Depot-Readiness-Projekt.
+Bereits dort oder in Vercel gespeicherte Daten und Umgebungsvariablen werden durch diese
+Codebereinigung nicht automatisch gelöscht oder migriert.
 
-- `ADMIN_EXPORT_TOKEN`: einfacher MVP-Schutz für JSON-/CSV-Export.
-- `READINESS_STORAGE_PATH`: optionaler Dateipfad für gespeicherte Readiness Submissions. Ohne Wert nutzt die App `/tmp/truckonomics-readiness-submissions.json`.
-
-## Depot Readiness Check
-
-Lokal starten:
-
-```bash
-npm install
-npm run dev:vercel
-```
-
-Dann im Browser oeffnen:
-
-```text
-http://127.0.0.1:3000/depot-readiness
-```
-
-Der Check ist auf DepotOne ausgerichtet und dient als qualifizierter Lead-Funnel. Er umfasst:
-
-- mehrstufigen Wizard für Unternehmen, Fuhrpark, Einsatzprofil, Depot, Energie, Wirtschaftlichkeit und Kontaktfreigabe
-- Score von 0 bis 100 mit Readiness-Level
-- Lead-Klassen A, B und C
-- DSGVO-Struktur mit separater Kontakt- und Marketing-Einwilligung
-- DepotOne-orientiertes Design mit E.ON Drive, NEoT und Mitsui als Partnerbezug
-- Mock-Schnittstelle in `api/crmAdapter.ts` für spätere Anbindung an HubSpot, Salesforce, Pipedrive oder DepotOne/E.ON-Endpunkte
-
-Tests ausfuehren:
+## Tests
 
 ```bash
 npm test
 ```
 
-Nur Scoring-Tests:
+Ladepark-Planung einschließlich Datenimport und nativer API-Laufzeit:
 
 ```bash
-npm run test:readiness
+bash scripts/check_charging_planning.sh
 ```
 
 ## Automatischer BNetzA-Import
