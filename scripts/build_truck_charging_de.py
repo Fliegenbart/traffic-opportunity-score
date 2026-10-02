@@ -1,7 +1,7 @@
 """Erzeugt die Lkw-Ladepark-Datei für die App aus zwei Quellen:
 
 1. BNetzA-Ladesäulenregister (data/external/bnetza_ladesaeulen.csv, vorher laden:
-   Download-Link auf bundesnetzagentur.de unter E-Mobilität → Download und Kontakt).
+   automatisch laden: python3 scripts/refresh_truck_charging_de.py).
    Daraus werden als "verifiziert" übernommen:
    - alle Einrichtungen von Milence Germany GmbH,
    - Daimler Truck AG ab 150 kW (TruckCharge),
@@ -18,27 +18,26 @@ Ausgabe: client/public/data/truck-charging-de.json
 
 from __future__ import annotations
 
-import csv
 import json
 import math
 import re
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from zipfile import ZipFile
 
 import numpy as np
-import pandas as pd
+import argparse
+import os
+import tempfile
+
+from bnetza_register import parse_csv
 
 ROOT = Path(__file__).resolve().parents[1]
 BNETZA_CSV = ROOT / "data" / "external" / "bnetza_ladesaeulen.csv"
 CURATED_JSON = ROOT / "curated" / "truck-charging-de.json"
-ZIP_PATH = ROOT / "data" / "raw" / "mendeley_py2zkrb65h_v2" / "py2zkrb65h-2.zip"
 OUT_PATH = ROOT / "client" / "public" / "data" / "truck-charging-de.json"
-ZIP_PREFIX = "Synthetic European road freight transport flow dat/"
 
-BNETZA_HEADER_SKIP = 10
-BNETZA_DATA_DATE = "2026-04-22"
+NETWORK_PATH = ROOT / "curated" / "charging-network-segments-de.json"
 PROXY_MIN_KW = 300
 VERIFIED_MIN_KW = 150
 AUTOBAHN_MAX_KM = 3.0
@@ -61,52 +60,6 @@ def haversine_km(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
     dx = (lon2 - lon1) * KM_PER_DEG_LAT * math.cos(math.radians((lat1 + lat2) / 2))
     dy = (lat2 - lat1) * KM_PER_DEG_LAT
     return math.hypot(dx, dy)
-
-
-def parse_german_float(value: str | None) -> float:
-    value = (value or "").strip()
-    if not value:
-        return 0.0
-    try:
-        return float(value.replace(".", "").replace(",", "."))
-    except ValueError:
-        return 0.0
-
-
-def parse_coord(value: str | None) -> float | None:
-    value = (value or "").strip()
-    if not value:
-        return None
-    try:
-        return float(value.replace(",", "."))
-    except ValueError:
-        return None
-
-
-def load_register() -> list[dict]:
-    rows = []
-    with open(BNETZA_CSV, encoding="latin-1") as f:
-        for _ in range(BNETZA_HEADER_SKIP):
-            next(f)
-        for row in csv.DictReader(f, delimiter=";"):
-            lat = parse_coord(row.get("Breitengrad"))
-            lon = parse_coord(row.get("Längengrad"))
-            if lat is None or lon is None:
-                continue
-            rows.append(
-                {
-                    "operator": (row.get("Betreiber") or "").strip(),
-                    "status": (row.get("Status") or "").strip(),
-                    "ort": (row.get("Ort") or "").strip(),
-                    "kw": parse_german_float(row.get("Nennleistung Ladeeinrichtung [kW]")),
-                    "points": int(parse_german_float(row.get("Anzahl Ladepunkte")) or 1),
-                    "lat": lat,
-                    "lon": lon,
-                    "siteLabel": (row.get("Standortbezeichnung") or "").strip(),
-                    "parking": (row.get("Informationen zum Parkraum") or "").strip(),
-                }
-            )
-    return rows
 
 
 def classify_verified(row: dict) -> str | None:
@@ -158,12 +111,22 @@ def cluster_hubs(rows: list[dict]) -> list[dict]:
 
 
 def main() -> None:
-    if not BNETZA_CSV.exists():
-        raise SystemExit(f"Missing BNetzA CSV: {BNETZA_CSV} (siehe Docstring)")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--csv", type=Path, default=BNETZA_CSV)
+    parser.add_argument("--output", type=Path, default=OUT_PATH)
+    parser.add_argument("--import-metadata", type=Path)
+    args = parser.parse_args()
+    if not args.csv.exists():
+        raise SystemExit(f"Missing BNetzA CSV: {args.csv} (siehe Docstring)")
     if not CURATED_JSON.exists():
         raise SystemExit(f"Missing curated list: {CURATED_JSON}")
 
-    register = load_register()
+    register, register_metadata = parse_csv(args.csv.read_bytes())
+    if args.import_metadata:
+        imported = json.loads(args.import_metadata.read_text())
+        if imported["registerSha256"] != register_metadata["registerSha256"]:
+            raise ValueError("Register hash differs from import metadata")
+        register_metadata.update(imported)
     active = [r for r in register if r["status"].lower() == "in betrieb"]
     print(f"Register: {len(register)} Einrichtungen, davon in Betrieb: {len(active)}")
 
@@ -216,32 +179,19 @@ def main() -> None:
                 "maxKw": entry.get("maxKw", 0),
                 "source": entry["source"],
                 "coordsApprox": bool(entry.get("coordsApprox")),
+                "checkedAt": entry["checkedAt"],
             }
         )
         added += 1
     print(f"Kuratiert übernommen: {added}, als Dublette übersprungen: {skipped}")
 
     # Proxy-Ebene: Hochleistungslader in Autobahnnähe (Lkw-Tauglichkeit unbestätigt).
-    with ZipFile(ZIP_PATH) as archive:
-        nodes = pd.read_csv(archive.open(ZIP_PREFIX + "03_network-nodes.csv"))
-        edges = pd.read_csv(archive.open(ZIP_PREFIX + "04_network-edges.csv"))
-    node_lon = dict(zip(nodes["Network_Node_ID"], nodes["Network_Node_X"]))
-    node_lat = dict(zip(nodes["Network_Node_ID"], nodes["Network_Node_Y"]))
-    node_country = dict(zip(nodes["Network_Node_ID"], nodes["Country"]))
-    edges["aCountry"] = edges["Network_Node_A_ID"].map(node_country)
-    edges["bCountry"] = edges["Network_Node_B_ID"].map(node_country)
-    de_edges = edges.query("aCountry == 'DE' and bCountry == 'DE'").copy()
-    for col, mapping in [
-        ("aLon", node_lon),
-        ("aLat", node_lat),
-    ]:
-        de_edges[col] = de_edges["Network_Node_A_ID"].map(mapping)
-    de_edges["bLon"] = de_edges["Network_Node_B_ID"].map(node_lon)
-    de_edges["bLat"] = de_edges["Network_Node_B_ID"].map(node_lat)
-    de_edges = de_edges.dropna(subset=["aLon", "aLat", "bLon", "bLat"])
-
-    ax, ay = to_xy(de_edges["aLon"].to_numpy(), de_edges["aLat"].to_numpy())
-    bx, by = to_xy(de_edges["bLon"].to_numpy(), de_edges["bLat"].to_numpy())
+    network = json.loads(NETWORK_PATH.read_text())
+    segments = np.asarray(network["segments"], dtype=float)
+    if segments.ndim != 2 or segments.shape[1] != 4 or not np.isfinite(segments).all():
+        raise ValueError("Invalid frozen model network")
+    ax, ay = to_xy(segments[:, 0], segments[:, 1])
+    bx, by = to_xy(segments[:, 2], segments[:, 3])
     dx, dy = bx - ax, by - ay
     seg_len_sq = np.where(dx * dx + dy * dy > 0, dx * dx + dy * dy, 1)
 
@@ -289,9 +239,10 @@ def main() -> None:
         "schemaVersion": 1,
         "metadata": {
             "generatedAt": datetime.now(timezone.utc).isoformat(),
-            "bnetzaDataDate": BNETZA_DATA_DATE,
+            **register_metadata,
+            "curatedCheckedAt": sorted(set(e["checkedAt"] for e in curated)),
             "sources": [
-                "BNetzA-Ladesäulenregister (Stand " + BNETZA_DATA_DATE + ")",
+                "BNetzA-Ladesäulenregister (Stand " + register_metadata["bnetzaDataDate"] + ")",
                 "Betreiber-Pressemitteilungen (Milence, Aral pulse, E.ON/MAN) — siehe curated/truck-charging-de.json",
             ],
             "methodNote": (
@@ -305,10 +256,15 @@ def main() -> None:
         "proxy": proxy,
     }
 
-    OUT_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=args.output.parent,
+                                     delete=False) as tmp:
+        json.dump(payload, tmp, indent=2, ensure_ascii=False)
+        tmp_path = tmp.name
+    os.replace(tmp_path, args.output)
     live = sum(1 for hub in verified if hub["status"] == "live")
     announced = len(verified) - live
-    print(f"Wrote {OUT_PATH}")
+    print(f"Wrote {args.output}")
     print(f"Verifizierte Hubs: {live} in Betrieb, {announced} angekündigt")
     print(f"Proxy-Cluster: {len(proxy)}")
 

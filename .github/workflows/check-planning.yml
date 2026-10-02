@@ -1,0 +1,44 @@
+name: Charging planning checks
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'shared/charging-planning/**'
+      - 'shared/geo.ts'
+      - 'api/charging-plan*'
+      - 'scripts/*planning*'
+      - 'scripts/run_charging_plan.ts'
+      - 'scripts/test_charging_runtime.mjs'
+      - 'client/public/data/planning/**'
+      - 'client/src/components/charging-planner*'
+      - 'client/src/components/site-economics.css'
+      - 'client/src/lib/charging-planning.worker.ts'
+      - 'client/src/pages/traffic-opportunity.tsx'
+      - '.github/workflows/check-planning.yml'
+      - 'package*.json'
+      - 'tsconfig.json'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - run: pip install -r scripts/requirements-planning.txt
+      - run: bash scripts/check_charging_planning.sh
+      - run: npm test
+      - run: npm run build
+      - run: npx --yes tsx@4.21.0 scripts/run_charging_plan.ts --example --out output/planning-demo
+      - uses: actions/upload-artifact@v4
+        with:
+          name: illustrative-charging-plan
+          path: output/planning-demo/

@@ -1,10 +1,21 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "generatedAt": "2026-06-10T04:52:56.041483+00:00",
-    "bnetzaDataDate": "2026-04-22",
+    "generatedAt": "2026-10-02T05:06:34.320467+00:00",
+    "bnetzaDataDate": "2026-09-01",
+    "registerRows": 116442,
+    "invalidRows": 1,
+    "registerSha256": "cdd8e38f1fa7e8512bd97caa8cf77e9f875436be1f8fe3fe1f2bd9789a504c5b",
+    "retrievedAt": "2026-10-02T05:06:32.953228+00:00",
+    "registerSourceUrl": "https://data.bundesnetzagentur.de/Bundesnetzagentur/DE/Fachthemen/ElektrizitaetundGas/E-Mobilitaet/Ladesaeulenregister_BNetzA_2026-09-01.csv",
+    "registerSourceMode": "public_csv",
+    "curatedSha256": "9f10a91971a9d846ebc7de9782eb0fefb016238142faa791d094a3c7308fce22",
+    "networkSha256": "edcd00067958ac881bccbbd577913724d02d798a2f0a90385d9f30147a52caa8",
+    "curatedCheckedAt": [
+      "2026-06-10"
+    ],
     "sources": [
-      "BNetzA-Ladesäulenregister (Stand 2026-04-22)",
+      "BNetzA-Ladesäulenregister (Stand 2026-09-01)",
       "Betreiber-Pressemitteilungen (Milence, Aral pulse, E.ON/MAN) — siehe curated/truck-charging-de.json"
     ],
     "methodNote": "Verifiziert = Betreiber mit dediziertem Lkw-Ladenetz oder explizite Lkw-Kennzeichnung im Register bzw. belegte Pressemitteilung. Proxy = Schnelllader ab 300 kW in Autobahnnähe; ob ein Sattelzug dort rangieren kann, ist nicht bestätigt."
@@ -21,7 +32,8 @@
       "chargePoints": 6,
       "maxKw": 1000,
       "source": "https://www.aral.de/de/global/retail/presse/pressemeldungen/pm2026-03-12-aral-pulse-geht-in-deutschland-mit-megawatt-ladetechnologie-fuer-e-lkw-an-den-start.html",
-      "coordsApprox": true
+      "coordsApprox": true,
+      "checkedAt": "2026-06-10"
     },
     {
       "id": "cur-1",
@@ -34,7 +46,8 @@
       "chargePoints": 6,
       "maxKw": 1000,
       "source": "https://www.aral.de/de/global/retail/presse/pressemeldungen/pm2026-03-12-aral-pulse-geht-in-deutschland-mit-megawatt-ladetechnologie-fuer-e-lkw-an-den-start.html",
-      "coordsApprox": true
+      "coordsApprox": true,
+      "checkedAt": "2026-06-10"
     },
     {
       "id": "cur-2",
@@ -47,7 +60,8 @@
       "chargePoints": 6,
       "maxKw": 1000,
       "source": "https://www.aral.de/de/global/retail/presse/pressemeldungen/pm2026-03-12-aral-pulse-geht-in-deutschland-mit-megawatt-ladetechnologie-fuer-e-lkw-an-den-start.html",
-      "coordsApprox": false
+      "coordsApprox": false,
+      "checkedAt": "2026-06-10"
     },
     {
       "id": "cur-3",
@@ -60,7 +74,8 @@
       "chargePoints": 6,
       "maxKw": 1000,
       "source": "https://www.aral.de/de/global/retail/presse/pressemeldungen/pm2026-03-12-aral-pulse-geht-in-deutschland-mit-megawatt-ladetechnologie-fuer-e-lkw-an-den-start.html",
-      "coordsApprox": true
+      "coordsApprox": true,
+      "checkedAt": "2026-06-10"
     },
     {
       "id": "cur-4",
@@ -73,7 +88,8 @@
       "chargePoints": 6,
       "maxKw": 1000,
       "source": "https://www.bp.com/de_de/germany/home/presse/nachrichten/2026-05-06-erstmalig-bei-bp-aral-pulse-hat-fuenf-megawatt-ladeparks-in-betrieb-genommen.html",
-      "coordsApprox": false
+      "coordsApprox": false,
+      "checkedAt": "2026-06-10"
     },
     {
       "id": "reg-0",
@@ -115,7 +131,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-9",
+      "id": "reg-10",
       "name": "Milence Himmelkron",
       "operator": "Milence",
       "type": "hpc",
@@ -128,7 +144,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-10",
+      "id": "reg-11",
       "name": "Daimler TruckCharge Aschheim",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -141,7 +157,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-13",
+      "id": "reg-14",
       "name": "E.ON Drive / MAN Fürstenwalde /Spree",
       "operator": "E.ON Drive / MAN",
       "type": "hpc",
@@ -154,7 +170,33 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-17",
+      "id": "reg-16",
+      "name": "Shell Deutschland GmbH Hamburg",
+      "operator": "Shell Deutschland GmbH",
+      "type": "hpc",
+      "status": "live",
+      "lon": 10.022129,
+      "lat": 53.518846,
+      "chargePoints": 4,
+      "maxKw": 400,
+      "source": "BNetzA-Ladesäulenregister",
+      "coordsApprox": false
+    },
+    {
+      "id": "reg-19",
+      "name": "Milence Lohfelden",
+      "operator": "Milence",
+      "type": "hpc",
+      "status": "live",
+      "lon": 9.527149,
+      "lat": 51.27316,
+      "chargePoints": 4,
+      "maxKw": 400,
+      "source": "BNetzA-Ladesäulenregister",
+      "coordsApprox": false
+    },
+    {
+      "id": "reg-21",
       "name": "Wernsing Feinkost GmbH Essen (Oldenburg)",
       "operator": "Wernsing Feinkost GmbH",
       "type": "hpc",
@@ -167,7 +209,20 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-19",
+      "id": "reg-22",
+      "name": "Franz Högemann Energie und Dienstleistung Garrel",
+      "operator": "Franz Högemann Energie und Dienstleistung",
+      "type": "hpc",
+      "status": "live",
+      "lon": 8.0338,
+      "lat": 52.94369,
+      "chargePoints": 2,
+      "maxKw": 400,
+      "source": "BNetzA-Ladesäulenregister",
+      "coordsApprox": false
+    },
+    {
+      "id": "reg-24",
       "name": "Milence Recklinghausen",
       "operator": "Milence",
       "type": "hpc",
@@ -180,7 +235,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-23",
+      "id": "reg-28",
       "name": "Milence Koblenz",
       "operator": "Milence",
       "type": "hpc",
@@ -193,7 +248,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-24",
+      "id": "reg-29",
       "name": "Milence Mogendorf",
       "operator": "Milence",
       "type": "hpc",
@@ -206,7 +261,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-25",
+      "id": "reg-30",
       "name": "Milence Oranienbaum-Wörlitz",
       "operator": "Milence",
       "type": "hpc",
@@ -219,7 +274,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-26",
+      "id": "reg-31",
       "name": "Milence Kraftsdorf",
       "operator": "Milence",
       "type": "hpc",
@@ -242,7 +297,34 @@
       "chargePoints": 4,
       "maxKw": 400,
       "source": "https://www.electrive.net/2024/11/15/man-und-e-on-eroeffnet-zweiten-e-lkw-ladepark/",
-      "coordsApprox": true
+      "coordsApprox": true,
+      "checkedAt": "2026-06-10"
+    },
+    {
+      "id": "reg-9",
+      "name": "Tank & Rast Entwicklungsgesellschaft mbH Rüdenhausen",
+      "operator": "Tank & Rast Entwicklungsgesellschaft mbH",
+      "type": "hpc",
+      "status": "live",
+      "lon": 10.340423,
+      "lat": 49.769899,
+      "chargePoints": 2,
+      "maxKw": 340,
+      "source": "BNetzA-Ladesäulenregister",
+      "coordsApprox": false
+    },
+    {
+      "id": "reg-18",
+      "name": "Tank & Rast Entwicklungsgesellschaft mbH Niederaula",
+      "operator": "Tank & Rast Entwicklungsgesellschaft mbH",
+      "type": "hpc",
+      "status": "live",
+      "lon": 9.58797,
+      "lat": 50.77822,
+      "chargePoints": 2,
+      "maxKw": 340,
+      "source": "BNetzA-Ladesäulenregister",
+      "coordsApprox": false
     },
     {
       "id": "reg-3",
@@ -284,7 +366,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-11",
+      "id": "reg-12",
       "name": "Daimler TruckCharge Neu-Ulm",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -297,7 +379,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-12",
+      "id": "reg-13",
       "name": "Daimler TruckCharge Berlin",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -310,7 +392,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-16",
+      "id": "reg-20",
       "name": "Daimler TruckCharge Lohfelden",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -323,7 +405,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-18",
+      "id": "reg-23",
       "name": "Daimler TruckCharge Haan",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -336,7 +418,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-21",
+      "id": "reg-26",
       "name": "Daimler TruckCharge Dortmund",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -362,7 +444,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-15",
+      "id": "reg-17",
       "name": "Daimler TruckCharge Frankfurt am Main",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -401,7 +483,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-14",
+      "id": "reg-15",
       "name": "Daimler TruckCharge Bremen",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -414,7 +496,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-20",
+      "id": "reg-25",
       "name": "Daimler TruckCharge Frechen",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -427,7 +509,7 @@
       "coordsApprox": false
     },
     {
-      "id": "reg-22",
+      "id": "reg-27",
       "name": "Daimler TruckCharge Koblenz",
       "operator": "Daimler TruckCharge",
       "type": "hpc",
@@ -450,7 +532,8 @@
       "chargePoints": 8,
       "maxKw": 400,
       "source": "https://milence.com/de/newsroom/milence-beschleunigt-deutschlands-uebergang-zum-elektrischen-strassengueterverkehr-erste-e-lkw-ladeparks-im-grossraum-leipzig-eroeffnet/",
-      "coordsApprox": true
+      "coordsApprox": true,
+      "checkedAt": "2026-06-10"
     },
     {
       "id": "cur-7",
@@ -463,7 +546,8 @@
       "chargePoints": 8,
       "maxKw": 400,
       "source": "https://ecomento.de/2025/07/17/milence-bringt-drei-neue-deutsche-e-lkw-ladeparks-ans-netz/",
-      "coordsApprox": true
+      "coordsApprox": true,
+      "checkedAt": "2026-06-10"
     },
     {
       "id": "cur-8",
@@ -476,13 +560,20 @@
       "chargePoints": 8,
       "maxKw": 400,
       "source": "https://www.electrive.net/2025/07/16/milence-eroeffnet-drei-weitere-lkw-ladeparks-in-deutschland/",
-      "coordsApprox": true
+      "coordsApprox": true,
+      "checkedAt": "2026-06-10"
     }
   ],
   "proxy": [
     {
       "lon": 10.1078,
       "lat": 48.4934,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.1337,
+      "lat": 48.4987,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -517,16 +608,16 @@
       "maxKw": 300
     },
     {
-      "lon": 8.9961,
-      "lat": 48.6876,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 9.0052,
       "lat": 48.6898,
       "chargePoints": 2,
       "maxKw": 320
+    },
+    {
+      "lon": 8.9961,
+      "lat": 48.6876,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 9.0022,
@@ -547,9 +638,9 @@
       "maxKw": 300
     },
     {
-      "lon": 8.8933,
-      "lat": 48.5814,
-      "chargePoints": 10,
+      "lon": 8.8927,
+      "lat": 48.5816,
+      "chargePoints": 16,
       "maxKw": 360
     },
     {
@@ -571,15 +662,15 @@
       "maxKw": 300
     },
     {
+      "lon": 8.9134,
+      "lat": 48.7879,
+      "chargePoints": 4,
+      "maxKw": 600
+    },
+    {
       "lon": 8.9303,
       "lat": 48.781,
       "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.9221,
-      "lat": 48.812,
-      "chargePoints": 13,
       "maxKw": 300
     },
     {
@@ -589,10 +680,16 @@
       "maxKw": 360
     },
     {
-      "lon": 9.4881,
-      "lat": 47.6682,
-      "chargePoints": 2,
+      "lon": 8.9221,
+      "lat": 48.812,
+      "chargePoints": 13,
       "maxKw": 300
+    },
+    {
+      "lon": 9.523,
+      "lat": 47.6725,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
       "lon": 9.5065,
@@ -601,10 +698,10 @@
       "maxKw": 300
     },
     {
-      "lon": 9.523,
-      "lat": 47.6725,
-      "chargePoints": 6,
-      "maxKw": 400
+      "lon": 9.4881,
+      "lat": 47.6682,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 9.587,
@@ -625,13 +722,25 @@
       "maxKw": 350
     },
     {
-      "lon": 7.7551,
+      "lon": 7.777,
+      "lat": 48.0279,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.5924,
+      "lat": 47.9092,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 7.7547,
       "lat": 48.2268,
       "chargePoints": 6,
       "maxKw": 300
     },
     {
-      "lon": 7.7547,
+      "lon": 7.7551,
       "lat": 48.2268,
       "chargePoints": 6,
       "maxKw": 300
@@ -673,20 +782,14 @@
       "maxKw": 400
     },
     {
-      "lon": 9.2154,
-      "lat": 48.6852,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 9.1928,
       "lat": 48.6784,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 9.4521,
-      "lat": 48.6424,
+      "lon": 9.2154,
+      "lat": 48.6852,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -694,7 +797,13 @@
       "lon": 9.4302,
       "lat": 48.6443,
       "chargePoints": 6,
-      "maxKw": 320
+      "maxKw": 300
+    },
+    {
+      "lon": 9.4521,
+      "lat": 48.6424,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 9.3718,
@@ -751,12 +860,6 @@
       "maxKw": 400
     },
     {
-      "lon": 10.2054,
-      "lat": 48.6156,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 10.1773,
       "lat": 48.5841,
       "chargePoints": 12,
@@ -769,10 +872,22 @@
       "maxKw": 400
     },
     {
+      "lon": 10.2054,
+      "lat": 48.6156,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 10.2134,
       "lat": 48.6896,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 9.224,
+      "lat": 49.1956,
+      "chargePoints": 4,
+      "maxKw": 1200
     },
     {
       "lon": 9.2194,
@@ -787,12 +902,6 @@
       "maxKw": 300
     },
     {
-      "lon": 9.224,
-      "lat": 49.1956,
-      "chargePoints": 4,
-      "maxKw": 1200
-    },
-    {
       "lon": 9.3076,
       "lat": 49.1451,
       "chargePoints": 2,
@@ -805,15 +914,21 @@
       "maxKw": 300
     },
     {
-      "lon": 9.3091,
-      "lat": 49.1434,
-      "chargePoints": 33,
-      "maxKw": 320
+      "lon": 9.2593,
+      "lat": 49.1687,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
-      "lon": 9.2669,
-      "lat": 49.0581,
-      "chargePoints": 5,
+      "lon": 9.2531,
+      "lat": 49.1686,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
+      "lon": 9.3091,
+      "lat": 49.1434,
+      "chargePoints": 37,
       "maxKw": 300
     },
     {
@@ -829,9 +944,9 @@
       "maxKw": 350
     },
     {
-      "lon": 9.0773,
-      "lat": 49.2119,
-      "chargePoints": 4,
+      "lon": 9.2669,
+      "lat": 49.0581,
+      "chargePoints": 5,
       "maxKw": 300
     },
     {
@@ -841,8 +956,8 @@
       "maxKw": 300
     },
     {
-      "lon": 9.4809,
-      "lat": 49.2072,
+      "lon": 9.0773,
+      "lat": 49.2119,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -853,9 +968,9 @@
       "maxKw": 400
     },
     {
-      "lon": 9.5854,
-      "lat": 49.2124,
-      "chargePoints": 2,
+      "lon": 9.4809,
+      "lat": 49.2072,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -863,6 +978,12 @@
       "lat": 49.2062,
       "chargePoints": 12,
       "maxKw": 350
+    },
+    {
+      "lon": 9.5854,
+      "lat": 49.2124,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 9.692,
@@ -877,10 +998,22 @@
       "maxKw": 300
     },
     {
-      "lon": 8.4066,
-      "lat": 48.958,
-      "chargePoints": 12,
+      "lon": 8.3844,
+      "lat": 48.9464,
+      "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 8.3851,
+      "lat": 48.9463,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.3784,
+      "lat": 48.9577,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 8.3823,
@@ -889,10 +1022,10 @@
       "maxKw": 350
     },
     {
-      "lon": 8.3784,
-      "lat": 48.9577,
-      "chargePoints": 4,
-      "maxKw": 400
+      "lon": 8.4066,
+      "lat": 48.958,
+      "chargePoints": 12,
+      "maxKw": 300
     },
     {
       "lon": 8.526,
@@ -925,6 +1058,12 @@
       "maxKw": 300
     },
     {
+      "lon": 8.7682,
+      "lat": 47.8522,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 8.7879,
       "lat": 47.7361,
       "chargePoints": 2,
@@ -937,16 +1076,16 @@
       "maxKw": 300
     },
     {
-      "lon": 9.0045,
-      "lat": 47.8587,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 9.0092,
       "lat": 47.8485,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 9.0045,
+      "lat": 47.8587,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 7.682,
@@ -979,15 +1118,21 @@
       "maxKw": 400
     },
     {
-      "lon": 9.1319,
-      "lat": 48.8301,
-      "chargePoints": 3,
+      "lon": 7.8612,
+      "lat": 47.5899,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
       "lon": 9.1055,
       "lat": 48.8506,
       "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.1319,
+      "lat": 48.8301,
+      "chargePoints": 3,
       "maxKw": 300
     },
     {
@@ -1015,22 +1160,28 @@
       "maxKw": 300
     },
     {
+      "lon": 9.1231,
+      "lat": 48.93,
+      "chargePoints": 4,
+      "maxKw": 600
+    },
+    {
       "lon": 9.5858,
       "lat": 49.7724,
       "chargePoints": 40,
       "maxKw": 400
     },
     {
-      "lon": 7.9374,
-      "lat": 48.4692,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 7.9398,
       "lat": 48.4781,
       "chargePoints": 6,
       "maxKw": 360
+    },
+    {
+      "lon": 7.9374,
+      "lat": 48.4692,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 7.8202,
@@ -1066,6 +1217,12 @@
       "lon": 7.8054,
       "lat": 49.458,
       "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.0392,
+      "lat": 48.3329,
+      "chargePoints": 4,
       "maxKw": 400
     },
     {
@@ -1147,21 +1304,27 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1738,
-      "lat": 48.958,
-      "chargePoints": 4,
-      "maxKw": 320
-    },
-    {
       "lon": 10.1833,
       "lat": 48.9567,
       "chargePoints": 14,
       "maxKw": 400
     },
     {
+      "lon": 10.1738,
+      "lat": 48.958,
+      "chargePoints": 4,
+      "maxKw": 320
+    },
+    {
       "lon": 8.2409,
       "lat": 48.8597,
       "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.2174,
+      "lat": 48.8636,
+      "chargePoints": 4,
       "maxKw": 400
     },
     {
@@ -1171,16 +1334,22 @@
       "maxKw": 300
     },
     {
-      "lon": 9.8282,
-      "lat": 47.6948,
-      "chargePoints": 4,
-      "maxKw": 315
+      "lon": 8.1103,
+      "lat": 48.7241,
+      "chargePoints": 12,
+      "maxKw": 400
     },
     {
       "lon": 9.8371,
       "lat": 47.6866,
       "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 9.8282,
+      "lat": 47.6948,
+      "chargePoints": 4,
+      "maxKw": 315
     },
     {
       "lon": 9.826,
@@ -1195,10 +1364,10 @@
       "maxKw": 300
     },
     {
-      "lon": 10.0208,
-      "lat": 47.8251,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 9.9817,
+      "lat": 47.8009,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
       "lon": 10.0025,
@@ -1210,6 +1379,12 @@
       "lon": 10.0077,
       "lat": 47.8215,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.0208,
+      "lat": 47.8251,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -1237,32 +1412,8 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5646,
-      "lat": 49.3918,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.5782,
-      "lat": 49.3967,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.5451,
-      "lat": 49.4135,
-      "chargePoints": 6,
-      "maxKw": 320
-    },
-    {
-      "lon": 8.5428,
-      "lat": 49.4156,
-      "chargePoints": 4,
-      "maxKw": 400
-    },
-    {
-      "lon": 8.5607,
-      "lat": 49.3771,
+      "lon": 8.5778,
+      "lat": 49.3977,
       "chargePoints": 6,
       "maxKw": 400
     },
@@ -1279,6 +1430,30 @@
       "maxKw": 400
     },
     {
+      "lon": 8.5451,
+      "lat": 49.4135,
+      "chargePoints": 6,
+      "maxKw": 320
+    },
+    {
+      "lon": 8.5607,
+      "lat": 49.3771,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.5646,
+      "lat": 49.392,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.5428,
+      "lat": 49.4156,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 8.5335,
       "lat": 49.3366,
       "chargePoints": 2,
@@ -1291,10 +1466,10 @@
       "maxKw": 372
     },
     {
-      "lon": 8.635,
-      "lat": 49.302,
-      "chargePoints": 6,
-      "maxKw": 300
+      "lon": 8.6559,
+      "lat": 49.2939,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 8.6505,
@@ -1303,10 +1478,10 @@
       "maxKw": 400
     },
     {
-      "lon": 8.6559,
-      "lat": 49.2939,
-      "chargePoints": 4,
-      "maxKw": 400
+      "lon": 8.635,
+      "lat": 49.302,
+      "chargePoints": 6,
+      "maxKw": 300
     },
     {
       "lon": 8.6961,
@@ -1315,10 +1490,10 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6518,
-      "lat": 49.5566,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 8.6521,
+      "lat": 49.5492,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 8.6343,
@@ -1327,10 +1502,10 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6521,
-      "lat": 49.5492,
-      "chargePoints": 2,
-      "maxKw": 400
+      "lon": 8.6518,
+      "lat": 49.5566,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 8.6376,
@@ -1351,15 +1526,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.8615,
-      "lat": 49.2481,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 8.8899,
       "lat": 49.2415,
       "chargePoints": 14,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.8615,
+      "lat": 49.2481,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -1384,6 +1559,12 @@
       "lon": 8.6636,
       "lat": 48.3436,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.6077,
+      "lat": 48.1648,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -1435,15 +1616,15 @@
       "maxKw": 320
     },
     {
-      "lon": 8.466,
-      "lat": 48.0442,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 8.4442,
       "lat": 48.0582,
       "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.466,
+      "lat": 48.0442,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -1453,16 +1634,16 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5311,
-      "lat": 48.0323,
-      "chargePoints": 14,
-      "maxKw": 320
-    },
-    {
       "lon": 8.622,
       "lat": 47.9655,
       "chargePoints": 6,
       "maxKw": 400
+    },
+    {
+      "lon": 8.5311,
+      "lat": 48.0323,
+      "chargePoints": 14,
+      "maxKw": 300
     },
     {
       "lon": 8.6282,
@@ -1487,6 +1668,12 @@
       "lat": 47.5654,
       "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 8.0854,
+      "lat": 47.5679,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 8.2642,
@@ -1537,21 +1724,21 @@
       "maxKw": 300
     },
     {
-      "lon": 9.2194,
-      "lat": 49.1636,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 9.2099,
       "lat": 49.1574,
       "chargePoints": 1,
       "maxKw": 360
     },
     {
-      "lon": 8.4474,
-      "lat": 49.0038,
-      "chargePoints": 8,
+      "lon": 9.2194,
+      "lat": 49.1636,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.4388,
+      "lat": 49.0084,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -1561,10 +1748,16 @@
       "maxKw": 400
     },
     {
-      "lon": 8.4439,
+      "lon": 8.4415,
       "lat": 49.0045,
-      "chargePoints": 8,
+      "chargePoints": 14,
       "maxKw": 400
+    },
+    {
+      "lon": 8.4474,
+      "lat": 49.0038,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 8.46,
@@ -1591,15 +1784,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.4956,
-      "lat": 49.4762,
-      "chargePoints": 10,
-      "maxKw": 300
-    },
-    {
       "lon": 8.5092,
       "lat": 49.4719,
       "chargePoints": 12,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.4956,
+      "lat": 49.4762,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
@@ -1663,6 +1856,12 @@
       "maxKw": 300
     },
     {
+      "lon": 8.6653,
+      "lat": 48.8854,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 8.661,
       "lat": 48.9021,
       "chargePoints": 4,
@@ -1705,6 +1904,12 @@
       "maxKw": 350
     },
     {
+      "lon": 9.1402,
+      "lat": 49.987,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 9.1325,
       "lat": 49.9849,
       "chargePoints": 2,
@@ -1717,22 +1922,16 @@
       "maxKw": 300
     },
     {
-      "lon": 9.1402,
-      "lat": 49.987,
+      "lon": 10.8804,
+      "lat": 48.4027,
       "chargePoints": 4,
-      "maxKw": 360
+      "maxKw": 320
     },
     {
       "lon": 10.8774,
       "lat": 48.4087,
       "chargePoints": 4,
       "maxKw": 300
-    },
-    {
-      "lon": 10.8804,
-      "lat": 48.4027,
-      "chargePoints": 4,
-      "maxKw": 320
     },
     {
       "lon": 10.8547,
@@ -1765,10 +1964,16 @@
       "maxKw": 350
     },
     {
-      "lon": 11.5631,
+      "lon": 10.9066,
+      "lat": 49.9157,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
+      "lon": 11.5847,
       "lat": 49.9332,
-      "chargePoints": 10,
-      "maxKw": 300
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 11.5679,
@@ -1777,9 +1982,15 @@
       "maxKw": 300
     },
     {
-      "lon": 11.5847,
+      "lon": 11.5631,
       "lat": 49.9332,
-      "chargePoints": 4,
+      "chargePoints": 10,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.5999,
+      "lat": 49.8938,
+      "chargePoints": 6,
       "maxKw": 400
     },
     {
@@ -1795,15 +2006,15 @@
       "maxKw": 300
     },
     {
-      "lon": 11.5999,
-      "lat": 49.8938,
-      "chargePoints": 6,
-      "maxKw": 400
-    },
-    {
       "lon": 11.6012,
       "lat": 49.9551,
       "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 11.6004,
+      "lat": 49.9257,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -1813,14 +2024,20 @@
       "maxKw": 400
     },
     {
-      "lon": 10.9835,
-      "lat": 50.2758,
+      "lon": 10.9742,
+      "lat": 50.2798,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 10.9742,
-      "lat": 50.2798,
+      "lon": 10.9551,
+      "lat": 50.2737,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.9835,
+      "lat": 50.2758,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -1831,15 +2048,15 @@
       "maxKw": 320
     },
     {
-      "lon": 11.0399,
-      "lat": 49.6014,
+      "lon": 11.0144,
+      "lat": 49.5928,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 10.9679,
-      "lat": 49.5763,
-      "chargePoints": 6,
+      "lon": 11.0399,
+      "lat": 49.6014,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -1849,15 +2066,15 @@
       "maxKw": 300
     },
     {
-      "lon": 11.0086,
-      "lat": 49.4629,
-      "chargePoints": 2,
+      "lon": 10.9679,
+      "lat": 49.5763,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
-      "lon": 11.0093,
-      "lat": 49.4808,
-      "chargePoints": 10,
+      "lon": 11.0086,
+      "lat": 49.4629,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -1865,6 +2082,12 @@
       "lat": 49.4947,
       "chargePoints": 16,
       "maxKw": 400
+    },
+    {
+      "lon": 11.0093,
+      "lat": 49.4808,
+      "chargePoints": 10,
+      "maxKw": 300
     },
     {
       "lon": 10.9759,
@@ -1879,21 +2102,9 @@
       "maxKw": 300
     },
     {
-      "lon": 11.4697,
-      "lat": 48.7476,
-      "chargePoints": 10,
-      "maxKw": 300
-    },
-    {
       "lon": 11.4774,
       "lat": 48.7528,
       "chargePoints": 16,
-      "maxKw": 300
-    },
-    {
-      "lon": 11.4517,
-      "lat": 48.7529,
-      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -1903,8 +2114,14 @@
       "maxKw": 300
     },
     {
-      "lon": 11.4519,
-      "lat": 48.7723,
+      "lon": 11.4697,
+      "lat": 48.7476,
+      "chargePoints": 10,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.4517,
+      "lat": 48.7529,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -1919,6 +2136,18 @@
       "lat": 48.7831,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 11.438,
+      "lat": 48.7663,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 11.4519,
+      "lat": 48.7723,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 10.3195,
@@ -1939,10 +2168,10 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1532,
-      "lat": 47.9994,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 12.1024,
+      "lat": 48.5392,
+      "chargePoints": 12,
+      "maxKw": 400
     },
     {
       "lon": 10.1835,
@@ -1951,9 +2180,15 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1702,
-      "lat": 47.9999,
-      "chargePoints": 12,
+      "lon": 10.1532,
+      "lat": 47.9994,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.17,
+      "lat": 47.9994,
+      "chargePoints": 14,
       "maxKw": 300
     },
     {
@@ -1969,16 +2204,16 @@
       "maxKw": 300
     },
     {
+      "lon": 11.5406,
+      "lat": 48.1552,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
       "lon": 11.5147,
       "lat": 48.1523,
       "chargePoints": 2,
       "maxKw": 320
-    },
-    {
-      "lon": 11.5218,
-      "lat": 48.1268,
-      "chargePoints": 4,
-      "maxKw": 300
     },
     {
       "lon": 11.5281,
@@ -1987,10 +2222,22 @@
       "maxKw": 300
     },
     {
+      "lon": 11.5218,
+      "lat": 48.1268,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 11.5904,
       "lat": 48.1663,
       "chargePoints": 2,
       "maxKw": 320
+    },
+    {
+      "lon": 11.5555,
+      "lat": 48.1798,
+      "chargePoints": 10,
+      "maxKw": 400
     },
     {
       "lon": 11.5666,
@@ -2029,8 +2276,8 @@
       "maxKw": 400
     },
     {
-      "lon": 11.467,
-      "lat": 48.1651,
+      "lon": 11.4471,
+      "lat": 48.171,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -2041,10 +2288,16 @@
       "maxKw": 300
     },
     {
-      "lon": 11.4471,
-      "lat": 48.171,
+      "lon": 11.467,
+      "lat": 48.1651,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 11.4134,
+      "lat": 48.1352,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
       "lon": 11.4109,
@@ -2089,9 +2342,9 @@
       "maxKw": 320
     },
     {
-      "lon": 11.713,
-      "lat": 48.1113,
-      "chargePoints": 2,
+      "lon": 11.7136,
+      "lat": 48.1117,
+      "chargePoints": 4,
       "maxKw": 400
     },
     {
@@ -2131,12 +2384,6 @@
       "maxKw": 300
     },
     {
-      "lon": 11.0384,
-      "lat": 49.3991,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 11.1127,
       "lat": 49.4047,
       "chargePoints": 8,
@@ -2155,21 +2402,27 @@
       "maxKw": 300
     },
     {
-      "lon": 13.3632,
-      "lat": 48.5609,
-      "chargePoints": 10,
-      "maxKw": 300
-    },
-    {
-      "lon": 13.4124,
-      "lat": 48.5717,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 13.366,
+      "lat": 48.5889,
+      "chargePoints": 12,
+      "maxKw": 350
     },
     {
       "lon": 13.378,
       "lat": 48.5603,
       "chargePoints": 12,
+      "maxKw": 300
+    },
+    {
+      "lon": 13.4119,
+      "lat": 48.5556,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 13.3632,
+      "lat": 48.5609,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
@@ -2179,21 +2432,9 @@
       "maxKw": 300
     },
     {
-      "lon": 13.366,
-      "lat": 48.5889,
-      "chargePoints": 12,
-      "maxKw": 350
-    },
-    {
-      "lon": 13.4118,
-      "lat": 48.5556,
-      "chargePoints": 8,
-      "maxKw": 400
-    },
-    {
-      "lon": 12.0753,
-      "lat": 49.0166,
-      "chargePoints": 2,
+      "lon": 13.4124,
+      "lat": 48.5717,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -2203,8 +2444,20 @@
       "maxKw": 300
     },
     {
+      "lon": 12.0753,
+      "lat": 49.0166,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 12.0631,
       "lat": 49.0095,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 12.0661,
+      "lat": 49.0046,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -2212,12 +2465,6 @@
       "lon": 12.0709,
       "lat": 49.0111,
       "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 12.0661,
-      "lat": 49.0046,
-      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -2241,7 +2488,13 @@
     {
       "lon": 12.1144,
       "lat": 49.026,
-      "chargePoints": 6,
+      "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
+      "lon": 12.1231,
+      "lat": 49.028,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -2251,10 +2504,10 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1916,
-      "lat": 50.0595,
-      "chargePoints": 6,
-      "maxKw": 300
+      "lon": 10.2181,
+      "lat": 50.0212,
+      "chargePoints": 22,
+      "maxKw": 320
     },
     {
       "lon": 10.2376,
@@ -2263,10 +2516,10 @@
       "maxKw": 400
     },
     {
-      "lon": 10.2181,
-      "lat": 50.0212,
-      "chargePoints": 22,
-      "maxKw": 320
+      "lon": 10.1918,
+      "lat": 50.0597,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 10.2147,
@@ -2287,16 +2540,16 @@
       "maxKw": 300
     },
     {
-      "lon": 12.1574,
-      "lat": 49.7004,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 12.1556,
       "lat": 49.6619,
       "chargePoints": 10,
       "maxKw": 400
+    },
+    {
+      "lon": 12.1574,
+      "lat": 49.7004,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 9.9408,
@@ -2317,15 +2570,15 @@
       "maxKw": 350
     },
     {
-      "lon": 11.0658,
-      "lat": 48.39,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
       "lon": 11.0632,
       "lat": 48.3906,
       "chargePoints": 20,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.0658,
+      "lat": 48.39,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -2335,16 +2588,16 @@
       "maxKw": 300
     },
     {
-      "lon": 12.7087,
-      "lat": 48.2415,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 12.6945,
       "lat": 48.2559,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 12.7087,
+      "lat": 48.2415,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 12.6562,
@@ -2395,38 +2648,20 @@
       "maxKw": 300
     },
     {
-      "lon": 10.5027,
-      "lat": 49.235,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 10.5358,
       "lat": 49.2603,
       "chargePoints": 2,
       "maxKw": 800
     },
     {
+      "lon": 10.5027,
+      "lat": 49.235,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 10.7126,
       "lat": 49.2809,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 10.4355,
-      "lat": 49.2525,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 10.4234,
-      "lat": 49.2503,
-      "chargePoints": 30,
-      "maxKw": 350
-    },
-    {
-      "lon": 10.4341,
-      "lat": 49.2523,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -2441,6 +2676,24 @@
       "lat": 49.2412,
       "chargePoints": 4,
       "maxKw": 350
+    },
+    {
+      "lon": 10.4234,
+      "lat": 49.2503,
+      "chargePoints": 30,
+      "maxKw": 350
+    },
+    {
+      "lon": 10.4336,
+      "lat": 49.2526,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.4355,
+      "lat": 49.2525,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 10.2135,
@@ -2458,6 +2711,12 @@
       "lon": 10.1708,
       "lat": 49.2078,
       "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.2501,
+      "lat": 49.4458,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -2509,20 +2768,14 @@
       "maxKw": 300
     },
     {
-      "lon": 9.0701,
-      "lat": 49.9945,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 9.0686,
       "lat": 49.9953,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 9.354,
-      "lat": 49.9345,
+      "lon": 9.0701,
+      "lat": 49.9945,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -2533,8 +2786,8 @@
       "maxKw": 350
     },
     {
-      "lon": 10.8653,
-      "lat": 48.434,
+      "lon": 9.354,
+      "lat": 49.9345,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -2551,8 +2804,8 @@
       "maxKw": 300
     },
     {
-      "lon": 10.152,
-      "lat": 50.1451,
+      "lon": 10.8653,
+      "lat": 48.434,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -2560,6 +2813,18 @@
       "lon": 10.154,
       "lat": 50.1446,
       "chargePoints": 14,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.152,
+      "lat": 50.1451,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.9313,
+      "lat": 50.1963,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -2587,10 +2852,10 @@
       "maxKw": 350
     },
     {
-      "lon": 10.6339,
-      "lat": 49.7465,
+      "lon": 10.8624,
+      "lat": 49.9159,
       "chargePoints": 8,
-      "maxKw": 300
+      "maxKw": 400
     },
     {
       "lon": 10.6169,
@@ -2599,9 +2864,9 @@
       "maxKw": 400
     },
     {
-      "lon": 10.8751,
-      "lat": 49.9733,
-      "chargePoints": 2,
+      "lon": 10.6339,
+      "lat": 49.7465,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -2611,15 +2876,15 @@
       "maxKw": 400
     },
     {
-      "lon": 11.0276,
-      "lat": 49.7978,
-      "chargePoints": 10,
-      "maxKw": 300
-    },
-    {
       "lon": 11.0235,
       "lat": 49.801,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.0276,
+      "lat": 49.7978,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
@@ -2629,16 +2894,16 @@
       "maxKw": 300
     },
     {
-      "lon": 11.6112,
-      "lat": 49.9699,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 11.6164,
       "lat": 49.9711,
       "chargePoints": 12,
       "maxKw": 400
+    },
+    {
+      "lon": 11.6112,
+      "lat": 49.9699,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 12.9422,
@@ -2659,16 +2924,22 @@
       "maxKw": 300
     },
     {
+      "lon": 11.0315,
+      "lat": 50.2875,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 11.0186,
       "lat": 50.2889,
       "chargePoints": 10,
       "maxKw": 300
     },
     {
-      "lon": 11.0315,
-      "lat": 50.2875,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 11.3008,
+      "lat": 48.258,
+      "chargePoints": 12,
+      "maxKw": 400
     },
     {
       "lon": 11.3529,
@@ -2701,12 +2972,6 @@
       "maxKw": 300
     },
     {
-      "lon": 13.0465,
-      "lat": 48.7655,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 13.0435,
       "lat": 48.7669,
       "chargePoints": 8,
@@ -2717,6 +2982,12 @@
       "lat": 48.7573,
       "chargePoints": 12,
       "maxKw": 400
+    },
+    {
+      "lon": 13.0465,
+      "lat": 48.7655,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 13.144,
@@ -2749,10 +3020,16 @@
       "maxKw": 300
     },
     {
-      "lon": 12.6735,
-      "lat": 48.6922,
-      "chargePoints": 10,
-      "maxKw": 350
+      "lon": 12.6733,
+      "lat": 48.692,
+      "chargePoints": 18,
+      "maxKw": 400
+    },
+    {
+      "lon": 12.7452,
+      "lat": 48.7445,
+      "chargePoints": 8,
+      "maxKw": 1800
     },
     {
       "lon": 12.7431,
@@ -2797,10 +3074,10 @@
       "maxKw": 350
     },
     {
-      "lon": 11.3767,
-      "lat": 48.9982,
-      "chargePoints": 8,
-      "maxKw": 300
+      "lon": 11.3764,
+      "lat": 48.9981,
+      "chargePoints": 10,
+      "maxKw": 400
     },
     {
       "lon": 10.9231,
@@ -2809,10 +3086,10 @@
       "maxKw": 300
     },
     {
-      "lon": 10.8547,
+      "lon": 10.8546,
       "lat": 49.6985,
-      "chargePoints": 16,
-      "maxKw": 300
+      "chargePoints": 20,
+      "maxKw": 400
     },
     {
       "lon": 10.7265,
@@ -2821,15 +3098,15 @@
       "maxKw": 300
     },
     {
-      "lon": 11.0644,
-      "lat": 49.6987,
-      "chargePoints": 8,
+      "lon": 11.0689,
+      "lat": 49.7075,
+      "chargePoints": 18,
       "maxKw": 300
     },
     {
-      "lon": 11.0679,
-      "lat": 49.7068,
-      "chargePoints": 6,
+      "lon": 11.0644,
+      "lat": 49.6987,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -2869,16 +3146,16 @@
       "maxKw": 300
     },
     {
-      "lon": 11.6474,
-      "lat": 48.3114,
-      "chargePoints": 8,
-      "maxKw": 350
-    },
-    {
       "lon": 11.6931,
       "lat": 48.3295,
       "chargePoints": 14,
       "maxKw": 400
+    },
+    {
+      "lon": 11.6474,
+      "lat": 48.3114,
+      "chargePoints": 8,
+      "maxKw": 350
     },
     {
       "lon": 11.64,
@@ -2893,9 +3170,9 @@
       "maxKw": 300
     },
     {
-      "lon": 11.5854,
+      "lon": 11.5855,
       "lat": 48.4282,
-      "chargePoints": 4,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -2911,21 +3188,21 @@
       "maxKw": 322
     },
     {
-      "lon": 11.3706,
-      "lat": 48.1406,
-      "chargePoints": 18,
+      "lon": 11.3707,
+      "lat": 48.1404,
+      "chargePoints": 20,
       "maxKw": 400
-    },
-    {
-      "lon": 11.3303,
-      "lat": 48.2214,
-      "chargePoints": 2,
-      "maxKw": 300
     },
     {
       "lon": 11.335,
       "lat": 48.2272,
       "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.3303,
+      "lat": 48.2214,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -2947,6 +3224,12 @@
       "maxKw": 300
     },
     {
+      "lon": 11.1048,
+      "lat": 47.4943,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 11.1125,
       "lat": 47.4903,
       "chargePoints": 2,
@@ -2959,15 +3242,15 @@
       "maxKw": 300
     },
     {
-      "lon": 10.2936,
-      "lat": 48.4338,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 10.2973,
       "lat": 48.4293,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.2936,
+      "lat": 48.4338,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -2979,7 +3262,7 @@
     {
       "lon": 10.2401,
       "lat": 48.4473,
-      "chargePoints": 9,
+      "chargePoints": 18,
       "maxKw": 1000
     },
     {
@@ -3043,9 +3326,15 @@
       "maxKw": 300
     },
     {
+      "lon": 10.4696,
+      "lat": 49.7691,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 10.0761,
       "lat": 49.7667,
-      "chargePoints": 4,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -3085,21 +3374,9 @@
       "maxKw": 350
     },
     {
-      "lon": 10.341,
-      "lat": 49.7696,
-      "chargePoints": 20,
-      "maxKw": 300
-    },
-    {
       "lon": 10.2152,
       "lat": 48.7897,
       "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 11.4081,
-      "lat": 50.0216,
-      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -3107,6 +3384,12 @@
       "lat": 50.024,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 11.4081,
+      "lat": 50.0216,
+      "chargePoints": 6,
+      "maxKw": 300
     },
     {
       "lon": 11.6635,
@@ -3121,6 +3404,18 @@
       "maxKw": 300
     },
     {
+      "lon": 10.8471,
+      "lat": 48.0588,
+      "chargePoints": 12,
+      "maxKw": 350
+    },
+    {
+      "lon": 10.8647,
+      "lat": 48.0384,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 10.8921,
       "lat": 48.0545,
       "chargePoints": 8,
@@ -3131,18 +3426,6 @@
       "lat": 48.0497,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 10.8647,
-      "lat": 48.0384,
-      "chargePoints": 8,
-      "maxKw": 400
-    },
-    {
-      "lon": 10.8471,
-      "lat": 48.0588,
-      "chargePoints": 12,
-      "maxKw": 350
     },
     {
       "lon": 10.8599,
@@ -3229,12 +3512,6 @@
       "maxKw": 300
     },
     {
-      "lon": 11.7107,
-      "lat": 47.8757,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 11.7315,
       "lat": 47.8918,
       "chargePoints": 6,
@@ -3247,16 +3524,22 @@
       "maxKw": 350
     },
     {
+      "lon": 11.7107,
+      "lat": 47.8757,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 11.7376,
       "lat": 47.8763,
       "chargePoints": 4,
       "maxKw": 340
     },
     {
-      "lon": 11.9029,
-      "lat": 47.828,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 11.9032,
+      "lat": 47.8287,
+      "chargePoints": 10,
+      "maxKw": 400
     },
     {
       "lon": 12.3709,
@@ -3435,7 +3718,7 @@
     {
       "lon": 10.1748,
       "lat": 49.585,
-      "chargePoints": 2,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -3449,6 +3732,12 @@
       "lat": 49.6192,
       "chargePoints": 2,
       "maxKw": 320
+    },
+    {
+      "lon": 12.1842,
+      "lat": 49.8045,
+      "chargePoints": 10,
+      "maxKw": 400
     },
     {
       "lon": 12.1472,
@@ -3475,16 +3764,16 @@
       "maxKw": 300
     },
     {
-      "lon": 10.103,
-      "lat": 48.2172,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 10.1277,
       "lat": 48.2193,
       "chargePoints": 16,
       "maxKw": 400
+    },
+    {
+      "lon": 10.103,
+      "lat": 48.2172,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 10.0975,
@@ -3505,27 +3794,27 @@
       "maxKw": 300
     },
     {
+      "lon": 11.3425,
+      "lat": 49.383,
+      "chargePoints": 28,
+      "maxKw": 400
+    },
+    {
       "lon": 11.3484,
       "lat": 49.3842,
       "chargePoints": 8,
       "maxKw": 300
     },
     {
-      "lon": 11.3436,
-      "lat": 49.3826,
-      "chargePoints": 16,
+      "lon": 11.2075,
+      "lat": 49.3644,
+      "chargePoints": 6,
       "maxKw": 400
     },
     {
       "lon": 11.207,
       "lat": 49.3655,
       "chargePoints": 18,
-      "maxKw": 400
-    },
-    {
-      "lon": 11.2075,
-      "lat": 49.3644,
-      "chargePoints": 6,
       "maxKw": 400
     },
     {
@@ -3541,16 +3830,16 @@
       "maxKw": 300
     },
     {
-      "lon": 11.2858,
-      "lat": 49.5037,
-      "chargePoints": 6,
-      "maxKw": 400
-    },
-    {
       "lon": 11.312,
       "lat": 49.5167,
       "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 11.2858,
+      "lat": 49.5037,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
       "lon": 11.4084,
@@ -3585,7 +3874,13 @@
     {
       "lon": 10.3029,
       "lat": 47.8119,
-      "chargePoints": 16,
+      "chargePoints": 18,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.4182,
+      "lat": 47.6632,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -3595,20 +3890,8 @@
       "maxKw": 300
     },
     {
-      "lon": 10.4182,
-      "lat": 47.6632,
-      "chargePoints": 8,
-      "maxKw": 400
-    },
-    {
       "lon": 10.342,
       "lat": 47.699,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 10.3453,
-      "lat": 47.6629,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -3619,8 +3902,20 @@
       "maxKw": 320
     },
     {
+      "lon": 10.3453,
+      "lat": 47.6629,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 10.7196,
       "lat": 48.0352,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.7106,
+      "lat": 48.0296,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -3631,10 +3926,10 @@
       "maxKw": 300
     },
     {
-      "lon": 10.6694,
-      "lat": 47.5681,
-      "chargePoints": 8,
-      "maxKw": 300
+      "lon": 10.6994,
+      "lat": 47.5825,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 10.6885,
@@ -3643,16 +3938,16 @@
       "maxKw": 400
     },
     {
-      "lon": 10.6994,
-      "lat": 47.5825,
-      "chargePoints": 2,
-      "maxKw": 400
+      "lon": 10.6694,
+      "lat": 47.5681,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
-      "lon": 13.2535,
-      "lat": 48.6658,
-      "chargePoints": 9,
-      "maxKw": 480
+      "lon": 13.2534,
+      "lat": 48.6656,
+      "chargePoints": 10,
+      "maxKw": 1000
     },
     {
       "lon": 11.4814,
@@ -3664,7 +3959,7 @@
       "lon": 11.5202,
       "lat": 48.6438,
       "chargePoints": 10,
-      "maxKw": 400
+      "maxKw": 300
     },
     {
       "lon": 11.5821,
@@ -3685,22 +3980,22 @@
       "maxKw": 300
     },
     {
-      "lon": 12.1894,
-      "lat": 48.9882,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 12.1927,
       "lat": 48.9807,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 12.0653,
-      "lat": 48.9729,
-      "chargePoints": 2,
+      "lon": 12.1894,
+      "lat": 48.9882,
+      "chargePoints": 6,
       "maxKw": 300
+    },
+    {
+      "lon": 12.065,
+      "lat": 48.9752,
+      "chargePoints": 18,
+      "maxKw": 1000
     },
     {
       "lon": 12.0486,
@@ -3715,15 +4010,9 @@
       "maxKw": 300
     },
     {
-      "lon": 12.065,
-      "lat": 48.9752,
-      "chargePoints": 12,
-      "maxKw": 400
-    },
-    {
-      "lon": 12.3654,
-      "lat": 49.0014,
-      "chargePoints": 28,
+      "lon": 12.3648,
+      "lat": 49.0019,
+      "chargePoints": 6,
       "maxKw": 400
     },
     {
@@ -3733,9 +4022,9 @@
       "maxKw": 400
     },
     {
-      "lon": 12.3648,
-      "lat": 49.0019,
-      "chargePoints": 6,
+      "lon": 12.3654,
+      "lat": 49.0014,
+      "chargePoints": 28,
       "maxKw": 400
     },
     {
@@ -3787,6 +4076,12 @@
       "maxKw": 300
     },
     {
+      "lon": 12.114,
+      "lat": 47.7907,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 12.1198,
       "lat": 47.8048,
       "chargePoints": 8,
@@ -3797,12 +4092,6 @@
       "lat": 47.7662,
       "chargePoints": 14,
       "maxKw": 400
-    },
-    {
-      "lon": 12.114,
-      "lat": 47.7907,
-      "chargePoints": 2,
-      "maxKw": 300
     },
     {
       "lon": 12.2014,
@@ -3859,15 +4148,15 @@
       "maxKw": 300
     },
     {
-      "lon": 12.1446,
-      "lat": 49.3136,
-      "chargePoints": 7,
-      "maxKw": 300
-    },
-    {
       "lon": 12.1499,
       "lat": 49.3139,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 12.1446,
+      "lat": 49.3136,
+      "chargePoints": 7,
       "maxKw": 300
     },
     {
@@ -3895,12 +4184,6 @@
       "maxKw": 400
     },
     {
-      "lon": 12.0537,
-      "lat": 49.4379,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 12.0878,
       "lat": 49.4447,
       "chargePoints": 6,
@@ -3913,9 +4196,15 @@
       "maxKw": 400
     },
     {
-      "lon": 10.1174,
-      "lat": 50.0033,
-      "chargePoints": 12,
+      "lon": 12.0537,
+      "lat": 49.4379,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.1173,
+      "lat": 50.0034,
+      "chargePoints": 14,
       "maxKw": 350
     },
     {
@@ -3949,9 +4238,27 @@
       "maxKw": 300
     },
     {
+      "lon": 10.2466,
+      "lat": 50.0385,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 11.3086,
       "lat": 48.1011,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.2838,
+      "lat": 48.0947,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
+      "lon": 11.3131,
+      "lat": 48.0934,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -3961,10 +4268,10 @@
       "maxKw": 400
     },
     {
-      "lon": 11.3471,
-      "lat": 48.0032,
-      "chargePoints": 4,
-      "maxKw": 320
+      "lon": 11.3481,
+      "lat": 48.0025,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 12.7313,
@@ -3979,16 +4286,22 @@
       "maxKw": 350
     },
     {
+      "lon": 12.5394,
+      "lat": 48.9631,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 12.5453,
       "lat": 48.9476,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 12.5394,
-      "lat": 48.9631,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 12.2472,
+      "lat": 49.9531,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 12.2271,
@@ -4015,15 +4328,15 @@
       "maxKw": 400
     },
     {
-      "lon": 12.6365,
-      "lat": 47.8285,
+      "lon": 12.6325,
+      "lat": 47.8298,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 12.6325,
-      "lat": 47.8298,
-      "chargePoints": 4,
+      "lon": 12.6365,
+      "lat": 47.8285,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -4033,16 +4346,34 @@
       "maxKw": 300
     },
     {
+      "lon": 10.5918,
+      "lat": 48.0219,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.6689,
+      "lat": 48.0296,
+      "chargePoints": 10,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.6652,
+      "lat": 48.0414,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
       "lon": 10.6203,
       "lat": 48.0425,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 10.5095,
-      "lat": 48.0456,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 10.5086,
+      "lat": 48.0457,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
       "lon": 10.5043,
@@ -4070,9 +4401,9 @@
     },
     {
       "lon": 10.3291,
-      "lat": 48.027,
+      "lat": 48.0271,
       "chargePoints": 17,
-      "maxKw": 360
+      "maxKw": 400
     },
     {
       "lon": 10.1502,
@@ -4081,8 +4412,8 @@
       "maxKw": 300
     },
     {
-      "lon": 10.2168,
-      "lat": 47.9905,
+      "lon": 10.2257,
+      "lat": 47.9888,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -4093,8 +4424,8 @@
       "maxKw": 300
     },
     {
-      "lon": 10.2257,
-      "lat": 47.9888,
+      "lon": 10.2168,
+      "lat": 47.9905,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -4177,9 +4508,9 @@
       "maxKw": 350
     },
     {
-      "lon": 10.0014,
-      "lat": 49.9118,
-      "chargePoints": 16,
+      "lon": 10.0009,
+      "lat": 49.9121,
+      "chargePoints": 24,
       "maxKw": 400
     },
     {
@@ -4231,14 +4562,14 @@
       "maxKw": 300
     },
     {
-      "lon": 13.3702,
-      "lat": 52.4931,
+      "lon": 13.3813,
+      "lat": 52.4844,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 13.3813,
-      "lat": 52.4844,
+      "lon": 13.3702,
+      "lat": 52.4931,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -4255,6 +4586,12 @@
       "maxKw": 300
     },
     {
+      "lon": 13.3772,
+      "lat": 52.4647,
+      "chargePoints": 4,
+      "maxKw": 360
+    },
+    {
       "lon": 13.3756,
       "lat": 52.5011,
       "chargePoints": 2,
@@ -4265,12 +4602,6 @@
       "lat": 52.4701,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 13.3772,
-      "lat": 52.4647,
-      "chargePoints": 4,
-      "maxKw": 360
     },
     {
       "lon": 13.3782,
@@ -4309,6 +4640,12 @@
       "maxKw": 300
     },
     {
+      "lon": 13.4609,
+      "lat": 52.432,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 13.4923,
       "lat": 52.4135,
       "chargePoints": 2,
@@ -4321,15 +4658,15 @@
       "maxKw": 300
     },
     {
-      "lon": 13.5084,
-      "lat": 52.4582,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 13.5135,
       "lat": 52.4534,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 13.5084,
+      "lat": 52.4582,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -4367,6 +4704,12 @@
       "lat": 52.5645,
       "chargePoints": 2,
       "maxKw": 360
+    },
+    {
+      "lon": 13.4282,
+      "lat": 52.6075,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 13.4009,
@@ -4483,10 +4826,10 @@
       "maxKw": 300
     },
     {
-      "lon": 13.6174,
-      "lat": 52.6068,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 13.5291,
+      "lat": 52.6081,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 13.5145,
@@ -4495,22 +4838,22 @@
       "maxKw": 360
     },
     {
-      "lon": 13.5291,
-      "lat": 52.6081,
-      "chargePoints": 8,
-      "maxKw": 400
-    },
-    {
-      "lon": 13.5169,
-      "lat": 52.397,
-      "chargePoints": 9,
-      "maxKw": 400
+      "lon": 13.6174,
+      "lat": 52.6068,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 13.5588,
       "lat": 52.3678,
       "chargePoints": 14,
       "maxKw": 300
+    },
+    {
+      "lon": 13.5169,
+      "lat": 52.397,
+      "chargePoints": 9,
+      "maxKw": 400
     },
     {
       "lon": 13.5273,
@@ -4525,16 +4868,16 @@
       "maxKw": 400
     },
     {
-      "lon": 13.6058,
-      "lat": 52.318,
-      "chargePoints": 4,
-      "maxKw": 400
-    },
-    {
       "lon": 13.6052,
       "lat": 52.3135,
       "chargePoints": 8,
       "maxKw": 300
+    },
+    {
+      "lon": 13.6058,
+      "lat": 52.318,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 13.4947,
@@ -4545,6 +4888,12 @@
     {
       "lon": 13.8856,
       "lat": 51.9338,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 13.9108,
+      "lat": 51.9425,
       "chargePoints": 4,
       "maxKw": 400
     },
@@ -4573,6 +4922,12 @@
       "maxKw": 300
     },
     {
+      "lon": 12.9754,
+      "lat": 52.5658,
+      "chargePoints": 4,
+      "maxKw": 420
+    },
+    {
       "lon": 13.0126,
       "lat": 52.5823,
       "chargePoints": 6,
@@ -4597,15 +4952,15 @@
       "maxKw": 400
     },
     {
-      "lon": 13.2713,
-      "lat": 52.6625,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 13.2441,
       "lat": 52.6409,
       "chargePoints": 5,
+      "maxKw": 300
+    },
+    {
+      "lon": 13.2713,
+      "lat": 52.6625,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -4653,19 +5008,19 @@
     {
       "lon": 13.9113,
       "lat": 51.5376,
-      "chargePoints": 10,
+      "chargePoints": 12,
       "maxKw": 400
-    },
-    {
-      "lon": 13.907,
-      "lat": 51.8498,
-      "chargePoints": 6,
-      "maxKw": 300
     },
     {
       "lon": 13.9392,
       "lat": 51.8655,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 13.907,
+      "lat": 51.8498,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -4693,22 +5048,22 @@
       "maxKw": 300
     },
     {
-      "lon": 13.1872,
-      "lat": 52.403,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 13.1892,
       "lat": 52.4059,
       "chargePoints": 5,
       "maxKw": 350
     },
     {
-      "lon": 13.0259,
-      "lat": 52.3011,
+      "lon": 13.1872,
+      "lat": 52.403,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 13.0243,
+      "lat": 52.3022,
       "chargePoints": 4,
-      "maxKw": 360
+      "maxKw": 300
     },
     {
       "lon": 12.4649,
@@ -4723,9 +5078,9 @@
       "maxKw": 350
     },
     {
-      "lon": 13.3135,
-      "lat": 52.3089,
-      "chargePoints": 6,
+      "lon": 13.3134,
+      "lat": 52.3086,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
@@ -4771,15 +5126,21 @@
       "maxKw": 400
     },
     {
+      "lon": 8.8291,
+      "lat": 53.0346,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
       "lon": 8.8187,
       "lat": 53.0468,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 8.8291,
-      "lat": 53.0346,
-      "chargePoints": 2,
+      "lon": 8.9403,
+      "lat": 53.028,
+      "chargePoints": 6,
       "maxKw": 400
     },
     {
@@ -4795,16 +5156,10 @@
       "maxKw": 400
     },
     {
-      "lon": 8.9403,
-      "lat": 53.028,
-      "chargePoints": 6,
-      "maxKw": 400
-    },
-    {
       "lon": 8.9629,
       "lat": 53.0576,
       "chargePoints": 2,
-      "maxKw": 360
+      "maxKw": 300
     },
     {
       "lon": 8.8855,
@@ -4819,15 +5174,21 @@
       "maxKw": 300
     },
     {
+      "lon": 8.6251,
+      "lat": 53.1815,
+      "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
       "lon": 8.6218,
       "lat": 53.1819,
       "chargePoints": 8,
       "maxKw": 400
     },
     {
-      "lon": 8.6251,
-      "lat": 53.1815,
-      "chargePoints": 8,
+      "lon": 8.5951,
+      "lat": 53.5453,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -4837,27 +5198,21 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5951,
-      "lat": 53.5453,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.6249,
-      "lat": 53.4972,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 8.5992,
       "lat": 53.4876,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
+      "lon": 8.6249,
+      "lat": 53.4972,
+      "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
       "lon": 10.0217,
-      "lat": 53.5433,
-      "chargePoints": 2,
+      "lat": 53.5432,
+      "chargePoints": 8,
       "maxKw": 345
     },
     {
@@ -4879,9 +5234,9 @@
       "maxKw": 300
     },
     {
-      "lon": 10.2074,
-      "lat": 53.4817,
-      "chargePoints": 6,
+      "lon": 10.2075,
+      "lat": 53.4818,
+      "chargePoints": 12,
       "maxKw": 300
     },
     {
@@ -4915,27 +5270,9 @@
       "maxKw": 300
     },
     {
-      "lon": 9.9347,
-      "lat": 53.4305,
-      "chargePoints": 10,
-      "maxKw": 300
-    },
-    {
-      "lon": 9.9354,
-      "lat": 53.4298,
-      "chargePoints": 14,
-      "maxKw": 400
-    },
-    {
       "lon": 9.9629,
       "lat": 53.424,
       "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
-      "lon": 9.9362,
-      "lat": 53.4387,
-      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -4945,9 +5282,21 @@
       "maxKw": 300
     },
     {
-      "lon": 9.9918,
-      "lat": 53.4824,
-      "chargePoints": 2,
+      "lon": 9.9354,
+      "lat": 53.4298,
+      "chargePoints": 14,
+      "maxKw": 400
+    },
+    {
+      "lon": 9.9362,
+      "lat": 53.4387,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.9347,
+      "lat": 53.4305,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
@@ -4963,26 +5312,14 @@
       "maxKw": 300
     },
     {
-      "lon": 10.0197,
-      "lat": 53.5188,
-      "chargePoints": 4,
+      "lon": 9.9918,
+      "lat": 53.4824,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
       "lon": 10.0189,
       "lat": 53.4903,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 9.8862,
-      "lat": 53.5268,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 9.8904,
-      "lat": 53.5174,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -4993,14 +5330,26 @@
       "maxKw": 400
     },
     {
-      "lon": 9.8845,
-      "lat": 53.4777,
+      "lon": 9.8904,
+      "lat": 53.5174,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.9296,
+      "lat": 53.5127,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 10.0811,
-      "lat": 53.5768,
+      "lon": 9.8862,
+      "lat": 53.5268,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.8845,
+      "lat": 53.4777,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -5009,6 +5358,12 @@
       "lat": 53.5782,
       "chargePoints": 4,
       "maxKw": 360
+    },
+    {
+      "lon": 10.0811,
+      "lat": 53.5768,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 10.1432,
@@ -5023,15 +5378,15 @@
       "maxKw": 320
     },
     {
-      "lon": 10.1003,
-      "lat": 53.5896,
-      "chargePoints": 2,
-      "maxKw": 360
-    },
-    {
       "lon": 10.1032,
       "lat": 53.5808,
       "chargePoints": 6,
+      "maxKw": 360
+    },
+    {
+      "lon": 10.1003,
+      "lat": 53.5896,
+      "chargePoints": 2,
       "maxKw": 360
     },
     {
@@ -5053,12 +5408,6 @@
       "maxKw": 350
     },
     {
-      "lon": 10.0819,
-      "lat": 53.5154,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 10.0897,
       "lat": 53.5057,
       "chargePoints": 14,
@@ -5069,6 +5418,12 @@
       "lat": 53.5049,
       "chargePoints": 4,
       "maxKw": 320
+    },
+    {
+      "lon": 10.0819,
+      "lat": 53.5154,
+      "chargePoints": 6,
+      "maxKw": 300
     },
     {
       "lon": 10.1483,
@@ -5089,22 +5444,16 @@
       "maxKw": 300
     },
     {
+      "lon": 9.9089,
+      "lat": 53.622,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 9.9058,
       "lat": 53.6143,
       "chargePoints": 14,
       "maxKw": 320
-    },
-    {
-      "lon": 9.9086,
-      "lat": 53.621,
-      "chargePoints": 6,
-      "maxKw": 400
-    },
-    {
-      "lon": 9.9211,
-      "lat": 53.5974,
-      "chargePoints": 4,
-      "maxKw": 300
     },
     {
       "lon": 9.9328,
@@ -5123,6 +5472,12 @@
       "lat": 53.5859,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 9.9211,
+      "lat": 53.5974,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 9.9445,
@@ -5155,9 +5510,9 @@
       "maxKw": 300
     },
     {
-      "lon": 9.8964,
-      "lat": 53.566,
-      "chargePoints": 4,
+      "lon": 9.8961,
+      "lat": 53.5682,
+      "chargePoints": 6,
       "maxKw": 320
     },
     {
@@ -5183,6 +5538,12 @@
       "lat": 49.8892,
       "chargePoints": 10,
       "maxKw": 320
+    },
+    {
+      "lon": 8.6267,
+      "lat": 49.8544,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 8.6442,
@@ -5263,10 +5624,10 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5874,
-      "lat": 50.0265,
-      "chargePoints": 22,
-      "maxKw": 300
+      "lon": 8.5568,
+      "lat": 50.0238,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 8.553,
@@ -5281,10 +5642,10 @@
       "maxKw": 400
     },
     {
-      "lon": 8.5568,
-      "lat": 50.0238,
-      "chargePoints": 4,
-      "maxKw": 400
+      "lon": 8.5874,
+      "lat": 50.0265,
+      "chargePoints": 22,
+      "maxKw": 300
     },
     {
       "lon": 8.537,
@@ -5295,7 +5656,7 @@
     {
       "lon": 8.5435,
       "lat": 50.0965,
-      "chargePoints": 6,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -5305,16 +5666,52 @@
       "maxKw": 400
     },
     {
-      "lon": 9.5311,
-      "lat": 51.3031,
+      "lon": 8.9133,
+      "lat": 50.138,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.9176,
+      "lat": 50.128,
+      "chargePoints": 20,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.901,
+      "lat": 50.1475,
       "chargePoints": 6,
-      "maxKw": 320
+      "maxKw": 400
+    },
+    {
+      "lon": 8.9328,
+      "lat": 50.146,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.9501,
+      "lat": 50.1251,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 9.5335,
       "lat": 51.3117,
       "chargePoints": 8,
       "maxKw": 300
+    },
+    {
+      "lon": 9.5311,
+      "lat": 51.3031,
+      "chargePoints": 6,
+      "maxKw": 320
+    },
+    {
+      "lon": 9.5466,
+      "lat": 51.2953,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 9.4417,
@@ -5347,6 +5744,12 @@
       "maxKw": 300
     },
     {
+      "lon": 8.2542,
+      "lat": 50.0723,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 8.2528,
       "lat": 50.0618,
       "chargePoints": 8,
@@ -5359,8 +5762,8 @@
       "maxKw": 300
     },
     {
-      "lon": 8.2098,
-      "lat": 50.0759,
+      "lon": 8.2179,
+      "lat": 50.0441,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -5369,12 +5772,6 @@
       "lat": 50.0471,
       "chargePoints": 20,
       "maxKw": 320
-    },
-    {
-      "lon": 8.2179,
-      "lat": 50.0441,
-      "chargePoints": 2,
-      "maxKw": 300
     },
     {
       "lon": 8.3434,
@@ -5395,6 +5792,12 @@
       "maxKw": 300
     },
     {
+      "lon": 8.5944,
+      "lat": 49.672,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
       "lon": 8.6117,
       "lat": 49.6763,
       "chargePoints": 6,
@@ -5413,12 +5816,6 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5944,
-      "lat": 49.672,
-      "chargePoints": 12,
-      "maxKw": 400
-    },
-    {
       "lon": 8.6243,
       "lat": 49.6431,
       "chargePoints": 4,
@@ -5432,14 +5829,14 @@
     },
     {
       "lon": 8.553,
-      "lat": 49.6438,
+      "lat": 49.6437,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 8.568,
-      "lat": 49.5274,
-      "chargePoints": 16,
+      "lon": 8.5694,
+      "lat": 49.5271,
+      "chargePoints": 22,
       "maxKw": 400
     },
     {
@@ -5455,15 +5852,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5882,
-      "lat": 49.8102,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 8.5832,
       "lat": 49.8044,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.5882,
+      "lat": 49.8102,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -5479,10 +5876,10 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5539,
-      "lat": 49.8689,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 8.553,
+      "lat": 49.8699,
+      "chargePoints": 10,
+      "maxKw": 400
     },
     {
       "lon": 9.7063,
@@ -5545,15 +5942,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6895,
-      "lat": 50.5722,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
       "lon": 8.7118,
       "lat": 50.5752,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.6895,
+      "lat": 50.5722,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -5587,22 +5984,16 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6502,
-      "lat": 50.5394,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 8.6576,
       "lat": 50.5356,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 8.6722,
-      "lat": 50.5391,
+      "lon": 8.6502,
+      "lat": 50.5394,
       "chargePoints": 4,
-      "maxKw": 400
+      "maxKw": 300
     },
     {
       "lon": 8.8204,
@@ -5635,20 +6026,20 @@
       "maxKw": 300
     },
     {
+      "lon": 8.585,
+      "lat": 50.0113,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
       "lon": 8.5238,
       "lat": 49.903,
       "chargePoints": 6,
       "maxKw": 300
     },
     {
-      "lon": 8.5439,
-      "lat": 49.8926,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.4241,
-      "lat": 49.9972,
+      "lon": 8.4506,
+      "lat": 49.9869,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -5659,8 +6050,8 @@
       "maxKw": 300
     },
     {
-      "lon": 8.4506,
-      "lat": 49.9869,
+      "lon": 8.4241,
+      "lat": 49.9972,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -5701,22 +6092,16 @@
       "maxKw": 400
     },
     {
-      "lon": 9.707,
-      "lat": 50.8637,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 9.7259,
       "lat": 50.8522,
       "chargePoints": 10,
       "maxKw": 300
     },
     {
-      "lon": 9.7225,
-      "lat": 50.8625,
-      "chargePoints": 12,
-      "maxKw": 300
+      "lon": 9.7222,
+      "lat": 50.8624,
+      "chargePoints": 14,
+      "maxKw": 400
     },
     {
       "lon": 9.6692,
@@ -5725,16 +6110,16 @@
       "maxKw": 300
     },
     {
+      "lon": 9.707,
+      "lat": 50.8637,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 9.6014,
       "lat": 50.7985,
       "chargePoints": 4,
       "maxKw": 300
-    },
-    {
-      "lon": 9.5872,
-      "lat": 50.7779,
-      "chargePoints": 16,
-      "maxKw": 400
     },
     {
       "lon": 9.5727,
@@ -5791,27 +6176,21 @@
       "maxKw": 300
     },
     {
-      "lon": 9.3995,
-      "lat": 51.2606,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 9.5297,
       "lat": 51.2869,
       "chargePoints": 4,
       "maxKw": 600
     },
     {
-      "lon": 9.5467,
-      "lat": 51.32,
-      "chargePoints": 2,
+      "lon": 9.5658,
+      "lat": 51.3187,
+      "chargePoints": 4,
       "maxKw": 400
     },
     {
-      "lon": 9.5658,
-      "lat": 51.3185,
-      "chargePoints": 8,
+      "lon": 9.5467,
+      "lat": 51.32,
+      "chargePoints": 2,
       "maxKw": 400
     },
     {
@@ -5845,6 +6224,18 @@
       "maxKw": 300
     },
     {
+      "lon": 8.4778,
+      "lat": 50.5646,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.4978,
+      "lat": 50.562,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 8.4997,
       "lat": 50.5673,
       "chargePoints": 20,
@@ -5857,9 +6248,9 @@
       "maxKw": 320
     },
     {
-      "lon": 8.4778,
-      "lat": 50.5646,
-      "chargePoints": 4,
+      "lon": 8.4725,
+      "lat": 50.5498,
+      "chargePoints": 14,
       "maxKw": 400
     },
     {
@@ -5867,12 +6258,6 @@
       "lat": 50.5457,
       "chargePoints": 4,
       "maxKw": 300
-    },
-    {
-      "lon": 8.4725,
-      "lat": 50.5498,
-      "chargePoints": 14,
-      "maxKw": 400
     },
     {
       "lon": 8.6091,
@@ -5884,7 +6269,7 @@
       "lon": 8.4807,
       "lat": 50.584,
       "chargePoints": 2,
-      "maxKw": 320
+      "maxKw": 300
     },
     {
       "lon": 8.5901,
@@ -5905,12 +6290,6 @@
       "maxKw": 300
     },
     {
-      "lon": 8.2822,
-      "lat": 50.7424,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 8.2898,
       "lat": 50.7248,
       "chargePoints": 4,
@@ -5927,6 +6306,12 @@
       "lat": 50.7357,
       "chargePoints": 2,
       "maxKw": 360
+    },
+    {
+      "lon": 8.2822,
+      "lat": 50.7424,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 8.2212,
@@ -5956,7 +6341,7 @@
       "lon": 8.2809,
       "lat": 50.6745,
       "chargePoints": 2,
-      "maxKw": 320
+      "maxKw": 300
     },
     {
       "lon": 8.3244,
@@ -6001,16 +6386,16 @@
       "maxKw": 300
     },
     {
+      "lon": 8.0922,
+      "lat": 50.3802,
+      "chargePoints": 16,
+      "maxKw": 400
+    },
+    {
       "lon": 8.0968,
       "lat": 50.3788,
       "chargePoints": 6,
       "maxKw": 400
-    },
-    {
-      "lon": 8.0925,
-      "lat": 50.3799,
-      "chargePoints": 12,
-      "maxKw": 300
     },
     {
       "lon": 8.1376,
@@ -6025,10 +6410,10 @@
       "maxKw": 300
     },
     {
-      "lon": 9.5316,
-      "lat": 50.3867,
-      "chargePoints": 10,
-      "maxKw": 320
+      "lon": 9.5311,
+      "lat": 50.3875,
+      "chargePoints": 18,
+      "maxKw": 400
     },
     {
       "lon": 9.5298,
@@ -6043,46 +6428,16 @@
       "maxKw": 400
     },
     {
-      "lon": 8.9133,
-      "lat": 50.138,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.9178,
-      "lat": 50.1281,
-      "chargePoints": 14,
-      "maxKw": 400
-    },
-    {
-      "lon": 8.901,
-      "lat": 50.1475,
-      "chargePoints": 6,
-      "maxKw": 400
-    },
-    {
-      "lon": 8.9328,
-      "lat": 50.146,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.9501,
-      "lat": 50.1251,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
       "lon": 8.8682,
       "lat": 50.1296,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 8.8297,
-      "lat": 50.1443,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 8.8313,
+      "lat": 50.1431,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 8.8077,
@@ -6097,10 +6452,10 @@
       "maxKw": 300
     },
     {
-      "lon": 9.0235,
-      "lat": 50.1393,
-      "chargePoints": 6,
-      "maxKw": 300
+      "lon": 9.0211,
+      "lat": 50.1791,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 9.0295,
@@ -6109,9 +6464,15 @@
       "maxKw": 300
     },
     {
-      "lon": 9.0078,
-      "lat": 50.1821,
-      "chargePoints": 29,
+      "lon": 9.0235,
+      "lat": 50.1393,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.0079,
+      "lat": 50.1822,
+      "chargePoints": 37,
       "maxKw": 400
     },
     {
@@ -6125,6 +6486,18 @@
       "lat": 50.1891,
       "chargePoints": 12,
       "maxKw": 400
+    },
+    {
+      "lon": 9.178,
+      "lat": 50.2024,
+      "chargePoints": 1,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.1743,
+      "lat": 50.188,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 9.1355,
@@ -6157,16 +6530,16 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5817,
-      "lat": 50.1412,
-      "chargePoints": 24,
-      "maxKw": 360
-    },
-    {
       "lon": 8.5653,
       "lat": 50.1399,
       "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 8.5817,
+      "lat": 50.1412,
+      "chargePoints": 24,
+      "maxKw": 360
     },
     {
       "lon": 8.5616,
@@ -6177,7 +6550,7 @@
     {
       "lon": 8.4687,
       "lat": 50.1186,
-      "chargePoints": 6,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -6193,15 +6566,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.4723,
-      "lat": 50.0766,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 8.4591,
       "lat": 50.0825,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.4723,
+      "lat": 50.0766,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -6229,6 +6602,12 @@
       "maxKw": 350
     },
     {
+      "lon": 8.8985,
+      "lat": 50.0209,
+      "chargePoints": 2,
+      "maxKw": 600
+    },
+    {
       "lon": 8.8007,
       "lat": 50.0482,
       "chargePoints": 4,
@@ -6241,10 +6620,10 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6518,
-      "lat": 49.9932,
+      "lon": 8.652,
+      "lat": 49.9933,
       "chargePoints": 4,
-      "maxKw": 360
+      "maxKw": 300
     },
     {
       "lon": 8.6763,
@@ -6259,15 +6638,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.7102,
-      "lat": 50.0481,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 8.7173,
       "lat": 50.0477,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.7102,
+      "lat": 50.0481,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -6313,6 +6692,12 @@
       "maxKw": 300
     },
     {
+      "lon": 8.3243,
+      "lat": 50.1536,
+      "chargePoints": 16,
+      "maxKw": 400
+    },
+    {
       "lon": 9.3692,
       "lat": 51.1828,
       "chargePoints": 2,
@@ -6337,6 +6722,12 @@
       "maxKw": 300
     },
     {
+      "lon": 9.4858,
+      "lat": 51.0859,
+      "chargePoints": 16,
+      "maxKw": 400
+    },
+    {
       "lon": 9.2775,
       "lat": 51.1209,
       "chargePoints": 8,
@@ -6355,16 +6746,16 @@
       "maxKw": 300
     },
     {
-      "lon": 9.4728,
-      "lat": 51.0068,
-      "chargePoints": 12,
-      "maxKw": 300
-    },
-    {
       "lon": 9.4813,
       "lat": 51.0053,
       "chargePoints": 12,
       "maxKw": 350
+    },
+    {
+      "lon": 9.4728,
+      "lat": 51.0068,
+      "chargePoints": 12,
+      "maxKw": 300
     },
     {
       "lon": 8.9901,
@@ -6397,8 +6788,8 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6809,
-      "lat": 50.4358,
+      "lon": 8.6901,
+      "lat": 50.4297,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -6407,6 +6798,12 @@
       "lat": 50.4282,
       "chargePoints": 6,
       "maxKw": 400
+    },
+    {
+      "lon": 8.6809,
+      "lat": 50.4358,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 8.693,
@@ -6423,7 +6820,7 @@
     {
       "lon": 8.9344,
       "lat": 50.33,
-      "chargePoints": 4,
+      "chargePoints": 5,
       "maxKw": 300
     },
     {
@@ -6434,8 +6831,8 @@
     },
     {
       "lon": 12.1924,
-      "lat": 54.0824,
-      "chargePoints": 27,
+      "lat": 54.0821,
+      "chargePoints": 23,
       "maxKw": 400
     },
     {
@@ -6457,22 +6854,10 @@
       "maxKw": 360
     },
     {
-      "lon": 12.1759,
-      "lat": 54.0991,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
-      "lon": 12.1745,
-      "lat": 54.0995,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 12.1682,
-      "lat": 54.1099,
-      "chargePoints": 4,
-      "maxKw": 360
+      "lon": 12.1765,
+      "lat": 54.0993,
+      "chargePoints": 12,
+      "maxKw": 400
     },
     {
       "lon": 12.1729,
@@ -6481,16 +6866,34 @@
       "maxKw": 400
     },
     {
-      "lon": 11.4659,
-      "lat": 53.5923,
-      "chargePoints": 2,
+      "lon": 12.1745,
+      "lat": 54.0995,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 11.4883,
-      "lat": 53.6872,
-      "chargePoints": 4,
+      "lon": 12.1667,
+      "lat": 54.1103,
+      "chargePoints": 8,
       "maxKw": 360
+    },
+    {
+      "lon": 11.4659,
+      "lat": 53.5932,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.4884,
+      "lat": 53.6871,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.4896,
+      "lat": 53.4388,
+      "chargePoints": 10,
+      "maxKw": 1000
     },
     {
       "lon": 11.4696,
@@ -6505,12 +6908,6 @@
       "maxKw": 400
     },
     {
-      "lon": 11.0876,
-      "lat": 53.502,
-      "chargePoints": 8,
-      "maxKw": 350
-    },
-    {
       "lon": 11.0969,
       "lat": 53.5076,
       "chargePoints": 4,
@@ -6523,10 +6920,22 @@
       "maxKw": 400
     },
     {
-      "lon": 11.4896,
-      "lat": 53.4388,
+      "lon": 11.0876,
+      "lat": 53.502,
       "chargePoints": 8,
-      "maxKw": 1000
+      "maxKw": 350
+    },
+    {
+      "lon": 11.6263,
+      "lat": 53.3809,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
+      "lon": 13.2848,
+      "lat": 53.5817,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 13.2713,
@@ -6545,6 +6954,12 @@
       "lat": 53.3566,
       "chargePoints": 8,
       "maxKw": 360
+    },
+    {
+      "lon": 13.0646,
+      "lat": 53.3634,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 11.1868,
@@ -6571,6 +6986,12 @@
       "maxKw": 350
     },
     {
+      "lon": 11.4478,
+      "lat": 53.8721,
+      "chargePoints": 14,
+      "maxKw": 400
+    },
+    {
       "lon": 11.4614,
       "lat": 53.8856,
       "chargePoints": 4,
@@ -6595,6 +7016,12 @@
       "maxKw": 300
     },
     {
+      "lon": 12.2278,
+      "lat": 54.1522,
+      "chargePoints": 16,
+      "maxKw": 400
+    },
+    {
       "lon": 12.2135,
       "lat": 54.0811,
       "chargePoints": 2,
@@ -6613,21 +7040,15 @@
       "maxKw": 400
     },
     {
-      "lon": 12.2001,
-      "lat": 54.0118,
-      "chargePoints": 18,
-      "maxKw": 300
-    },
-    {
       "lon": 12.2317,
       "lat": 54.0225,
       "chargePoints": 14,
       "maxKw": 400
     },
     {
-      "lon": 11.9283,
-      "lat": 54.106,
-      "chargePoints": 4,
+      "lon": 12.2001,
+      "lat": 54.0118,
+      "chargePoints": 18,
       "maxKw": 300
     },
     {
@@ -6641,6 +7062,18 @@
       "lat": 54.1083,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 11.9283,
+      "lat": 54.106,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 12.2903,
+      "lat": 53.8413,
+      "chargePoints": 7,
+      "maxKw": 300
     },
     {
       "lon": 13.3333,
@@ -6661,14 +7094,14 @@
       "maxKw": 300
     },
     {
-      "lon": 13.1122,
-      "lat": 54.2704,
+      "lon": 13.0544,
+      "lat": 54.3297,
       "chargePoints": 2,
-      "maxKw": 300
+      "maxKw": 600
     },
     {
-      "lon": 13.1167,
-      "lat": 54.2625,
+      "lon": 13.1122,
+      "lat": 54.2704,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -6677,6 +7110,12 @@
       "lat": 54.3013,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 13.1167,
+      "lat": 54.2625,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 13.0229,
@@ -6691,16 +7130,16 @@
       "maxKw": 400
     },
     {
+      "lon": 13.0887,
+      "lat": 54.0928,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 13.3082,
       "lat": 54.362,
       "chargePoints": 4,
       "maxKw": 360
-    },
-    {
-      "lon": 10.5496,
-      "lat": 52.2774,
-      "chargePoints": 2,
-      "maxKw": 300
     },
     {
       "lon": 10.5373,
@@ -6709,9 +7148,9 @@
       "maxKw": 300
     },
     {
-      "lon": 10.5613,
-      "lat": 52.2895,
-      "chargePoints": 6,
+      "lon": 10.5496,
+      "lat": 52.2774,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -6721,10 +7160,22 @@
       "maxKw": 350
     },
     {
+      "lon": 10.5613,
+      "lat": 52.2895,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
       "lon": 10.5075,
       "lat": 52.3095,
       "chargePoints": 14,
-      "maxKw": 320
+      "maxKw": 300
+    },
+    {
+      "lon": 10.503,
+      "lat": 52.3111,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 10.4783,
@@ -6735,12 +7186,6 @@
     {
       "lon": 10.4778,
       "lat": 52.3273,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 10.503,
-      "lat": 52.3111,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -6787,9 +7232,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6754,
-      "lat": 53.0388,
-      "chargePoints": 8,
+      "lon": 10.5333,
+      "lat": 52.2296,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.6458,
+      "lat": 53.0372,
+      "chargePoints": 12,
       "maxKw": 400
     },
     {
@@ -6799,15 +7250,15 @@
       "maxKw": 350
     },
     {
+      "lon": 8.6754,
+      "lat": 53.0388,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 7.2106,
       "lat": 53.3887,
       "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 7.1688,
-      "lat": 53.3632,
-      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -6817,14 +7268,14 @@
       "maxKw": 600
     },
     {
-      "lon": 8.1918,
-      "lat": 53.1434,
-      "chargePoints": 4,
+      "lon": 7.1688,
+      "lat": 53.3632,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
-      "lon": 8.2284,
-      "lat": 53.1804,
+      "lon": 8.1918,
+      "lat": 53.1434,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -6835,10 +7286,22 @@
       "maxKw": 400
     },
     {
+      "lon": 8.2284,
+      "lat": 53.1804,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
       "lon": 8.1701,
       "lat": 53.1595,
       "chargePoints": 8,
       "maxKw": 360
+    },
+    {
+      "lon": 8.1754,
+      "lat": 53.1527,
+      "chargePoints": 12,
+      "maxKw": 400
     },
     {
       "lon": 8.211,
@@ -6847,9 +7310,9 @@
       "maxKw": 300
     },
     {
-      "lon": 8.2093,
-      "lat": 53.1028,
-      "chargePoints": 2,
+      "lon": 8.209,
+      "lat": 53.1027,
+      "chargePoints": 6,
       "maxKw": 400
     },
     {
@@ -6865,10 +7328,10 @@
       "maxKw": 400
     },
     {
-      "lon": 7.9492,
+      "lon": 7.9493,
       "lat": 52.3018,
       "chargePoints": 4,
-      "maxKw": 360
+      "maxKw": 400
     },
     {
       "lon": 7.9565,
@@ -6890,9 +7353,9 @@
     },
     {
       "lon": 8.0374,
-      "lat": 52.2494,
+      "lat": 52.2493,
       "chargePoints": 4,
-      "maxKw": 360
+      "maxKw": 300
     },
     {
       "lon": 8.065,
@@ -6979,6 +7442,12 @@
       "maxKw": 300
     },
     {
+      "lon": 10.7604,
+      "lat": 52.4318,
+      "chargePoints": 8,
+      "maxKw": 600
+    },
+    {
       "lon": 10.7752,
       "lat": 52.4278,
       "chargePoints": 2,
@@ -6989,12 +7458,6 @@
       "lat": 52.4264,
       "chargePoints": 4,
       "maxKw": 360
-    },
-    {
-      "lon": 10.7604,
-      "lat": 52.4318,
-      "chargePoints": 8,
-      "maxKw": 600
     },
     {
       "lon": 10.7457,
@@ -7009,16 +7472,22 @@
       "maxKw": 350
     },
     {
+      "lon": 10.7537,
+      "lat": 52.3922,
+      "chargePoints": 4,
+      "maxKw": 350
+    },
+    {
       "lon": 10.7328,
       "lat": 52.3698,
       "chargePoints": 10,
       "maxKw": 365
     },
     {
-      "lon": 10.7537,
-      "lat": 52.3922,
-      "chargePoints": 4,
-      "maxKw": 350
+      "lon": 10.7429,
+      "lat": 52.3704,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 10.7517,
@@ -7027,9 +7496,15 @@
       "maxKw": 360
     },
     {
-      "lon": 10.7429,
-      "lat": 52.3704,
-      "chargePoints": 2,
+      "lon": 8.1327,
+      "lat": 53.162,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.1208,
+      "lat": 53.1678,
+      "chargePoints": 4,
       "maxKw": 400
     },
     {
@@ -7051,15 +7526,21 @@
       "maxKw": 350
     },
     {
+      "lon": 7.7789,
+      "lat": 52.756,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 7.7569,
       "lat": 52.7317,
       "chargePoints": 4,
       "maxKw": 400
     },
     {
-      "lon": 7.7789,
-      "lat": 52.756,
-      "chargePoints": 4,
+      "lon": 8.0002,
+      "lat": 52.8271,
+      "chargePoints": 18,
       "maxKw": 400
     },
     {
@@ -7067,18 +7548,6 @@
       "lat": 52.8384,
       "chargePoints": 4,
       "maxKw": 300
-    },
-    {
-      "lon": 8.0002,
-      "lat": 52.8272,
-      "chargePoints": 16,
-      "maxKw": 400
-    },
-    {
-      "lon": 8.04,
-      "lat": 52.8442,
-      "chargePoints": 2,
-      "maxKw": 400
     },
     {
       "lon": 8.1941,
@@ -7123,10 +7592,10 @@
       "maxKw": 400
     },
     {
-      "lon": 8.8079,
-      "lat": 53.0292,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 8.6878,
+      "lat": 53.0207,
+      "chargePoints": 10,
+      "maxKw": 400
     },
     {
       "lon": 8.703,
@@ -7135,8 +7604,8 @@
       "maxKw": 400
     },
     {
-      "lon": 8.6877,
-      "lat": 53.0207,
+      "lon": 8.8079,
+      "lat": 53.0292,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -7165,10 +7634,22 @@
       "maxKw": 400
     },
     {
+      "lon": 7.2402,
+      "lat": 53.0864,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
       "lon": 7.2758,
       "lat": 53.0641,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 7.2477,
+      "lat": 53.0646,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 7.2433,
@@ -7177,21 +7658,15 @@
       "maxKw": 480
     },
     {
-      "lon": 7.2402,
-      "lat": 53.0864,
-      "chargePoints": 12,
-      "maxKw": 400
-    },
-    {
       "lon": 7.4399,
       "lat": 52.3456,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 7.2636,
+      "lon": 7.2635,
       "lat": 52.3593,
-      "chargePoints": 16,
+      "chargePoints": 20,
       "maxKw": 400
     },
     {
@@ -7261,20 +7736,14 @@
       "maxKw": 300
     },
     {
-      "lon": 8.0932,
-      "lat": 53.3935,
+      "lon": 8.1245,
+      "lat": 53.3974,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 8.1305,
-      "lat": 53.3951,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.1245,
-      "lat": 53.3974,
+      "lon": 8.0932,
+      "lat": 53.3935,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -7285,22 +7754,34 @@
       "maxKw": 400
     },
     {
+      "lon": 8.1305,
+      "lat": 53.3951,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 10.4185,
       "lat": 52.338,
       "chargePoints": 4,
       "maxKw": 700
     },
     {
-      "lon": 10.1408,
-      "lat": 51.9473,
-      "chargePoints": 10,
-      "maxKw": 320
+      "lon": 10.5673,
+      "lat": 51.9549,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 10.1428,
       "lat": 51.9275,
       "chargePoints": 12,
       "maxKw": 350
+    },
+    {
+      "lon": 10.1408,
+      "lat": 51.9473,
+      "chargePoints": 10,
+      "maxKw": 320
     },
     {
       "lon": 9.7632,
@@ -7321,14 +7802,14 @@
       "maxKw": 300
     },
     {
-      "lon": 9.8899,
-      "lat": 51.5277,
+      "lon": 9.9084,
+      "lat": 51.535,
       "chargePoints": 6,
       "maxKw": 300
     },
     {
-      "lon": 9.9084,
-      "lat": 51.535,
+      "lon": 9.8899,
+      "lat": 51.5277,
       "chargePoints": 6,
       "maxKw": 300
     },
@@ -7345,26 +7826,20 @@
       "maxKw": 400
     },
     {
-      "lon": 7.0676,
-      "lat": 52.3207,
-      "chargePoints": 10,
-      "maxKw": 300
-    },
-    {
       "lon": 7.0418,
       "lat": 52.3125,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 7.2466,
-      "lat": 52.3288,
-      "chargePoints": 6,
+      "lon": 7.0676,
+      "lat": 52.3207,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
-      "lon": 7.2176,
-      "lat": 52.4824,
+      "lon": 7.2466,
+      "lat": 52.3288,
       "chargePoints": 6,
       "maxKw": 300
     },
@@ -7375,9 +7850,9 @@
       "maxKw": 300
     },
     {
-      "lon": 9.9925,
-      "lat": 53.409,
-      "chargePoints": 2,
+      "lon": 7.2176,
+      "lat": 52.4824,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -7387,8 +7862,8 @@
       "maxKw": 300
     },
     {
-      "lon": 9.9833,
-      "lat": 53.3908,
+      "lon": 9.9925,
+      "lat": 53.409,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -7397,6 +7872,12 @@
       "lat": 53.3828,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 9.9833,
+      "lat": 53.3908,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 10.043,
@@ -7429,10 +7910,22 @@
       "maxKw": 300
     },
     {
+      "lon": 10.0785,
+      "lat": 53.2321,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 10.2195,
       "lat": 53.3391,
       "chargePoints": 10,
       "maxKw": 320
+    },
+    {
+      "lon": 10.0485,
+      "lat": 53.3019,
+      "chargePoints": 12,
+      "maxKw": 400
     },
     {
       "lon": 9.8003,
@@ -7441,16 +7934,16 @@
       "maxKw": 400
     },
     {
+      "lon": 9.8533,
+      "lat": 52.9724,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 9.9212,
       "lat": 52.9971,
       "chargePoints": 4,
       "maxKw": 300
-    },
-    {
-      "lon": 9.8533,
-      "lat": 52.9724,
-      "chargePoints": 2,
-      "maxKw": 320
     },
     {
       "lon": 9.9828,
@@ -7477,12 +7970,6 @@
       "maxKw": 300
     },
     {
-      "lon": 9.5564,
-      "lat": 52.8488,
-      "chargePoints": 12,
-      "maxKw": 400
-    },
-    {
       "lon": 9.4745,
       "lat": 52.883,
       "chargePoints": 4,
@@ -7501,15 +7988,33 @@
       "maxKw": 400
     },
     {
+      "lon": 9.5564,
+      "lat": 52.8488,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 9.5758,
+      "lat": 52.8577,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 9.7775,
       "lat": 52.8974,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 9.7683,
-      "lat": 52.8939,
-      "chargePoints": 20,
+      "lon": 9.7687,
+      "lat": 52.8949,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 9.6921,
+      "lat": 52.8529,
+      "chargePoints": 10,
       "maxKw": 400
     },
     {
@@ -7519,22 +8024,28 @@
       "maxKw": 300
     },
     {
-      "lon": 9.6921,
-      "lat": 52.8529,
-      "chargePoints": 10,
-      "maxKw": 400
-    },
-    {
-      "lon": 9.6888,
-      "lat": 52.6737,
-      "chargePoints": 18,
-      "maxKw": 320
+      "lon": 9.6893,
+      "lat": 52.6734,
+      "chargePoints": 30,
+      "maxKw": 1000
     },
     {
       "lon": 10.8239,
       "lat": 52.3116,
       "chargePoints": 8,
       "maxKw": 300
+    },
+    {
+      "lon": 10.8437,
+      "lat": 52.3067,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.8417,
+      "lat": 52.3049,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 10.8252,
@@ -7561,6 +8072,12 @@
       "maxKw": 300
     },
     {
+      "lon": 9.9973,
+      "lat": 52.1606,
+      "chargePoints": 12,
+      "maxKw": 320
+    },
+    {
       "lon": 9.9691,
       "lat": 52.1639,
       "chargePoints": 4,
@@ -7571,12 +8088,6 @@
       "lat": 52.1595,
       "chargePoints": 18,
       "maxKw": 300
-    },
-    {
-      "lon": 9.9973,
-      "lat": 52.1606,
-      "chargePoints": 12,
-      "maxKw": 320
     },
     {
       "lon": 9.9648,
@@ -7627,12 +8138,6 @@
       "maxKw": 400
     },
     {
-      "lon": 7.4545,
-      "lat": 53.2308,
-      "chargePoints": 2,
-      "maxKw": 400
-    },
-    {
       "lon": 7.4569,
       "lat": 53.2677,
       "chargePoints": 4,
@@ -7645,20 +8150,26 @@
       "maxKw": 300
     },
     {
+      "lon": 7.2834,
+      "lat": 53.135,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 7.2949,
       "lat": 53.1711,
       "chargePoints": 4,
       "maxKw": 400
     },
     {
-      "lon": 7.5856,
-      "lat": 53.259,
+      "lon": 7.5793,
+      "lat": 53.2588,
       "chargePoints": 4,
       "maxKw": 400
     },
     {
-      "lon": 7.5793,
-      "lat": 53.2588,
+      "lon": 7.5856,
+      "lat": 53.259,
       "chargePoints": 4,
       "maxKw": 400
     },
@@ -7693,10 +8204,10 @@
       "maxKw": 350
     },
     {
-      "lon": 10.0645,
-      "lat": 51.788,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 10.0629,
+      "lat": 51.7874,
+      "chargePoints": 14,
+      "maxKw": 400
     },
     {
       "lon": 8.2206,
@@ -7747,15 +8258,21 @@
       "maxKw": 300
     },
     {
+      "lon": 8.0039,
+      "lat": 52.3574,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
       "lon": 8.1633,
       "lat": 52.2372,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 8.1243,
+      "lon": 8.1244,
       "lat": 52.3056,
-      "chargePoints": 4,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
@@ -7783,10 +8300,10 @@
       "maxKw": 300
     },
     {
-      "lon": 8.0211,
-      "lat": 52.3987,
-      "chargePoints": 8,
-      "maxKw": 400
+      "lon": 8.4122,
+      "lat": 52.1951,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 8.031,
@@ -7795,10 +8312,22 @@
       "maxKw": 400
     },
     {
+      "lon": 8.0211,
+      "lat": 52.3987,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 8.0547,
       "lat": 52.4825,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 8.6993,
+      "lat": 53.1865,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 8.7104,
@@ -7813,8 +8342,14 @@
       "maxKw": 300
     },
     {
-      "lon": 8.6993,
-      "lat": 53.1865,
+      "lon": 8.6581,
+      "lat": 53.2108,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.26,
+      "lat": 52.3324,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -7831,12 +8366,6 @@
       "maxKw": 300
     },
     {
-      "lon": 10.2445,
-      "lat": 52.3382,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
       "lon": 10.2479,
       "lat": 52.34,
       "chargePoints": 12,
@@ -7847,6 +8376,12 @@
       "lat": 52.3352,
       "chargePoints": 2,
       "maxKw": 400
+    },
+    {
+      "lon": 10.2445,
+      "lat": 52.3382,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 9.707,
@@ -7879,16 +8414,16 @@
       "maxKw": 315
     },
     {
-      "lon": 9.6354,
-      "lat": 52.4185,
-      "chargePoints": 12,
-      "maxKw": 1000
-    },
-    {
       "lon": 9.6925,
       "lat": 52.4089,
       "chargePoints": 2,
       "maxKw": 600
+    },
+    {
+      "lon": 9.6354,
+      "lat": 52.4185,
+      "chargePoints": 12,
+      "maxKw": 1000
     },
     {
       "lon": 9.8124,
@@ -7945,10 +8480,10 @@
       "maxKw": 400
     },
     {
-      "lon": 9.7228,
-      "lat": 52.4427,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 9.7253,
+      "lat": 52.441,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 9.7441,
@@ -7957,21 +8492,21 @@
       "maxKw": 400
     },
     {
-      "lon": 9.7253,
-      "lat": 52.441,
-      "chargePoints": 8,
+      "lon": 9.7228,
+      "lat": 52.4427,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.6964,
+      "lat": 52.4605,
+      "chargePoints": 4,
       "maxKw": 400
     },
     {
       "lon": 9.7187,
       "lat": 52.4564,
       "chargePoints": 26,
-      "maxKw": 400
-    },
-    {
-      "lon": 9.6964,
-      "lat": 52.4605,
-      "chargePoints": 4,
       "maxKw": 400
     },
     {
@@ -7987,6 +8522,18 @@
       "maxKw": 300
     },
     {
+      "lon": 9.8219,
+      "lat": 52.2852,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 9.7865,
+      "lat": 52.5541,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
       "lon": 9.8376,
       "lat": 52.4243,
       "chargePoints": 6,
@@ -7999,15 +8546,27 @@
       "maxKw": 300
     },
     {
-      "lon": 9.8451,
-      "lat": 52.4863,
-      "chargePoints": 34,
+      "lon": 9.6463,
+      "lat": 52.401,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 9.9129,
-      "lat": 52.3592,
-      "chargePoints": 2,
+      "lon": 9.8453,
+      "lat": 52.4861,
+      "chargePoints": 46,
+      "maxKw": 400
+    },
+    {
+      "lon": 9.9979,
+      "lat": 52.3878,
+      "chargePoints": 12,
+      "maxKw": 350
+    },
+    {
+      "lon": 10.1196,
+      "lat": 52.3596,
+      "chargePoints": 10,
       "maxKw": 300
     },
     {
@@ -8017,22 +8576,16 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1196,
-      "lat": 52.3596,
+      "lon": 9.9129,
+      "lat": 52.3592,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.2054,
+      "lat": 53.1167,
       "chargePoints": 10,
-      "maxKw": 300
-    },
-    {
-      "lon": 9.9979,
-      "lat": 52.3878,
-      "chargePoints": 12,
-      "maxKw": 350
-    },
-    {
-      "lon": 9.2314,
-      "lat": 53.114,
-      "chargePoints": 4,
-      "maxKw": 300
+      "maxKw": 400
     },
     {
       "lon": 9.2049,
@@ -8041,10 +8594,10 @@
       "maxKw": 350
     },
     {
-      "lon": 9.2054,
-      "lat": 53.1167,
-      "chargePoints": 10,
-      "maxKw": 400
+      "lon": 9.2314,
+      "lat": 53.114,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 9.3437,
@@ -8067,7 +8620,7 @@
     {
       "lon": 9.5076,
       "lat": 53.2883,
-      "chargePoints": 16,
+      "chargePoints": 18,
       "maxKw": 400
     },
     {
@@ -8095,12 +8648,6 @@
       "maxKw": 300
     },
     {
-      "lon": 9.2469,
-      "lat": 52.2338,
-      "chargePoints": 2,
-      "maxKw": 320
-    },
-    {
       "lon": 9.2219,
       "lat": 52.2237,
       "chargePoints": 6,
@@ -8111,6 +8658,12 @@
       "lat": 52.2267,
       "chargePoints": 6,
       "maxKw": 350
+    },
+    {
+      "lon": 9.2469,
+      "lat": 52.2338,
+      "chargePoints": 2,
+      "maxKw": 320
     },
     {
       "lon": 9.352,
@@ -8131,16 +8684,16 @@
       "maxKw": 300
     },
     {
-      "lon": 8.1183,
-      "lat": 52.5979,
-      "chargePoints": 16,
-      "maxKw": 300
-    },
-    {
       "lon": 8.1139,
       "lat": 52.5407,
       "chargePoints": 11,
       "maxKw": 350
+    },
+    {
+      "lon": 8.1183,
+      "lat": 52.5979,
+      "chargePoints": 16,
+      "maxKw": 300
     },
     {
       "lon": 8.1782,
@@ -8179,10 +8732,10 @@
       "maxKw": 400
     },
     {
-      "lon": 9.017,
-      "lat": 53.0593,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 9.0303,
+      "lat": 53.0537,
+      "chargePoints": 4,
+      "maxKw": 480
     },
     {
       "lon": 8.9672,
@@ -8191,15 +8744,27 @@
       "maxKw": 300
     },
     {
-      "lon": 9.0303,
-      "lat": 53.0537,
-      "chargePoints": 4,
-      "maxKw": 480
+      "lon": 9.017,
+      "lat": 53.0593,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.6431,
+      "lat": 52.2516,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 10.6549,
       "lat": 52.2537,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.5406,
+      "lat": 52.1743,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -8215,9 +8780,9 @@
       "maxKw": 400
     },
     {
-      "lon": 6.4429,
-      "lat": 51.8184,
-      "chargePoints": 12,
+      "lon": 6.4434,
+      "lat": 51.8182,
+      "chargePoints": 20,
       "maxKw": 300
     },
     {
@@ -8251,12 +8816,6 @@
       "maxKw": 300
     },
     {
-      "lon": 7.2874,
-      "lat": 51.8419,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 7.3231,
       "lat": 51.8686,
       "chargePoints": 4,
@@ -8269,22 +8828,16 @@
       "maxKw": 400
     },
     {
+      "lon": 7.2911,
+      "lat": 51.8423,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 7.3988,
       "lat": 51.9104,
       "chargePoints": 12,
       "maxKw": 400
-    },
-    {
-      "lon": 6.476,
-      "lat": 50.8297,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.4561,
-      "lat": 50.8405,
-      "chargePoints": 4,
-      "maxKw": 300
     },
     {
       "lon": 6.4589,
@@ -8299,10 +8852,22 @@
       "maxKw": 350
     },
     {
+      "lon": 6.476,
+      "lat": 50.8297,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 6.4863,
       "lat": 50.8426,
       "chargePoints": 2,
       "maxKw": 400
+    },
+    {
+      "lon": 6.4561,
+      "lat": 50.8405,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 6.4483,
@@ -8323,12 +8888,6 @@
       "maxKw": 300
     },
     {
-      "lon": 6.3653,
-      "lat": 50.928,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 6.3424,
       "lat": 50.924,
       "chargePoints": 4,
@@ -8341,9 +8900,9 @@
       "maxKw": 400
     },
     {
-      "lon": 6.275,
-      "lat": 50.8927,
-      "chargePoints": 2,
+      "lon": 6.3653,
+      "lat": 50.928,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -8353,15 +8912,21 @@
       "maxKw": 800
     },
     {
+      "lon": 6.275,
+      "lat": 50.8927,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 7.3551,
       "lat": 51.3264,
       "chargePoints": 12,
       "maxKw": 400
     },
     {
-      "lon": 7.3521,
-      "lat": 51.4423,
-      "chargePoints": 4,
+      "lon": 7.3862,
+      "lat": 51.3871,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -8377,15 +8942,21 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8506,
-      "lat": 50.7485,
-      "chargePoints": 10,
-      "maxKw": 360
+      "lon": 7.3521,
+      "lat": 51.4423,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
-      "lon": 6.669,
-      "lat": 50.4506,
-      "chargePoints": 8,
+      "lon": 6.8505,
+      "lat": 50.7485,
+      "chargePoints": 10,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.6683,
+      "lat": 50.4501,
+      "chargePoints": 4,
       "maxKw": 400
     },
     {
@@ -8449,15 +9020,21 @@
       "maxKw": 300
     },
     {
+      "lon": 6.3098,
+      "lat": 51.0807,
+      "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
       "lon": 6.3022,
       "lat": 51.0701,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 6.3098,
-      "lat": 51.0807,
-      "chargePoints": 8,
+      "lon": 6.2175,
+      "lat": 51.0563,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -8467,15 +9044,9 @@
       "maxKw": 320
     },
     {
-      "lon": 6.2175,
-      "lat": 51.0563,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.1926,
-      "lat": 51.0627,
-      "chargePoints": 2,
+      "lon": 6.2287,
+      "lat": 51.0478,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -8483,6 +9054,12 @@
       "lat": 51.0608,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 6.1926,
+      "lat": 51.0627,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 6.1568,
@@ -8509,10 +9086,16 @@
       "maxKw": 300
     },
     {
-      "lon": 8.5568,
-      "lat": 52.1929,
-      "chargePoints": 8,
+      "lon": 8.592,
+      "lat": 52.2063,
+      "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 8.5777,
+      "lat": 52.2024,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 8.6064,
@@ -8521,9 +9104,15 @@
       "maxKw": 300
     },
     {
-      "lon": 8.592,
-      "lat": 52.2063,
+      "lon": 8.5922,
+      "lat": 52.1932,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.5568,
+      "lat": 52.1929,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -8539,14 +9128,8 @@
       "maxKw": 400
     },
     {
-      "lon": 8.753,
-      "lat": 52.1788,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.783,
-      "lat": 52.2055,
+      "lon": 8.4575,
+      "lat": 52.2,
       "chargePoints": 4,
       "maxKw": 400
     },
@@ -8555,6 +9138,18 @@
       "lat": 52.2008,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 8.783,
+      "lat": 52.2055,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.753,
+      "lat": 52.1788,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 8.9245,
@@ -8569,21 +9164,27 @@
       "maxKw": 400
     },
     {
+      "lon": 7.9682,
+      "lat": 51.4424,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 8.2488,
       "lat": 51.3617,
       "chargePoints": 8,
       "maxKw": 300
     },
     {
-      "lon": 6.2649,
-      "lat": 51.8324,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 6.2752,
       "lat": 51.8424,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.2649,
+      "lat": 51.8324,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -8599,6 +9200,12 @@
       "maxKw": 400
     },
     {
+      "lon": 6.1733,
+      "lat": 51.6657,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 6.1193,
       "lat": 51.6519,
       "chargePoints": 2,
@@ -8607,12 +9214,6 @@
     {
       "lon": 6.1596,
       "lat": 51.6854,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.1733,
-      "lat": 51.6657,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -8689,9 +9290,9 @@
       "maxKw": 300
     },
     {
-      "lon": 7.7644,
-      "lat": 51.3781,
-      "chargePoints": 4,
+      "lon": 7.7686,
+      "lat": 51.3862,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -8701,10 +9302,10 @@
       "maxKw": 300
     },
     {
-      "lon": 7.7686,
-      "lat": 51.3862,
-      "chargePoints": 2,
-      "maxKw": 320
+      "lon": 7.7644,
+      "lat": 51.3781,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 6.9392,
@@ -8719,14 +9320,14 @@
       "maxKw": 400
     },
     {
-      "lon": 6.9839,
-      "lat": 51.1681,
+      "lon": 6.9207,
+      "lat": 51.1898,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 6.9207,
-      "lat": 51.1898,
+      "lon": 6.9839,
+      "lat": 51.1681,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -8737,22 +9338,22 @@
       "maxKw": 300
     },
     {
-      "lon": 6.9736,
-      "lat": 51.1195,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.9499,
-      "lat": 51.0964,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 6.9695,
+      "lat": 51.1202,
+      "chargePoints": 16,
+      "maxKw": 400
     },
     {
       "lon": 6.919,
       "lat": 51.1175,
       "chargePoints": 10,
       "maxKw": 400
+    },
+    {
+      "lon": 6.9499,
+      "lat": 51.0964,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 6.9063,
@@ -8821,16 +9422,16 @@
       "maxKw": 400
     },
     {
-      "lon": 7.0545,
-      "lat": 51.3316,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 7.0453,
       "lat": 51.3457,
       "chargePoints": 2,
       "maxKw": 400
+    },
+    {
+      "lon": 7.0545,
+      "lat": 51.3316,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 7.0103,
@@ -8845,16 +9446,16 @@
       "maxKw": 350
     },
     {
-      "lon": 8.8792,
-      "lat": 52.2131,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
       "lon": 8.9326,
       "lat": 52.211,
       "chargePoints": 12,
       "maxKw": 400
+    },
+    {
+      "lon": 8.8792,
+      "lat": 52.2131,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 8.8147,
@@ -8865,6 +9466,12 @@
     {
       "lon": 8.8043,
       "lat": 52.2173,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 7.5393,
+      "lat": 50.9768,
       "chargePoints": 4,
       "maxKw": 400
     },
@@ -8887,16 +9494,16 @@
       "maxKw": 300
     },
     {
-      "lon": 7.4491,
-      "lat": 50.9858,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 7.4591,
       "lat": 50.9923,
       "chargePoints": 2,
       "maxKw": 400
+    },
+    {
+      "lon": 7.4491,
+      "lat": 50.9858,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 7.8385,
@@ -8908,6 +9515,12 @@
       "lon": 7.8411,
       "lat": 50.99,
       "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.8465,
+      "lat": 50.9828,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -8929,16 +9542,16 @@
       "maxKw": 400
     },
     {
-      "lon": 8.7217,
-      "lat": 51.6839,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
       "lon": 8.723,
       "lat": 51.7068,
       "chargePoints": 18,
       "maxKw": 400
+    },
+    {
+      "lon": 8.7217,
+      "lat": 51.6839,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 8.6214,
@@ -8949,7 +9562,7 @@
     {
       "lon": 8.5159,
       "lat": 51.5939,
-      "chargePoints": 2,
+      "chargePoints": 6,
       "maxKw": 400
     },
     {
@@ -8957,6 +9570,18 @@
       "lat": 51.8171,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 8.7251,
+      "lat": 51.6292,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.7243,
+      "lat": 51.6275,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 7.2961,
@@ -8971,15 +9596,15 @@
       "maxKw": 350
     },
     {
-      "lon": 7.3161,
-      "lat": 51.5864,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 7.3094,
       "lat": 51.5803,
       "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.3161,
+      "lat": 51.5864,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -8989,21 +9614,15 @@
       "maxKw": 300
     },
     {
-      "lon": 7.2124,
-      "lat": 51.5678,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 7.1997,
       "lat": 51.5695,
       "chargePoints": 4,
       "maxKw": 400
     },
     {
-      "lon": 7.206,
-      "lat": 51.613,
-      "chargePoints": 2,
+      "lon": 7.2124,
+      "lat": 51.5678,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -9017,6 +9636,12 @@
       "lat": 51.5979,
       "chargePoints": 10,
       "maxKw": 400
+    },
+    {
+      "lon": 7.206,
+      "lat": 51.613,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 7.1502,
@@ -9041,6 +9666,18 @@
       "lat": 51.6636,
       "chargePoints": 6,
       "maxKw": 400
+    },
+    {
+      "lon": 6.9421,
+      "lat": 51.5587,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.9653,
+      "lat": 51.5661,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 6.9695,
@@ -9103,20 +9740,20 @@
       "maxKw": 300
     },
     {
-      "lon": 6.9155,
-      "lat": 50.8452,
-      "chargePoints": 6,
-      "maxKw": 400
-    },
-    {
       "lon": 6.8977,
       "lat": 50.8223,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 6.8969,
-      "lat": 50.8855,
+      "lon": 6.9155,
+      "lat": 50.8452,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
+      "lon": 6.8864,
+      "lat": 50.8923,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -9127,14 +9764,8 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8864,
-      "lat": 50.8923,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.8011,
-      "lat": 50.8318,
+      "lon": 6.8969,
+      "lat": 50.8855,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -9143,6 +9774,12 @@
       "lat": 50.7982,
       "chargePoints": 14,
       "maxKw": 400
+    },
+    {
+      "lon": 6.8011,
+      "lat": 50.8318,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 6.8102,
@@ -9181,14 +9818,14 @@
       "maxKw": 300
     },
     {
-      "lon": 7.2126,
-      "lat": 51.1413,
+      "lon": 7.1899,
+      "lat": 51.1384,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 7.1899,
-      "lat": 51.1384,
+      "lon": 7.2126,
+      "lat": 51.1413,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -9223,16 +9860,16 @@
       "maxKw": 300
     },
     {
-      "lon": 7.1522,
-      "lat": 50.8994,
-      "chargePoints": 1,
-      "maxKw": 300
-    },
-    {
       "lon": 7.1879,
       "lat": 50.8848,
       "chargePoints": 2,
       "maxKw": 320
+    },
+    {
+      "lon": 7.1522,
+      "lat": 50.8994,
+      "chargePoints": 1,
+      "maxKw": 300
     },
     {
       "lon": 6.6941,
@@ -9247,15 +9884,21 @@
       "maxKw": 300
     },
     {
+      "lon": 6.6155,
+      "lat": 51.2785,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 6.6394,
       "lat": 51.2675,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 6.6155,
-      "lat": 51.2785,
-      "chargePoints": 4,
+      "lon": 6.7095,
+      "lat": 51.1997,
+      "chargePoints": 12,
       "maxKw": 400
     },
     {
@@ -9263,6 +9906,12 @@
       "lat": 51.2001,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 6.7147,
+      "lat": 51.1939,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 6.6709,
@@ -9289,6 +9938,12 @@
       "maxKw": 300
     },
     {
+      "lon": 6.5794,
+      "lat": 51.1092,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 6.5932,
       "lat": 51.0884,
       "chargePoints": 2,
@@ -9301,22 +9956,28 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8106,
-      "lat": 51.0923,
-      "chargePoints": 14,
-      "maxKw": 400
-    },
-    {
       "lon": 6.8205,
       "lat": 51.0611,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
+      "lon": 6.8106,
+      "lat": 51.0923,
+      "chargePoints": 14,
+      "maxKw": 400
+    },
+    {
       "lon": 6.8032,
       "lat": 51.134,
       "chargePoints": 2,
       "maxKw": 360
+    },
+    {
+      "lon": 7.0295,
+      "lat": 50.762,
+      "chargePoints": 6,
+      "maxKw": 350
     },
     {
       "lon": 7.0151,
@@ -9329,12 +9990,6 @@
       "lat": 50.7937,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 7.0295,
-      "lat": 50.762,
-      "chargePoints": 6,
-      "maxKw": 350
     },
     {
       "lon": 7.0191,
@@ -9367,16 +10022,16 @@
       "maxKw": 300
     },
     {
-      "lon": 7.3338,
-      "lat": 50.6481,
-      "chargePoints": 36,
-      "maxKw": 350
-    },
-    {
       "lon": 7.2964,
       "lat": 50.6755,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 7.3338,
+      "lat": 50.6481,
+      "chargePoints": 36,
+      "maxKw": 350
     },
     {
       "lon": 7.1771,
@@ -9397,21 +10052,15 @@
       "maxKw": 300
     },
     {
-      "lon": 7.2046,
-      "lat": 50.7914,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 7.2198,
       "lat": 50.808,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 7.1743,
-      "lat": 50.7938,
-      "chargePoints": 2,
+      "lon": 7.2046,
+      "lat": 50.7914,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -9421,8 +10070,8 @@
       "maxKw": 300
     },
     {
-      "lon": 7.2704,
-      "lat": 50.7795,
+      "lon": 7.1743,
+      "lat": 50.7938,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -9435,6 +10084,12 @@
     {
       "lon": 7.2921,
       "lat": 50.7728,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.2704,
+      "lat": 50.7795,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -9505,12 +10160,6 @@
       "maxKw": 320
     },
     {
-      "lon": 7.9007,
-      "lat": 51.5628,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 7.9188,
       "lat": 51.5491,
       "chargePoints": 2,
@@ -9521,6 +10170,24 @@
       "lat": 51.5435,
       "chargePoints": 12,
       "maxKw": 400
+    },
+    {
+      "lon": 7.9007,
+      "lat": 51.5628,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.1295,
+      "lat": 51.5715,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.0991,
+      "lat": 51.5527,
+      "chargePoints": 6,
+      "maxKw": 684
     },
     {
       "lon": 8.0875,
@@ -9541,20 +10208,8 @@
       "maxKw": 300
     },
     {
-      "lon": 8.0991,
-      "lat": 51.5527,
-      "chargePoints": 6,
-      "maxKw": 684
-    },
-    {
       "lon": 8.1441,
       "lat": 51.5569,
-      "chargePoints": 4,
-      "maxKw": 400
-    },
-    {
-      "lon": 8.1295,
-      "lat": 51.5715,
       "chargePoints": 4,
       "maxKw": 400
     },
@@ -9565,16 +10220,22 @@
       "maxKw": 350
     },
     {
-      "lon": 8.5155,
-      "lat": 51.5982,
-      "chargePoints": 22,
-      "maxKw": 350
-    },
-    {
       "lon": 8.4851,
       "lat": 51.5952,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 8.4873,
+      "lat": 51.5932,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.5155,
+      "lat": 51.5982,
+      "chargePoints": 22,
+      "maxKw": 350
     },
     {
       "lon": 8.3368,
@@ -9589,9 +10250,9 @@
       "maxKw": 320
     },
     {
-      "lon": 6.1008,
-      "lat": 50.7829,
-      "chargePoints": 6,
+      "lon": 6.0981,
+      "lat": 50.7914,
+      "chargePoints": 18,
       "maxKw": 300
     },
     {
@@ -9601,15 +10262,15 @@
       "maxKw": 300
     },
     {
-      "lon": 6.098,
-      "lat": 50.7913,
-      "chargePoints": 16,
-      "maxKw": 300
-    },
-    {
       "lon": 6.094,
       "lat": 50.7882,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.1008,
+      "lat": 50.7829,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -9637,6 +10298,12 @@
       "maxKw": 320
     },
     {
+      "lon": 6.1817,
+      "lat": 50.7529,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 6.1583,
       "lat": 50.752,
       "chargePoints": 4,
@@ -9652,18 +10319,6 @@
       "lon": 6.1549,
       "lat": 50.8165,
       "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.3221,
-      "lat": 50.8243,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.317,
-      "lat": 50.8288,
-      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -9685,6 +10340,12 @@
       "maxKw": 400
     },
     {
+      "lon": 6.3221,
+      "lat": 50.8243,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 6.2323,
       "lat": 50.7961,
       "chargePoints": 2,
@@ -9695,6 +10356,18 @@
       "lat": 50.8202,
       "chargePoints": 12,
       "maxKw": 400
+    },
+    {
+      "lon": 6.2445,
+      "lat": 50.8368,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.317,
+      "lat": 50.8288,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 6.2164,
@@ -9727,15 +10400,21 @@
       "maxKw": 400
     },
     {
+      "lon": 7.7176,
+      "lat": 52.2794,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 7.7146,
       "lat": 52.2608,
       "chargePoints": 6,
       "maxKw": 400
     },
     {
-      "lon": 7.8486,
-      "lat": 52.2617,
-      "chargePoints": 8,
+      "lon": 7.8481,
+      "lat": 52.2611,
+      "chargePoints": 12,
       "maxKw": 400
     },
     {
@@ -9757,32 +10436,14 @@
       "maxKw": 300
     },
     {
-      "lon": 7.7339,
-      "lat": 52.1473,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 7.7361,
       "lat": 52.1465,
       "chargePoints": 8,
       "maxKw": 300
     },
     {
-      "lon": 7.5256,
-      "lat": 51.6069,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 7.5043,
-      "lat": 51.6065,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 7.5322,
-      "lat": 51.5938,
+      "lon": 7.7339,
+      "lat": 52.1473,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -9793,20 +10454,26 @@
       "maxKw": 400
     },
     {
-      "lon": 7.4387,
-      "lat": 51.5963,
+      "lon": 7.5043,
+      "lat": 51.6065,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.5256,
+      "lat": 51.6069,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 7.5587,
-      "lat": 51.4641,
-      "chargePoints": 6,
-      "maxKw": 400
+      "lon": 7.5322,
+      "lat": 51.5938,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
-      "lon": 7.5724,
-      "lat": 51.4441,
+      "lon": 7.4387,
+      "lat": 51.5963,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -9829,16 +10496,28 @@
       "maxKw": 400
     },
     {
+      "lon": 7.5724,
+      "lat": 51.4441,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.5587,
+      "lat": 51.4641,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
       "lon": 7.671,
       "lat": 51.5319,
       "chargePoints": 6,
       "maxKw": 300
     },
     {
-      "lon": 7.6739,
-      "lat": 51.5678,
-      "chargePoints": 66,
-      "maxKw": 360
+      "lon": 7.6738,
+      "lat": 51.5679,
+      "chargePoints": 72,
+      "maxKw": 400
     },
     {
       "lon": 7.6706,
@@ -9847,21 +10526,27 @@
       "maxKw": 350
     },
     {
-      "lon": 7.6427,
-      "lat": 51.6152,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 7.6444,
+      "lat": 51.589,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 7.6576,
       "lat": 51.6178,
       "chargePoints": 6,
-      "maxKw": 320
+      "maxKw": 300
     },
     {
       "lon": 7.6629,
       "lat": 51.6513,
       "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.6427,
+      "lat": 51.6152,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -9871,10 +10556,22 @@
       "maxKw": 300
     },
     {
-      "lon": 7.6724,
-      "lat": 51.6983,
+      "lon": 7.6715,
+      "lat": 51.6985,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 7.6817,
+      "lat": 51.534,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 7.6158,
+      "lat": 51.5154,
+      "chargePoints": 4,
+      "maxKw": 350
     },
     {
       "lon": 7.617,
@@ -9889,20 +10586,26 @@
       "maxKw": 300
     },
     {
-      "lon": 7.6158,
-      "lat": 51.5154,
-      "chargePoints": 4,
-      "maxKw": 350
-    },
-    {
       "lon": 7.6007,
       "lat": 51.5045,
       "chargePoints": 4,
       "maxKw": 400
     },
     {
+      "lon": 6.1958,
+      "lat": 51.3289,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 6.2113,
       "lat": 51.3295,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.2053,
+      "lat": 51.3109,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -9913,28 +10616,10 @@
       "maxKw": 300
     },
     {
-      "lon": 6.2053,
-      "lat": 51.3109,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.1958,
-      "lat": 51.3289,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 6.178,
       "lat": 51.3263,
       "chargePoints": 2,
       "maxKw": 360
-    },
-    {
-      "lon": 6.5087,
-      "lat": 51.2803,
-      "chargePoints": 4,
-      "maxKw": 300
     },
     {
       "lon": 6.5184,
@@ -9943,9 +10628,21 @@
       "maxKw": 400
     },
     {
-      "lon": 8.0722,
-      "lat": 51.7907,
-      "chargePoints": 2,
+      "lon": 6.5088,
+      "lat": 51.2804,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 8.0322,
+      "lat": 51.7725,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.0168,
+      "lat": 51.7988,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -9955,22 +10652,28 @@
       "maxKw": 400
     },
     {
-      "lon": 8.0305,
-      "lat": 51.7865,
+      "lon": 8.0722,
+      "lat": 51.7907,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 8.0322,
-      "lat": 51.7725,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 8.0299,
+      "lat": 51.7895,
+      "chargePoints": 10,
+      "maxKw": 400
     },
     {
       "lon": 8.131,
       "lat": 51.812,
       "chargePoints": 6,
       "maxKw": 350
+    },
+    {
+      "lon": 8.1451,
+      "lat": 51.8347,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 6.6644,
@@ -9985,28 +10688,28 @@
       "maxKw": 350
     },
     {
-      "lon": 6.5931,
-      "lat": 51.7411,
-      "chargePoints": 4,
-      "maxKw": 360
+      "lon": 6.5923,
+      "lat": 51.741,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
-      "lon": 6.9298,
-      "lat": 51.7022,
+      "lon": 6.5548,
+      "lat": 51.4208,
       "chargePoints": 2,
-      "maxKw": 360
-    },
-    {
-      "lon": 6.7313,
-      "lat": 51.5467,
-      "chargePoints": 7,
-      "maxKw": 600
+      "maxKw": 300
     },
     {
       "lon": 6.7257,
       "lat": 51.5585,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 6.7313,
+      "lat": 51.5467,
+      "chargePoints": 7,
+      "maxKw": 600
     },
     {
       "lon": 6.7643,
@@ -10018,6 +10721,18 @@
       "lon": 6.7537,
       "lat": 51.568,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.7519,
+      "lat": 51.5626,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.7419,
+      "lat": 51.6682,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -10033,10 +10748,10 @@
       "maxKw": 300
     },
     {
-      "lon": 6.7419,
-      "lat": 51.6682,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 6.6369,
+      "lat": 51.456,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 6.6437,
@@ -10055,12 +10770,6 @@
       "lat": 51.4569,
       "chargePoints": 2,
       "maxKw": 320
-    },
-    {
-      "lon": 6.6369,
-      "lat": 51.456,
-      "chargePoints": 2,
-      "maxKw": 400
     },
     {
       "lon": 6.663,
@@ -10082,6 +10791,12 @@
     },
     {
       "lon": 6.5467,
+      "lat": 51.4984,
+      "chargePoints": 12,
+      "maxKw": 400
+    },
+    {
+      "lon": 6.5467,
       "lat": 51.5086,
       "chargePoints": 6,
       "maxKw": 300
@@ -10099,9 +10814,9 @@
       "maxKw": 350
     },
     {
-      "lon": 6.5467,
-      "lat": 51.4984,
-      "chargePoints": 12,
+      "lon": 6.5809,
+      "lat": 51.5324,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -10117,16 +10832,16 @@
       "maxKw": 300
     },
     {
+      "lon": 6.5453,
+      "lat": 51.4337,
+      "chargePoints": 6,
+      "maxKw": 320
+    },
+    {
       "lon": 6.5802,
       "lat": 51.4508,
       "chargePoints": 6,
       "maxKw": 400
-    },
-    {
-      "lon": 6.5453,
-      "lat": 51.4336,
-      "chargePoints": 6,
-      "maxKw": 360
     },
     {
       "lon": 6.3759,
@@ -10141,12 +10856,6 @@
       "maxKw": 300
     },
     {
-      "lon": 8.607,
-      "lat": 51.9322,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 8.5759,
       "lat": 51.9551,
       "chargePoints": 2,
@@ -10157,6 +10866,12 @@
       "lat": 51.9512,
       "chargePoints": 18,
       "maxKw": 400
+    },
+    {
+      "lon": 8.607,
+      "lat": 51.9322,
+      "chargePoints": 6,
+      "maxKw": 300
     },
     {
       "lon": 8.6192,
@@ -10189,16 +10904,16 @@
       "maxKw": 300
     },
     {
-      "lon": 7.2573,
-      "lat": 51.4984,
-      "chargePoints": 26,
-      "maxKw": 400
-    },
-    {
       "lon": 7.2888,
       "lat": 51.4977,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 7.2573,
+      "lat": 51.4984,
+      "chargePoints": 26,
+      "maxKw": 400
     },
     {
       "lon": 7.2119,
@@ -10208,8 +10923,8 @@
     },
     {
       "lon": 7.1919,
-      "lat": 51.5069,
-      "chargePoints": 14,
+      "lat": 51.5072,
+      "chargePoints": 10,
       "maxKw": 400
     },
     {
@@ -10225,6 +10940,12 @@
       "maxKw": 300
     },
     {
+      "lon": 7.1507,
+      "lat": 51.4744,
+      "chargePoints": 10,
+      "maxKw": 350
+    },
+    {
       "lon": 7.1356,
       "lat": 51.4738,
       "chargePoints": 2,
@@ -10235,12 +10956,6 @@
       "lat": 51.4716,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 7.1507,
-      "lat": 51.4744,
-      "chargePoints": 10,
-      "maxKw": 350
     },
     {
       "lon": 7.3394,
@@ -10267,6 +10982,18 @@
       "maxKw": 400
     },
     {
+      "lon": 7.0672,
+      "lat": 50.726,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.0564,
+      "lat": 50.7194,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
       "lon": 7.1475,
       "lat": 50.7059,
       "chargePoints": 4,
@@ -10285,21 +11012,15 @@
       "maxKw": 300
     },
     {
-      "lon": 6.9668,
-      "lat": 51.5357,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 6.9829,
       "lat": 51.5354,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 6.9349,
-      "lat": 51.5116,
-      "chargePoints": 4,
+      "lon": 6.9668,
+      "lat": 51.5357,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -10307,6 +11028,18 @@
       "lat": 51.5398,
       "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 6.9357,
+      "lat": 51.5092,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 6.9348,
+      "lat": 51.5101,
+      "chargePoints": 8,
+      "maxKw": 400
     },
     {
       "lon": 6.9292,
@@ -10327,9 +11060,9 @@
       "maxKw": 300
     },
     {
-      "lon": 7.3752,
-      "lat": 51.4943,
-      "chargePoints": 2,
+      "lon": 7.3757,
+      "lat": 51.4936,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -10339,10 +11072,22 @@
       "maxKw": 400
     },
     {
+      "lon": 7.46,
+      "lat": 51.4674,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
       "lon": 7.4847,
       "lat": 51.4734,
       "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 7.5562,
+      "lat": 51.4937,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 7.5728,
@@ -10393,21 +11138,15 @@
       "maxKw": 300
     },
     {
-      "lon": 6.7638,
-      "lat": 51.4841,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 6.7844,
       "lat": 51.4887,
       "chargePoints": 8,
       "maxKw": 300
     },
     {
-      "lon": 6.7836,
-      "lat": 51.5037,
-      "chargePoints": 2,
+      "lon": 6.7638,
+      "lat": 51.4841,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -10421,6 +11160,12 @@
       "lat": 51.4863,
       "chargePoints": 6,
       "maxKw": 400
+    },
+    {
+      "lon": 6.7836,
+      "lat": 51.5037,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 6.7016,
@@ -10447,9 +11192,21 @@
       "maxKw": 300
     },
     {
+      "lon": 6.7827,
+      "lat": 51.2179,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
       "lon": 6.7754,
       "lat": 51.2137,
       "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
+      "lon": 6.7567,
+      "lat": 51.2068,
+      "chargePoints": 8,
       "maxKw": 400
     },
     {
@@ -10459,22 +11216,28 @@
       "maxKw": 300
     },
     {
-      "lon": 6.7567,
-      "lat": 51.2068,
-      "chargePoints": 8,
-      "maxKw": 400
-    },
-    {
       "lon": 6.7688,
       "lat": 51.2001,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 6.7813,
-      "lat": 51.2025,
+      "lon": 6.7809,
+      "lat": 51.2023,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.7985,
+      "lat": 51.2126,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 6.8416,
+      "lat": 51.1976,
       "chargePoints": 2,
-      "maxKw": 360
+      "maxKw": 300
     },
     {
       "lon": 6.8248,
@@ -10489,14 +11252,14 @@
       "maxKw": 360
     },
     {
-      "lon": 6.7823,
-      "lat": 51.2544,
+      "lon": 6.7687,
+      "lat": 51.2738,
       "chargePoints": 2,
       "maxKw": 320
     },
     {
-      "lon": 6.7687,
-      "lat": 51.2738,
+      "lon": 6.7823,
+      "lat": 51.2544,
       "chargePoints": 2,
       "maxKw": 320
     },
@@ -10597,6 +11360,12 @@
       "maxKw": 300
     },
     {
+      "lon": 7.0198,
+      "lat": 51.4433,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 7.0006,
       "lat": 51.4316,
       "chargePoints": 4,
@@ -10615,15 +11384,15 @@
       "maxKw": 300
     },
     {
-      "lon": 7.0382,
-      "lat": 51.459,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 6.929,
       "lat": 51.4613,
       "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.0382,
+      "lat": 51.459,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -10645,10 +11414,22 @@
       "maxKw": 300
     },
     {
+      "lon": 7.0001,
+      "lat": 51.4735,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
       "lon": 6.9821,
       "lat": 51.4589,
       "chargePoints": 2,
       "maxKw": 300
+    },
+    {
+      "lon": 6.9852,
+      "lat": 51.4568,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 6.98,
@@ -10661,6 +11442,12 @@
       "lat": 51.401,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 7.0747,
+      "lat": 51.4473,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 7.08,
@@ -10729,16 +11516,22 @@
       "maxKw": 300
     },
     {
+      "lon": 7.1223,
+      "lat": 51.5135,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
       "lon": 7.1064,
       "lat": 51.5137,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 7.1223,
-      "lat": 51.5135,
-      "chargePoints": 6,
-      "maxKw": 400
+      "lon": 7.1107,
+      "lat": 51.5369,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 7.1089,
@@ -10747,16 +11540,16 @@
       "maxKw": 300
     },
     {
-      "lon": 7.0743,
-      "lat": 51.5487,
-      "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
       "lon": 7.078,
       "lat": 51.5445,
       "chargePoints": 4,
       "maxKw": 320
+    },
+    {
+      "lon": 7.0743,
+      "lat": 51.5487,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 7.1124,
@@ -10771,16 +11564,16 @@
       "maxKw": 400
     },
     {
+      "lon": 7.4391,
+      "lat": 51.3861,
+      "chargePoints": 8,
+      "maxKw": 320
+    },
+    {
       "lon": 7.4582,
       "lat": 51.3723,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 7.4413,
-      "lat": 51.3862,
-      "chargePoints": 4,
-      "maxKw": 320
     },
     {
       "lon": 7.5299,
@@ -10813,14 +11606,8 @@
       "maxKw": 300
     },
     {
-      "lon": 7.8489,
-      "lat": 51.6168,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
-      "lon": 7.8443,
-      "lat": 51.6428,
+      "lon": 7.4051,
+      "lat": 51.3413,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -10831,9 +11618,27 @@
       "maxKw": 300
     },
     {
+      "lon": 7.8443,
+      "lat": 51.6428,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.8489,
+      "lat": 51.6168,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
       "lon": 7.2246,
       "lat": 51.541,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.2113,
+      "lat": 51.5317,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -10885,15 +11690,15 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8751,
-      "lat": 51.0034,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 6.8744,
       "lat": 51.0048,
       "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.8751,
+      "lat": 51.0034,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -10907,12 +11712,6 @@
       "lat": 50.9381,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 6.9274,
-      "lat": 50.9456,
-      "chargePoints": 4,
-      "maxKw": 360
     },
     {
       "lon": 6.9098,
@@ -10933,16 +11732,16 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8993,
-      "lat": 50.9838,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 6.8693,
       "lat": 50.9647,
       "chargePoints": 6,
       "maxKw": 400
+    },
+    {
+      "lon": 6.8993,
+      "lat": 50.9838,
+      "chargePoints": 6,
+      "maxKw": 300
     },
     {
       "lon": 6.8482,
@@ -10957,22 +11756,28 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8805,
-      "lat": 50.9469,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 6.8909,
       "lat": 50.9468,
       "chargePoints": 2,
       "maxKw": 360
     },
     {
+      "lon": 6.8805,
+      "lat": 50.9469,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 6.9664,
       "lat": 50.892,
       "chargePoints": 8,
       "maxKw": 300
+    },
+    {
+      "lon": 6.9248,
+      "lat": 50.8874,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 7.0053,
@@ -10987,16 +11792,16 @@
       "maxKw": 300
     },
     {
+      "lon": 7.007,
+      "lat": 50.9767,
+      "chargePoints": 10,
+      "maxKw": 400
+    },
+    {
       "lon": 7.0024,
       "lat": 50.9791,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 7.0072,
-      "lat": 50.9765,
-      "chargePoints": 2,
-      "maxKw": 400
     },
     {
       "lon": 7.0339,
@@ -11017,21 +11822,15 @@
       "maxKw": 300
     },
     {
-      "lon": 7.0943,
-      "lat": 50.8478,
-      "chargePoints": 12,
-      "maxKw": 300
-    },
-    {
       "lon": 7.1029,
       "lat": 50.8403,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 7.0714,
-      "lat": 50.8972,
-      "chargePoints": 4,
+      "lon": 7.0943,
+      "lat": 50.8478,
+      "chargePoints": 12,
       "maxKw": 300
     },
     {
@@ -11047,6 +11846,12 @@
       "maxKw": 300
     },
     {
+      "lon": 7.0714,
+      "lat": 50.8972,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 6.5909,
       "lat": 51.3277,
       "chargePoints": 8,
@@ -11056,6 +11861,12 @@
       "lon": 6.6278,
       "lat": 51.3444,
       "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.6049,
+      "lat": 51.3226,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -11104,7 +11915,7 @@
       "lon": 6.4832,
       "lat": 51.2237,
       "chargePoints": 2,
-      "maxKw": 320
+      "maxKw": 300
     },
     {
       "lon": 6.4096,
@@ -11137,15 +11948,15 @@
       "maxKw": 300
     },
     {
-      "lon": 6.4501,
-      "lat": 51.1522,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 6.4482,
       "lat": 51.1575,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.4501,
+      "lat": 51.1522,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -11173,15 +11984,15 @@
       "maxKw": 400
     },
     {
-      "lon": 6.833,
-      "lat": 51.4311,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 6.8584,
       "lat": 51.4309,
       "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.833,
+      "lat": 51.4311,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -11191,16 +12002,16 @@
       "maxKw": 300
     },
     {
-      "lon": 7.631,
-      "lat": 51.9336,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 7.6374,
       "lat": 51.925,
       "chargePoints": 6,
       "maxKw": 350
+    },
+    {
+      "lon": 7.631,
+      "lat": 51.9336,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 7.5703,
@@ -11227,12 +12038,6 @@
       "maxKw": 400
     },
     {
-      "lon": 6.8812,
-      "lat": 51.4883,
-      "chargePoints": 14,
-      "maxKw": 400
-    },
-    {
       "lon": 6.8878,
       "lat": 51.4898,
       "chargePoints": 16,
@@ -11245,10 +12050,10 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8639,
-      "lat": 51.5379,
-      "chargePoints": 2,
-      "maxKw": 360
+      "lon": 6.8812,
+      "lat": 51.4883,
+      "chargePoints": 14,
+      "maxKw": 400
     },
     {
       "lon": 6.852,
@@ -11269,15 +12074,15 @@
       "maxKw": 300
     },
     {
-      "lon": 6.8282,
-      "lat": 51.4941,
+      "lon": 6.864,
+      "lat": 51.5379,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 6.8374,
-      "lat": 51.4929,
-      "chargePoints": 4,
+      "lon": 6.8282,
+      "lat": 51.4941,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -11287,9 +12092,9 @@
       "maxKw": 300
     },
     {
-      "lon": 7.2076,
-      "lat": 51.178,
-      "chargePoints": 2,
+      "lon": 6.8374,
+      "lat": 51.4929,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -11299,8 +12104,20 @@
       "maxKw": 400
     },
     {
+      "lon": 7.2076,
+      "lat": 51.178,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 7.2012,
       "lat": 51.1777,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.2707,
+      "lat": 51.1941,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -11308,12 +12125,6 @@
       "lon": 7.2511,
       "lat": 51.1799,
       "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
-      "lon": 7.2707,
-      "lat": 51.1941,
-      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -11413,6 +12224,18 @@
       "maxKw": 300
     },
     {
+      "lon": 8.3534,
+      "lat": 49.5434,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
+      "lon": 7.7983,
+      "lat": 49.4566,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 7.8167,
       "lat": 49.4529,
       "chargePoints": 9,
@@ -11425,10 +12248,10 @@
       "maxKw": 300
     },
     {
-      "lon": 7.7983,
-      "lat": 49.4566,
+      "lon": 7.6815,
+      "lat": 49.4326,
       "chargePoints": 8,
-      "maxKw": 400
+      "maxKw": 320
     },
     {
       "lon": 7.6588,
@@ -11437,10 +12260,10 @@
       "maxKw": 300
     },
     {
-      "lon": 7.6815,
-      "lat": 49.4326,
-      "chargePoints": 8,
-      "maxKw": 320
+      "lon": 7.7036,
+      "lat": 49.4411,
+      "chargePoints": 3,
+      "maxKw": 300
     },
     {
       "lon": 7.7077,
@@ -11455,22 +12278,10 @@
       "maxKw": 300
     },
     {
-      "lon": 7.7036,
-      "lat": 49.4411,
-      "chargePoints": 3,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.1138,
-      "lat": 49.1853,
+      "lon": 8.1431,
+      "lat": 49.193,
       "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 8.131,
-      "lat": 49.192,
-      "chargePoints": 4,
-      "maxKw": 300
+      "maxKw": 350
     },
     {
       "lon": 8.1251,
@@ -11485,16 +12296,22 @@
       "maxKw": 300
     },
     {
-      "lon": 8.1431,
-      "lat": 49.193,
-      "chargePoints": 2,
-      "maxKw": 350
-    },
-    {
       "lon": 8.1125,
       "lat": 49.2099,
       "chargePoints": 8,
       "maxKw": 400
+    },
+    {
+      "lon": 8.131,
+      "lat": 49.192,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.1138,
+      "lat": 49.1853,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 8.4262,
@@ -11545,16 +12362,16 @@
       "maxKw": 300
     },
     {
-      "lon": 8.2224,
-      "lat": 50.0283,
-      "chargePoints": 16,
-      "maxKw": 300
-    },
-    {
       "lon": 8.2181,
       "lat": 50.0144,
       "chargePoints": 2,
       "maxKw": 360
+    },
+    {
+      "lon": 8.2224,
+      "lat": 50.0283,
+      "chargePoints": 16,
+      "maxKw": 300
     },
     {
       "lon": 8.2385,
@@ -11567,6 +12384,12 @@
       "lat": 49.9481,
       "chargePoints": 6,
       "maxKw": 300
+    },
+    {
+      "lon": 8.261,
+      "lat": 49.9615,
+      "chargePoints": 4,
+      "maxKw": 600
     },
     {
       "lon": 8.254,
@@ -11587,16 +12410,16 @@
       "maxKw": 320
     },
     {
-      "lon": 8.2704,
-      "lat": 49.9789,
-      "chargePoints": 8,
-      "maxKw": 360
-    },
-    {
       "lon": 8.2671,
       "lat": 49.9876,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 8.2704,
+      "lat": 49.9789,
+      "chargePoints": 8,
+      "maxKw": 360
     },
     {
       "lon": 8.1587,
@@ -11623,12 +12446,6 @@
       "maxKw": 300
     },
     {
-      "lon": 6.6901,
-      "lat": 49.7749,
-      "chargePoints": 8,
-      "maxKw": 400
-    },
-    {
       "lon": 6.6601,
       "lat": 49.771,
       "chargePoints": 6,
@@ -11647,6 +12464,12 @@
       "maxKw": 320
     },
     {
+      "lon": 6.6901,
+      "lat": 49.7749,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 6.6559,
       "lat": 49.7595,
       "chargePoints": 2,
@@ -11659,6 +12482,12 @@
       "maxKw": 300
     },
     {
+      "lon": 7.3666,
+      "lat": 49.2538,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 7.3503,
       "lat": 49.2486,
       "chargePoints": 8,
@@ -11668,12 +12497,6 @@
       "lon": 7.3553,
       "lat": 49.2272,
       "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 7.3666,
-      "lat": 49.2538,
-      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -11701,14 +12524,14 @@
       "maxKw": 300
     },
     {
-      "lon": 8.1382,
-      "lat": 49.7478,
-      "chargePoints": 6,
+      "lon": 7.9649,
+      "lat": 50.8387,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 8.1192,
-      "lat": 49.7506,
+      "lon": 8.1382,
+      "lat": 49.7478,
       "chargePoints": 6,
       "maxKw": 300
     },
@@ -11719,9 +12542,15 @@
       "maxKw": 400
     },
     {
-      "lon": 8.1427,
+      "lon": 8.1192,
+      "lat": 49.7506,
+      "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 8.1425,
       "lat": 49.8401,
-      "chargePoints": 22,
+      "chargePoints": 30,
       "maxKw": 400
     },
     {
@@ -11755,16 +12584,16 @@
       "maxKw": 300
     },
     {
+      "lon": 8.2512,
+      "lat": 49.3786,
+      "chargePoints": 8,
+      "maxKw": 360
+    },
+    {
       "lon": 8.2588,
       "lat": 49.374,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 8.2513,
-      "lat": 49.3785,
-      "chargePoints": 2,
-      "maxKw": 360
     },
     {
       "lon": 7.7657,
@@ -11776,18 +12605,6 @@
       "lon": 7.8257,
       "lat": 49.9239,
       "chargePoints": 8,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.9064,
-      "lat": 49.9907,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.89,
-      "lat": 49.977,
-      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -11807,6 +12624,18 @@
       "lat": 49.9669,
       "chargePoints": 6,
       "maxKw": 350
+    },
+    {
+      "lon": 6.9074,
+      "lat": 49.989,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.89,
+      "lat": 49.977,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 6.9031,
@@ -11845,12 +12674,6 @@
       "maxKw": 400
     },
     {
-      "lon": 6.5252,
-      "lat": 49.9559,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 6.5197,
       "lat": 49.9591,
       "chargePoints": 4,
@@ -11860,6 +12683,12 @@
       "lon": 6.5357,
       "lat": 49.9485,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.5252,
+      "lat": 49.9559,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -11893,9 +12722,9 @@
       "maxKw": 400
     },
     {
-      "lon": 7.5612,
-      "lat": 49.4214,
-      "chargePoints": 8,
+      "lon": 7.5625,
+      "lat": 49.4196,
+      "chargePoints": 12,
       "maxKw": 400
     },
     {
@@ -11929,10 +12758,10 @@
       "maxKw": 300
     },
     {
-      "lon": 8.1335,
-      "lat": 50.0017,
-      "chargePoints": 6,
-      "maxKw": 300
+      "lon": 8.1325,
+      "lat": 50.0015,
+      "chargePoints": 12,
+      "maxKw": 400
     },
     {
       "lon": 7.9031,
@@ -11971,8 +12800,14 @@
       "maxKw": 300
     },
     {
-      "lon": 7.51,
-      "lat": 50.2661,
+      "lon": 7.4786,
+      "lat": 50.3589,
+      "chargePoints": 2,
+      "maxKw": 600
+    },
+    {
+      "lon": 7.5101,
+      "lat": 50.2663,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -12007,6 +12842,12 @@
       "maxKw": 300
     },
     {
+      "lon": 7.3061,
+      "lat": 50.3069,
+      "chargePoints": 6,
+      "maxKw": 350
+    },
+    {
       "lon": 7.3282,
       "lat": 50.3042,
       "chargePoints": 2,
@@ -12017,12 +12858,6 @@
       "lat": 50.3077,
       "chargePoints": 8,
       "maxKw": 300
-    },
-    {
-      "lon": 7.3061,
-      "lat": 50.3069,
-      "chargePoints": 6,
-      "maxKw": 350
     },
     {
       "lon": 7.6351,
@@ -12103,6 +12938,12 @@
       "maxKw": 300
     },
     {
+      "lon": 6.579,
+      "lat": 49.7771,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 6.5831,
       "lat": 49.7724,
       "chargePoints": 4,
@@ -12115,15 +12956,27 @@
       "maxKw": 300
     },
     {
+      "lon": 6.8188,
+      "lat": 49.785,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
+      "lon": 6.814,
+      "lat": 49.7834,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
       "lon": 6.9534,
       "lat": 49.6776,
       "chargePoints": 8,
       "maxKw": 300
     },
     {
-      "lon": 6.8996,
-      "lat": 49.6907,
-      "chargePoints": 2,
+      "lon": 6.8983,
+      "lat": 49.6905,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -12163,15 +13016,9 @@
       "maxKw": 300
     },
     {
-      "lon": 7.8503,
-      "lat": 50.4477,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 7.8313,
-      "lat": 50.4405,
-      "chargePoints": 12,
+      "lon": 7.8492,
+      "lat": 50.4503,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -12179,6 +13026,12 @@
       "lat": 50.447,
       "chargePoints": 6,
       "maxKw": 450
+    },
+    {
+      "lon": 7.8313,
+      "lat": 50.4405,
+      "chargePoints": 12,
+      "maxKw": 300
     },
     {
       "lon": 7.9543,
@@ -12211,6 +13064,12 @@
       "maxKw": 300
     },
     {
+      "lon": 6.6257,
+      "lat": 49.4429,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 6.6374,
       "lat": 49.4421,
       "chargePoints": 2,
@@ -12223,15 +13082,9 @@
       "maxKw": 300
     },
     {
-      "lon": 6.6257,
-      "lat": 49.4429,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 6.3732,
-      "lat": 49.4745,
-      "chargePoints": 2,
+      "lon": 6.3738,
+      "lat": 49.4741,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -12255,6 +13108,12 @@
     {
       "lon": 6.9543,
       "lat": 49.4064,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.1228,
+      "lat": 49.3174,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -12283,16 +13142,16 @@
       "maxKw": 300
     },
     {
-      "lon": 7.0308,
-      "lat": 49.2267,
-      "chargePoints": 8,
-      "maxKw": 320
-    },
-    {
       "lon": 7.0212,
       "lat": 49.2245,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 7.0308,
+      "lat": 49.2267,
+      "chargePoints": 8,
+      "maxKw": 320
     },
     {
       "lon": 7.005,
@@ -12325,12 +13184,6 @@
       "maxKw": 400
     },
     {
-      "lon": 6.8633,
-      "lat": 49.2449,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 6.8608,
       "lat": 49.2473,
       "chargePoints": 12,
@@ -12340,6 +13193,12 @@
       "lon": 6.8709,
       "lat": 49.2494,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 6.8633,
+      "lat": 49.2449,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -12379,12 +13238,6 @@
       "maxKw": 300
     },
     {
-      "lon": 7.1319,
-      "lat": 49.2711,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 7.1802,
       "lat": 49.2781,
       "chargePoints": 2,
@@ -12397,9 +13250,9 @@
       "maxKw": 300
     },
     {
-      "lon": 7.3336,
-      "lat": 49.3238,
-      "chargePoints": 2,
+      "lon": 7.1319,
+      "lat": 49.2711,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -12409,15 +13262,21 @@
       "maxKw": 300
     },
     {
-      "lon": 7.3381,
-      "lat": 49.3395,
+      "lon": 7.3335,
+      "lat": 49.2622,
+      "chargePoints": 12,
+      "maxKw": 300
+    },
+    {
+      "lon": 7.3336,
+      "lat": 49.3238,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 7.3335,
-      "lat": 49.2622,
-      "chargePoints": 12,
+      "lon": 7.3381,
+      "lat": 49.3395,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -12433,12 +13292,6 @@
       "maxKw": 300
     },
     {
-      "lon": 12.852,
-      "lat": 50.8025,
-      "chargePoints": 6,
-      "maxKw": 350
-    },
-    {
       "lon": 12.8837,
       "lat": 50.8164,
       "chargePoints": 4,
@@ -12451,10 +13304,22 @@
       "maxKw": 350
     },
     {
+      "lon": 12.852,
+      "lat": 50.8025,
+      "chargePoints": 6,
+      "maxKw": 350
+    },
+    {
       "lon": 12.8421,
       "lat": 50.8127,
       "chargePoints": 4,
       "maxKw": 300
+    },
+    {
+      "lon": 12.8916,
+      "lat": 50.8092,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 13.7513,
@@ -12481,22 +13346,22 @@
       "maxKw": 300
     },
     {
-      "lon": 13.7462,
-      "lat": 51.1262,
-      "chargePoints": 6,
-      "maxKw": 300
-    },
-    {
       "lon": 13.7619,
       "lat": 51.1211,
       "chargePoints": 6,
       "maxKw": 400
     },
     {
-      "lon": 13.7264,
-      "lat": 51.0821,
-      "chargePoints": 2,
+      "lon": 13.7462,
+      "lat": 51.1262,
+      "chargePoints": 6,
       "maxKw": 300
+    },
+    {
+      "lon": 13.7294,
+      "lat": 51.0814,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
       "lon": 13.7144,
@@ -12511,15 +13376,21 @@
       "maxKw": 300
     },
     {
-      "lon": 13.6903,
-      "lat": 51.0787,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 13.7324,
+      "lat": 51.0984,
+      "chargePoints": 2,
+      "maxKw": 550
     },
     {
       "lon": 13.6983,
       "lat": 51.094,
       "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 13.6903,
+      "lat": 51.0787,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -12529,10 +13400,16 @@
       "maxKw": 300
     },
     {
-      "lon": 13.6598,
-      "lat": 51.0797,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 13.6962,
+      "lat": 51.0835,
+      "chargePoints": 10,
+      "maxKw": 400
+    },
+    {
+      "lon": 13.6303,
+      "lat": 51.0384,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 13.68,
@@ -12541,15 +13418,21 @@
       "maxKw": 300
     },
     {
-      "lon": 13.7303,
-      "lat": 51.0198,
-      "chargePoints": 6,
+      "lon": 13.6598,
+      "lat": 51.0797,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 13.7851,
-      "lat": 51.0066,
-      "chargePoints": 2,
+      "lon": 13.6612,
+      "lat": 51.0496,
+      "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 13.7303,
+      "lat": 51.0198,
+      "chargePoints": 6,
       "maxKw": 300
     },
     {
@@ -12557,6 +13440,12 @@
       "lat": 50.9962,
       "chargePoints": 6,
       "maxKw": 400
+    },
+    {
+      "lon": 13.7851,
+      "lat": 51.0066,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 12.3871,
@@ -12581,6 +13470,12 @@
       "lat": 51.3456,
       "chargePoints": 4,
       "maxKw": 400
+    },
+    {
+      "lon": 12.4538,
+      "lat": 51.3662,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 12.4552,
@@ -12613,14 +13508,14 @@
       "maxKw": 300
     },
     {
-      "lon": 14.0152,
-      "lat": 51.1873,
+      "lon": 14.0032,
+      "lat": 51.1791,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 14.0032,
-      "lat": 51.1791,
+      "lon": 14.0152,
+      "lat": 51.1873,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -12673,6 +13568,12 @@
       "maxKw": 300
     },
     {
+      "lon": 12.1692,
+      "lat": 51.3246,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
       "lon": 12.4988,
       "lat": 51.2673,
       "chargePoints": 4,
@@ -12709,15 +13610,15 @@
       "maxKw": 400
     },
     {
-      "lon": 13.2976,
-      "lat": 51.037,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 13.274,
       "lat": 51.0827,
       "chargePoints": 6,
+      "maxKw": 300
+    },
+    {
+      "lon": 13.2976,
+      "lat": 51.037,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -12769,6 +13670,12 @@
       "maxKw": 300
     },
     {
+      "lon": 13.6516,
+      "lat": 51.002,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 13.5715,
       "lat": 51.0617,
       "chargePoints": 12,
@@ -12811,6 +13718,12 @@
       "maxKw": 400
     },
     {
+      "lon": 12.4749,
+      "lat": 50.6825,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
       "lon": 12.5908,
       "lat": 50.6805,
       "chargePoints": 16,
@@ -12835,6 +13748,12 @@
       "maxKw": 350
     },
     {
+      "lon": 12.389,
+      "lat": 50.8158,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 12.302,
       "lat": 51.8216,
       "chargePoints": 10,
@@ -12847,20 +13766,14 @@
       "maxKw": 320
     },
     {
-      "lon": 11.6094,
-      "lat": 52.0818,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 11.6028,
       "lat": 52.0824,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 11.6291,
-      "lat": 52.1755,
+      "lon": 11.6094,
+      "lat": 52.0818,
       "chargePoints": 4,
       "maxKw": 300
     },
@@ -12875,6 +13788,18 @@
       "lat": 52.2089,
       "chargePoints": 14,
       "maxKw": 400
+    },
+    {
+      "lon": 11.6291,
+      "lat": 52.1755,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.6088,
+      "lat": 52.1624,
+      "chargePoints": 20,
+      "maxKw": 600
     },
     {
       "lon": 11.6117,
@@ -12895,6 +13820,12 @@
       "maxKw": 300
     },
     {
+      "lon": 11.4903,
+      "lat": 52.173,
+      "chargePoints": 14,
+      "maxKw": 400
+    },
+    {
       "lon": 11.492,
       "lat": 52.1754,
       "chargePoints": 16,
@@ -12905,12 +13836,6 @@
       "lat": 52.174,
       "chargePoints": 16,
       "maxKw": 350
-    },
-    {
-      "lon": 11.4942,
-      "lat": 52.1746,
-      "chargePoints": 8,
-      "maxKw": 300
     },
     {
       "lon": 11.1327,
@@ -12991,9 +13916,9 @@
       "maxKw": 300
     },
     {
-      "lon": 11.7673,
-      "lat": 51.6917,
-      "chargePoints": 22,
+      "lon": 11.7672,
+      "lat": 51.6914,
+      "chargePoints": 28,
       "maxKw": 300
     },
     {
@@ -13021,6 +13946,12 @@
       "maxKw": 300
     },
     {
+      "lon": 10.3424,
+      "lat": 53.4328,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 10.6907,
       "lat": 53.9047,
       "chargePoints": 6,
@@ -13039,15 +13970,15 @@
       "maxKw": 400
     },
     {
+      "lon": 10.7915,
+      "lat": 54.0973,
+      "chargePoints": 6,
+      "maxKw": 400
+    },
+    {
       "lon": 10.9332,
       "lat": 54.3322,
       "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
-      "lon": 11.1792,
-      "lat": 54.4458,
-      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -13055,6 +13986,12 @@
       "lat": 54.4449,
       "chargePoints": 2,
       "maxKw": 400
+    },
+    {
+      "lon": 11.1792,
+      "lat": 54.4458,
+      "chargePoints": 8,
+      "maxKw": 300
     },
     {
       "lon": 10.9833,
@@ -13069,10 +14006,16 @@
       "maxKw": 300
     },
     {
-      "lon": 9.7058,
-      "lat": 53.7455,
+      "lon": 11.0093,
+      "lat": 54.3651,
+      "chargePoints": 8,
+      "maxKw": 600
+    },
+    {
+      "lon": 10.9658,
+      "lat": 54.3634,
       "chargePoints": 4,
-      "maxKw": 300
+      "maxKw": 400
     },
     {
       "lon": 9.6841,
@@ -13081,16 +14024,22 @@
       "maxKw": 400
     },
     {
+      "lon": 9.7055,
+      "lat": 53.746,
+      "chargePoints": 20,
+      "maxKw": 400
+    },
+    {
+      "lon": 9.821,
+      "lat": 53.6482,
+      "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
       "lon": 9.7933,
       "lat": 53.6773,
       "chargePoints": 2,
       "maxKw": 300
-    },
-    {
-      "lon": 9.8209,
-      "lat": 53.6481,
-      "chargePoints": 4,
-      "maxKw": 360
     },
     {
       "lon": 9.7595,
@@ -13135,10 +14084,10 @@
       "maxKw": 300
     },
     {
-      "lon": 9.9435,
+      "lon": 9.9436,
       "lat": 54.1804,
-      "chargePoints": 38,
-      "maxKw": 350
+      "chargePoints": 28,
+      "maxKw": 400
     },
     {
       "lon": 9.7079,
@@ -13183,16 +14132,10 @@
       "maxKw": 400
     },
     {
-      "lon": 9.336,
-      "lat": 54.7781,
-      "chargePoints": 20,
-      "maxKw": 300
-    },
-    {
-      "lon": 9.3288,
-      "lat": 54.8034,
-      "chargePoints": 2,
-      "maxKw": 300
+      "lon": 9.3996,
+      "lat": 54.6627,
+      "chargePoints": 4,
+      "maxKw": 400
     },
     {
       "lon": 9.3253,
@@ -13201,9 +14144,27 @@
       "maxKw": 360
     },
     {
+      "lon": 9.3288,
+      "lat": 54.8034,
+      "chargePoints": 2,
+      "maxKw": 300
+    },
+    {
+      "lon": 9.336,
+      "lat": 54.7781,
+      "chargePoints": 20,
+      "maxKw": 300
+    },
+    {
       "lon": 9.3241,
       "lat": 54.7698,
       "chargePoints": 4,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.3086,
+      "lat": 53.9482,
+      "chargePoints": 2,
       "maxKw": 400
     },
     {
@@ -13213,8 +14174,8 @@
       "maxKw": 360
     },
     {
-      "lon": 10.3086,
-      "lat": 53.9482,
+      "lon": 10.2608,
+      "lat": 53.9596,
       "chargePoints": 2,
       "maxKw": 400
     },
@@ -13249,28 +14210,28 @@
       "maxKw": 300
     },
     {
-      "lon": 9.9481,
-      "lat": 53.8407,
-      "chargePoints": 6,
-      "maxKw": 360
-    },
-    {
       "lon": 9.9428,
       "lat": 53.8449,
       "chargePoints": 6,
       "maxKw": 400
     },
     {
-      "lon": 9.9295,
-      "lat": 53.9991,
-      "chargePoints": 1,
-      "maxKw": 300
+      "lon": 9.9481,
+      "lat": 53.8407,
+      "chargePoints": 6,
+      "maxKw": 360
     },
     {
       "lon": 9.9333,
       "lat": 54.0142,
       "chargePoints": 6,
       "maxKw": 350
+    },
+    {
+      "lon": 9.9295,
+      "lat": 53.9991,
+      "chargePoints": 1,
+      "maxKw": 300
     },
     {
       "lon": 9.5079,
@@ -13285,10 +14246,10 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1636,
-      "lat": 53.567,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 10.1959,
+      "lat": 53.5791,
+      "chargePoints": 6,
+      "maxKw": 400
     },
     {
       "lon": 10.1947,
@@ -13297,10 +14258,10 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1959,
-      "lat": 53.5791,
-      "chargePoints": 6,
-      "maxKw": 400
+      "lon": 10.1636,
+      "lat": 53.567,
+      "chargePoints": 4,
+      "maxKw": 300
     },
     {
       "lon": 10.2788,
@@ -13351,6 +14312,12 @@
       "maxKw": 300
     },
     {
+      "lon": 10.0541,
+      "lat": 54.3244,
+      "chargePoints": 6,
+      "maxKw": 600
+    },
+    {
       "lon": 10.1083,
       "lat": 54.3009,
       "chargePoints": 2,
@@ -13369,33 +14336,33 @@
       "maxKw": 300
     },
     {
-      "lon": 10.1368,
-      "lat": 54.3074,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 10.1441,
       "lat": 54.3009,
       "chargePoints": 4,
       "maxKw": 360
     },
     {
-      "lon": 10.6706,
-      "lat": 53.8795,
-      "chargePoints": 8,
+      "lon": 10.1368,
+      "lat": 54.3074,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 10.6698,
-      "lat": 53.8706,
-      "chargePoints": 4,
-      "maxKw": 300
+      "lon": 10.6678,
+      "lat": 53.8711,
+      "chargePoints": 14,
+      "maxKw": 400
     },
     {
       "lon": 10.6767,
       "lat": 53.88,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.6706,
+      "lat": 53.8795,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -13405,15 +14372,21 @@
       "maxKw": 300
     },
     {
+      "lon": 10.6581,
+      "lat": 53.8816,
+      "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
       "lon": 10.6359,
       "lat": 53.8563,
       "chargePoints": 4,
       "maxKw": 300
     },
     {
-      "lon": 10.6581,
-      "lat": 53.8816,
-      "chargePoints": 8,
+      "lon": 10.7315,
+      "lat": 53.9133,
+      "chargePoints": 10,
       "maxKw": 400
     },
     {
@@ -13431,7 +14404,7 @@
     {
       "lon": 11.0397,
       "lat": 51.0123,
-      "chargePoints": 6,
+      "chargePoints": 8,
       "maxKw": 300
     },
     {
@@ -13483,10 +14456,10 @@
       "maxKw": 300
     },
     {
-      "lon": 11.6196,
-      "lat": 50.8809,
-      "chargePoints": 12,
-      "maxKw": 300
+      "lon": 11.6209,
+      "lat": 50.8801,
+      "chargePoints": 16,
+      "maxKw": 400
     },
     {
       "lon": 10.7194,
@@ -13525,14 +14498,14 @@
       "maxKw": 400
     },
     {
-      "lon": 10.1317,
-      "lat": 51.3741,
+      "lon": 10.1346,
+      "lat": 51.3779,
       "chargePoints": 2,
       "maxKw": 300
     },
     {
-      "lon": 10.1346,
-      "lat": 51.3779,
+      "lon": 10.1317,
+      "lat": 51.3741,
       "chargePoints": 2,
       "maxKw": 300
     },
@@ -13549,16 +14522,16 @@
       "maxKw": 300
     },
     {
-      "lon": 10.3248,
-      "lat": 51.3751,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 10.3426,
       "lat": 51.3907,
       "chargePoints": 6,
       "maxKw": 350
+    },
+    {
+      "lon": 10.3248,
+      "lat": 51.3751,
+      "chargePoints": 2,
+      "maxKw": 300
     },
     {
       "lon": 10.367,
@@ -13579,9 +14552,9 @@
       "maxKw": 300
     },
     {
-      "lon": 10.7256,
-      "lat": 50.8984,
-      "chargePoints": 12,
+      "lon": 10.7257,
+      "lat": 50.8982,
+      "chargePoints": 16,
       "maxKw": 400
     },
     {
@@ -13603,15 +14576,15 @@
       "maxKw": 360
     },
     {
-      "lon": 10.9244,
-      "lat": 50.6914,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 10.9502,
       "lat": 50.6919,
       "chargePoints": 4,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.9244,
+      "lat": 50.6914,
+      "chargePoints": 2,
       "maxKw": 300
     },
     {
@@ -13639,15 +14612,15 @@
       "maxKw": 400
     },
     {
-      "lon": 10.7873,
-      "lat": 51.4965,
-      "chargePoints": 4,
-      "maxKw": 300
-    },
-    {
       "lon": 10.8297,
       "lat": 51.4889,
       "chargePoints": 10,
+      "maxKw": 300
+    },
+    {
+      "lon": 10.7873,
+      "lat": 51.4965,
+      "chargePoints": 4,
       "maxKw": 300
     },
     {
@@ -13669,21 +14642,15 @@
       "maxKw": 300
     },
     {
-      "lon": 11.855,
-      "lat": 50.9685,
-      "chargePoints": 13,
-      "maxKw": 300
-    },
-    {
       "lon": 11.8552,
       "lat": 50.9697,
       "chargePoints": 6,
       "maxKw": 300
     },
     {
-      "lon": 11.85,
-      "lat": 50.8863,
-      "chargePoints": 6,
+      "lon": 11.855,
+      "lat": 50.9685,
+      "chargePoints": 13,
       "maxKw": 300
     },
     {
@@ -13691,6 +14658,18 @@
       "lat": 50.8898,
       "chargePoints": 6,
       "maxKw": 300
+    },
+    {
+      "lon": 11.85,
+      "lat": 50.8863,
+      "chargePoints": 8,
+      "maxKw": 300
+    },
+    {
+      "lon": 11.8554,
+      "lat": 50.9035,
+      "chargePoints": 2,
+      "maxKw": 400
     },
     {
       "lon": 11.8434,
@@ -13706,9 +14685,9 @@
     },
     {
       "lon": 11.8036,
-      "lat": 50.5466,
-      "chargePoints": 18,
-      "maxKw": 300
+      "lat": 50.5467,
+      "chargePoints": 24,
+      "maxKw": 350
     },
     {
       "lon": 11.7882,
@@ -13717,27 +14696,33 @@
       "maxKw": 400
     },
     {
-      "lon": 10.6807,
-      "lat": 50.6421,
-      "chargePoints": 2,
-      "maxKw": 300
-    },
-    {
       "lon": 10.6866,
       "lat": 50.6438,
       "chargePoints": 32,
       "maxKw": 350
     },
     {
-      "lon": 10.3572,
-      "lat": 51.0004,
+      "lon": 10.6807,
+      "lat": 50.6421,
       "chargePoints": 2,
-      "maxKw": 400
+      "maxKw": 300
     },
     {
       "lon": 10.2926,
       "lat": 50.9941,
       "chargePoints": 8,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.3545,
+      "lat": 50.9984,
+      "chargePoints": 2,
+      "maxKw": 400
+    },
+    {
+      "lon": 10.3572,
+      "lat": 51.0004,
+      "chargePoints": 2,
       "maxKw": 400
     },
     {

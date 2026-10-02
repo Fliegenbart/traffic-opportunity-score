@@ -36,9 +36,10 @@ const ab = assessSite({ lon: 13.8, lat: 54.0 }, edges, farHub, regions);
 assert.ok(ab.signal === "pruefen" || ab.signal === "schwach");
 assert.ok(ab.edge!.km > 25);
 
-// Ohne Hubs: Wettbewerb gilt als frei, kein Hub-Eintrag
+// Ohne Hubs ist Wettbewerb unbekannt, nicht frei.
 const ohneHubs = assessSite({ lon: 10.2, lat: 52.33 }, edges, [], regions);
-assert.equal(ohneHubs.signal, "stark");
+assert.equal(ohneHubs.signal, "pruefen");
+assert.ok(ohneHubs.reasons.some((reason) => reason.includes("unbekannt")));
 assert.equal(ohneHubs.hub, null);
 
 // Umspannwerk-Proxy

@@ -141,8 +141,9 @@ function trafficTier(edgeKm: number | null, trucksPerDay: number): "hoch" | "mit
   return "mittel";
 }
 
-function competitionTier(hubKm: number | null): "frei" | "moderat" | "dicht" {
-  if (hubKm === null || hubKm > HUB_FREE_KM) return "frei";
+function competitionTier(hubKm: number | null): "frei" | "moderat" | "dicht" | "unbekannt" {
+  if (hubKm === null) return "unbekannt";
+  if (hubKm > HUB_FREE_KM) return "frei";
   if (hubKm > HUB_MODERATE_KM) return "moderat";
   return "dicht";
 }
@@ -203,7 +204,8 @@ export function assessSite(
   const competition = competitionTier(bestHub ? bestHubKm : null);
 
   let signal: SiteSignal;
-  if (traffic === "hoch" && competition === "frei") signal = "stark";
+  if (competition === "unbekannt") signal = "pruefen";
+  else if (traffic === "hoch" && competition === "frei") signal = "stark";
   else if (traffic === "hoch" && competition === "moderat") signal = "gut";
   else if (traffic === "mittel" && competition === "frei") signal = "gut";
   else if (traffic === "niedrig" && competition !== "frei") signal = "schwach";
@@ -223,11 +225,13 @@ export function assessSite(
   if (bestHub) {
     reasons.push(
       competition === "frei"
-        ? `Kein Lkw-Ladepark im ${HUB_FREE_KM}-km-Umkreis (nächster: ${bestHub.name}, ${Math.round(bestHubKm)} km) — unbesetzter Suchraum.`
+        ? `Im geladenen Register kein Lkw-Ladepark im ${HUB_FREE_KM}-km-Umkreis (nächster: ${bestHub.name}, ${Math.round(bestHubKm)} km). Bestand und Planungen vor Ort prüfen.`
         : competition === "moderat"
           ? `${bestHub.name} liegt ${Math.round(bestHubKm)} km entfernt — Koexistenz möglich, Einzugsgebiete prüfen.`
           : `${bestHub.name} liegt nur ${Math.round(bestHubKm)} km entfernt — direkter Wettbewerb um dieselben Lkw.`,
     );
+  } else {
+    reasons.push("Ladepark-Daten fehlen. Der Wettbewerb ist unbekannt, nicht unbesetzt.");
   }
   if (bestRegion) {
     reasons.push(

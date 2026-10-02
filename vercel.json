@@ -1,6 +1,23 @@
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist/public",
+  "redirects": [
+    {
+      "source": "/tco",
+      "destination": "https://truckonomics.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/embed",
+      "destination": "https://truckonomics.vercel.app/embed",
+      "permanent": false
+    },
+    {
+      "source": "/depot-readiness",
+      "destination": "https://depot-readiness-check.vercel.app/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api/|@vite/|@react-refresh|@fs/|src/|node_modules/).*)",

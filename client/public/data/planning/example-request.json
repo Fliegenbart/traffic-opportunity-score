@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "site": {
+    "id": "demo-5087",
+    "label": "Demostandort bei Köln-Longerich",
+    "lon": 6.908130729861113,
+    "lat": 50.98332443631987,
+    "access": {
+      "status": "assumed",
+      "note": "Illustrativer Punkt an einer Zählstation, kein geprüftes Grundstück oder Zufahrtsrecht."
+    },
+    "gridStatus": "assumed",
+    "competitionStatus": "unknown"
+  },
+  "traffic": {
+    "trucksPerDay": 1950.2918918918917,
+    "source": {
+      "id": "bast-raw-2026-07-01-2026-07-31-station-5087",
+      "title": "BASt: Automatische Dauerzählstellen, ungeprüfte Rohdaten: Köln-Longerich",
+      "url": "https://www.govdata.de/suche/daten/automatische-dauerzahlstellen-rohdaten",
+      "kind": "measured",
+      "version": "raw-2026-07-01-2026-07-31",
+      "retrievedAt": "2026-10-02T09:15:04.283242+00:00",
+      "observedThrough": "2026-07-31",
+      "sha256": "43905511e490cc2f5c81ce5efaef3c4f1cd1f93034e2fb547aec4d8c100b2722",
+      "license": "CC-BY-4.0",
+      "commercialUse": "allowed"
+    },
+    "contextSource": {
+      "id": "mendeley-py2zkrb65h-v2",
+      "title": "Speth et al.: Synthetic European road freight transport flow data based on ETISplus",
+      "url": "https://data.mendeley.com/datasets/py2zkrb65h/2",
+      "kind": "synthetic",
+      "version": "2",
+      "retrievedAt": "2026-10-02T08:58:14.683448+00:00",
+      "observedThrough": "2019-12-31",
+      "sha256": "5b6c36e949de8f94fcab377aebafa54b3514026a65f77e0a9de04976ab9e1a71",
+      "license": "CC-BY-4.0",
+      "commercialUse": "allowed"
+    },
+    "referenceYear": 2026,
+    "edgeId": 1020664,
+    "matchDistanceKm": 0.1487726223550098,
+    "directionShareR1": 0.5086307247148036,
+    "vehicleClass": "truck"
+  },
+  "profiles": {
+    "weekday": {
+      "source": {
+        "id": "bast-raw-2026-07-01-2026-07-31-station-5087",
+        "title": "BASt: Automatische Dauerzählstellen, ungeprüfte Rohdaten: Köln-Longerich",
+        "url": "https://www.govdata.de/suche/daten/automatische-dauerzahlstellen-rohdaten",
+        "kind": "measured",
+        "version": "raw-2026-07-01-2026-07-31",
+        "retrievedAt": "2026-10-02T09:15:04.283242+00:00",
+        "observedThrough": "2026-07-31",
+        "sha256": "43905511e490cc2f5c81ce5efaef3c4f1cd1f93034e2fb547aec4d8c100b2722",
+        "license": "CC-BY-4.0",
+        "commercialUse": "allowed"
+      },
+      "vehicleClass": "truck",
+      "matchStatus": "candidate",
+      "weights": [
+        18.5217,
+        22.5652,
+        19.1739,
+        29.3043,
+        52.1739,
+        123.4783,
+        176.5652,
+        206.913,
+        215.0435,
+        216.913,
+        214.087,
+        205.1304,
+        195.1739,
+        176.4545,
+        140.6818,
+        106.3043,
+        76.1739,
+        56.3043,
+        47.8261,
+        44.1739,
+        33.087,
+        28.9565,
+        23.8696,
+        23.5909
+      ]
+    },
+    "saturday": {
+      "source": {
+        "id": "bast-raw-2026-07-01-2026-07-31-station-5087",
+        "title": "BASt: Automatische Dauerzählstellen, ungeprüfte Rohdaten: Köln-Longerich",
+        "url": "https://www.govdata.de/suche/daten/automatische-dauerzahlstellen-rohdaten",
+        "kind": "measured",
+        "version": "raw-2026-07-01-2026-07-31",
+        "retrievedAt": "2026-10-02T09:15:04.283242+00:00",
+        "observedThrough": "2026-07-31",
+        "sha256": "43905511e490cc2f5c81ce5efaef3c4f1cd1f93034e2fb547aec4d8c100b2722",
+        "license": "CC-BY-4.0",
+        "commercialUse": "allowed"
+      },
+      "vehicleClass": "truck",
+      "matchStatus": "candidate",
+      "weights": [
+        21,
+        15,
+        13.75,
+        25.5,
+        28,
+        62.75,
+        55,
+        70,
+        70,
+        66.75,
+        56,
+        51.75,
+        45.5,
+        40.25,
+        33.5,
+        18.25,
+        16.5,
+        16.25,
+        15.5,
+        11.25,
+        8,
+        11,
+        4.75,
+        7.25
+      ]
+    },
+    "sunday": {
+      "source": {
+        "id": "bast-raw-2026-07-01-2026-07-31-station-5087",
+        "title": "BASt: Automatische Dauerzählstellen, ungeprüfte Rohdaten: Köln-Longerich",
+        "url": "https://www.govdata.de/suche/daten/automatische-dauerzahlstellen-rohdaten",
+        "kind": "measured",
+        "version": "raw-2026-07-01-2026-07-31",
+        "retrievedAt": "2026-10-02T09:15:04.283242+00:00",
+        "observedThrough": "2026-07-31",
+        "sha256": "43905511e490cc2f5c81ce5efaef3c4f1cd1f93034e2fb547aec4d8c100b2722",
+        "license": "CC-BY-4.0",
+        "commercialUse": "allowed"
+      },
+      "vehicleClass": "truck",
+      "matchStatus": "candidate",
+      "weights": [
+        5.5,
+        6,
+        2.5,
+        2.25,
+        2.5,
+        5.75,
+        6,
+        6.75,
+        12.25,
+        9.25,
+        13.5,
+        12.25,
+        15.5,
+        14.75,
+        16.75,
+        12.25,
+        10.5,
+        10,
+        13.75,
+        15,
+        14.25,
+        17.25,
+        15.25,
+        18.3333
+      ]
+    }
+  },
+  "demand": {
+    "reachableShare": 0.5,
+    "captureShare": 0.02,
+    "energyKwh": 250,
+    "seed": 42,
+    "anchors": [
+      {
+        "id": "illustrative-anchor",
+        "hour": 8,
+        "count": 4,
+        "energyKwh": 200,
+        "includedInPassing": false,
+        "activeOn": [
+          "weekday"
+        ]
+      }
+    ]
+  },
+  "capacity": {
+    "ports": 4,
+    "portPowerKw": 250,
+    "gridPowerKw": 1000,
+    "lossPercent": 8,
+    "turnaroundMinutes": 15,
+    "maxWaitMinutes": 30,
+    "opening": [
+      {
+        "startMinute": 0,
+        "endMinute": 1440
+      }
+    ]
+  },
+  "finance": {
+    "capex": 1500000,
+    "fixedCostAnnual": 90000,
+    "salePricePerKwh": 0.49,
+    "electricityPricePerKwh": 0.22,
+    "variableCostPerKwh": 0.03,
+    "discountRate": 0.08,
+    "priceEscalation": 0,
+    "costEscalation": 0.02,
+    "replacements": [
+      {
+        "year": 2033,
+        "amount": 200000
+      }
+    ],
+    "residualValue": 150000
+  },
+  "scenarios": [
+    {
+      "id": "low",
+      "label": "Niedrig",
+      "years": [
+        {
+          "year": 2027,
+          "evShare": 0.01,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2028,
+          "evShare": 0.02,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2029,
+          "evShare": 0.03,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2030,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2031,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2032,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2033,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2034,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2035,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2036,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        }
+      ]
+    },
+    {
+      "id": "base",
+      "label": "Basis",
+      "years": [
+        {
+          "year": 2027,
+          "evShare": 0.02,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2028,
+          "evShare": 0.04,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2029,
+          "evShare": 0.06,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2030,
+          "evShare": 0.08,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2031,
+          "evShare": 0.08,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2032,
+          "evShare": 0.08,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2033,
+          "evShare": 0.08,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2034,
+          "evShare": 0.08,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2035,
+          "evShare": 0.08,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2036,
+          "evShare": 0.08,
+          "trafficMultiplier": 1
+        }
+      ]
+    },
+    {
+      "id": "high",
+      "label": "Hoch",
+      "years": [
+        {
+          "year": 2027,
+          "evShare": 0.0375,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2028,
+          "evShare": 0.075,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2029,
+          "evShare": 0.11249999999999999,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2030,
+          "evShare": 0.15,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2031,
+          "evShare": 0.15,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2032,
+          "evShare": 0.15,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2033,
+          "evShare": 0.15,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2034,
+          "evShare": 0.15,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2035,
+          "evShare": 0.15,
+          "trafficMultiplier": 1
+        },
+        {
+          "year": 2036,
+          "evShare": 0.15,
+          "trafficMultiplier": 1
+        }
+      ]
+    }
+  ]
+}

@@ -4,7 +4,7 @@ Truckonomics ist ein Vercel-Projekt für einen deutschen TCO-Rechner für Diesel
 Zusätzlich enthält das Projekt einen B2B DepotOne Readiness Check als Lead-Generation-Funnel für Depot-Elektrifizierung
 sowie den Traffic Opportunity Score (Startseite `/`): eine Strecken- und Regionsanalyse für halböffentliches Lkw-Laden.
 
-Live: https://truckonomics.vercel.app
+Traffic-Opportunity-Projekt: https://traffic-opportunity-score.vercel.app
 
 ## Traffic Opportunity Score
 
@@ -20,7 +20,7 @@ Live: https://truckonomics.vercel.app
   (Nominatim) setzen → Ampel-Bewertung aus nächster Hotspot-Strecke, Lade-Lücke und
   Regions-Score, plus Netzanschluss-Proxy (nächstes Umspannwerk ≥110 kV aus OSM,
   `python3 scripts/build_substations_de.py` → `client/public/data/substations-de.json`)
-  und Erlös-Szenarien (E-Lkw-Hochlauf konservativ/Basis/ambitioniert, Annahmen deklariert) (Logik in `shared/standort-check.ts`, Test: `npm run test:standort`),
+  und Wirtschaftlichkeitsszenarien 2030 (E-Lkw-Anteil konservativ/Basis/ambitioniert, Annahmen deklariert) (Logik in `shared/standort-check.ts` und `shared/site-economics.ts`, Test: `npm run test:standort`),
   Vergleichstabelle und Lead-Formular (POST an `/api/leads`, tenant `standort-check`).
 - Deep-Links: `?region=<id>`, `?strecke=<edgeId>`, `?korridor=<originId-destId>`,
   `?standorte=<lon,lat;lon,lat>` und `?tab=` werden beim Laden übernommen und bei Auswahl
@@ -56,6 +56,36 @@ Live: https://truckonomics.vercel.app
   (Geo-Helfer in `shared/geo.ts`, Test: `npm run test:geo`).
 
 ## Technik
+
+### Investitionscheck für Ladepark-Betreiber
+
+Im Standort-Check öffnet „Wirtschaftlichkeit berechnen“ den Szenariorechner.
+Eine ausgewählte Strecke kann über „Standort an dieser Strecke prüfen“ übernommen werden;
+die Streckenmitte ist eine Suchposition, keine bestätigte Zufahrt oder verfügbare Fläche.
+
+- Bis zu drei Standorte mit identischen, veränderbaren Annahmen vergleichen.
+- Nachfrage aus erreichbarem Verkehr, E-Lkw-Anteil und Anhaltequote, plus zusätzlichen Ankerkunden.
+- Kapazität als Minimum aus Ladeplätzen und Netzanschluss, einschließlich mittlerer Ladeleistung,
+  Öffnungszeit, Verfügbarkeit, Wechselzeit und Ladeverlusten.
+- Netto-Umsatz abzüglich Strombezug, variabler Kosten und Fixkosten; operativer Break-even
+  und einfache Amortisation bei konstantem Szenariojahr 2030.
+- Validierte Annahmen bleiben im lokalen Browser gespeichert (`traffic-opportunity:economics:v1`).
+  Standortlinks enthalten Koordinaten, nicht die individuellen Annahmen. Der CSV-Export enthält
+  alle Standorte, drei Szenarien, Annahmen, Quellenstand und Rechengrenzen.
+- Fehlende Ladepark-Daten gelten als unbekannter Wettbewerb. Ohne Modellstrecke im 25-km-Umkreis
+  gibt es keine Ertragsberechnung. Die Regionssuche akzeptiert Umlaute und Umschreibungen.
+
+Die Startwerte sind illustrative Beispielannahmen, keine recherchierten Marktpreise.
+Ankunftsspitzen, Finanzierung, Steuern, Förderung, Abschreibung und Ersatzinvestitionen sind
+nicht modelliert. Chronos-2 skaliert die Wirtschaftlichkeit nicht: Der gespeicherte Lauf auf
+Zähldaten bis 2023 ist historisch und belegt keinen durchgängigen Vorteil gegenüber Saisonal-Naiv.
+Der Datenbestand wurde für diese Erweiterung nicht aktualisiert.
+
+Frontend: `client/src/components/site-economics.tsx` und `site-economics.css`.
+Rechenlogik, Eingabevalidierung und CSV: `shared/site-economics.ts`.
+Regressionstests: `shared/site-economics.test.ts` (Teil von `npm test`).
+
+### Stack
 
 - Frontend: React, TypeScript, Vite, Tailwind CSS
 - API: Vercel Serverless Functions in `api/`
@@ -135,3 +165,11 @@ Nur Scoring-Tests:
 ```bash
 npm run test:readiness
 ```
+
+## Automatischer BNetzA-Import
+
+`python3 scripts/refresh_truck_charging_de.py` lädt und validiert den aktuellen öffentlichen
+CSV-Download und erzeugt die Ladepark-Datei. Der vorbereitete GitHub-Workflow prüft täglich.
+Abrufdatum und tatsächlicher Datenstand bleiben getrennt. Die tagesaktuelle REST-Anbindung
+benötigt noch die von der BNetzA auf Anfrage bereitgestellte OpenAPI-Beschreibung.
+Details, Einrichtung und vorbereitete Anfrage: [BNetzA-Abruf](docs/bnetza-daily-import.md).
