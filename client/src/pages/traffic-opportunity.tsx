@@ -508,7 +508,7 @@ export default function TrafficOpportunity() {
   const embed = initialParams.embed;
 
   useEffect(() => {
-    document.title = "Traffic Opportunity Score – Truckonomics";
+    document.title = "Ladepark-Check – Truckonomics";
   }, []);
 
   useEffect(() => {
@@ -961,8 +961,8 @@ export default function TrafficOpportunity() {
               <Gauge className="h-[17px] w-[17px]" aria-hidden="true" />
             </div>
             <div className="min-w-0 leading-tight">
-              <h1 className="text-[15px] font-semibold tracking-[-0.01em]">Traffic Opportunity</h1>
-              <p className="truncate text-[11px] text-white/55">Standortanalyse für Lkw-Ladeparks</p>
+              <h1 className="text-[15px] font-semibold tracking-[-0.01em]">Ladepark-Check</h1>
+              <p className="truncate text-[11px] text-white/55">Lkw-Ladestandorte in einer Minute vorprüfen</p>
             </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -1957,7 +1957,7 @@ export default function TrafficOpportunity() {
                   Ein eigenes Depot elektrifizieren?
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#536066]">
-                  Der Traffic Opportunity Score betrachtet Verkehr und mögliche externe
+                  Der Ladepark-Check betrachtet Verkehr und mögliche externe
                   Ladekunden. Für die eigene Flotte geht es zusätzlich um Netzanschluss,
                   Fläche und Fahrzeuge. Dafür gibt es den getrennten Depot-Check.
                 </p>

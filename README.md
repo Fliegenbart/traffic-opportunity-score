@@ -1,4 +1,6 @@
-# Traffic Opportunity Score
+# Ladepark-Check
+
+Vormals „Traffic Opportunity Score“. Repo, Vercel-Projekt und Adresse heißen weiterhin `traffic-opportunity-score`.
 
 Dieses öffentliche Repository enthält die Strecken-, Regions- und Standortanalyse für
 halböffentliches Lkw-Laden in Deutschland sowie den Korridor-Report und die Ladepark-Planungsengine.
@@ -9,7 +11,7 @@ Traffic-Opportunity-Projekt: https://traffic-opportunity-score.vercel.app
 
 | Tool | GitHub-Repository | Lokaler Checkout | Sichtbarkeit |
 | --- | --- | --- | --- |
-| Traffic Opportunity Score | `Fliegenbart/traffic-opportunity-score` | `~/Documents/Truckonomics` | öffentlich |
+| Ladepark-Check (vormals Traffic Opportunity Score) | `Fliegenbart/traffic-opportunity-score` | `~/Documents/Truckonomics` | öffentlich |
 | TCO-Rechner | `Fliegenbart/truckonomics` | `~/Documents/truckonomics-tco` | privat |
 | Depot Readiness Check | `Fliegenbart/DepotReadinessCheck` | `~/Documents/DepotReadinessCheck` | privat |
 
@@ -19,7 +21,7 @@ weitergeleitet. Die Traffic-Einbettung bleibt über `?embed=1` verfügbar. Fremd
 werden weder weitergeleitet noch durch die SPA beantwortet. `npm run test:boundaries`
 prüft diese Projektgrenzen; die Prüfung ist Teil von `npm test`.
 
-## Traffic Opportunity Score
+## Ladepark-Check
 
 - Frontend: `client/src/pages/traffic-opportunity.tsx`, Karte in `client/src/components/traffic-map.tsx`
 - Tutorial: ein- und ausschaltbare, nicht blockierende Führung mit 13 Schritten, markierten

@@ -181,7 +181,7 @@ export default function KorridorReport() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Streckenanalyse · Traffic Opportunity";
+    document.title = "Streckenanalyse · Ladepark-Check";
     const params = new URLSearchParams(window.location.search);
     const id = (params.get("id") || "demo").replace(/[^a-z0-9-]/gi, "");
     Promise.all([
@@ -411,7 +411,7 @@ export default function KorridorReport() {
             </div>
             <div>
               <p className="text-lg font-semibold tracking-[-0.02em]">DepotOne</p>
-              <p className="text-xs text-[#6e6e73]">Truckonomics · Traffic Opportunity</p>
+              <p className="text-xs text-[#6e6e73]">Truckonomics · Ladepark-Check</p>
             </div>
           </div>
           <p className="text-sm text-[#6e6e73]">
