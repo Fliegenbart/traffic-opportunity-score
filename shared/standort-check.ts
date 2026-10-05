@@ -227,11 +227,11 @@ export function assessSite(
       competition === "frei"
         ? `Im geladenen Register kein Lkw-Ladepark im ${HUB_FREE_KM}-km-Umkreis (nächster: ${bestHub.name}, ${Math.round(bestHubKm)} km). Bestand und Planungen vor Ort prüfen.`
         : competition === "moderat"
-          ? `${bestHub.name} liegt ${Math.round(bestHubKm)} km entfernt — Koexistenz möglich, Einzugsgebiete prüfen.`
-          : `${bestHub.name} liegt nur ${Math.round(bestHubKm)} km Luftlinie entfernt. Gemeinsames Einzugsgebiet und Kapazität sind ungeprüft.`,
+          ? `${bestHub.name} liegt ${Math.round(bestHubKm)} km Luftlinie entfernt. Ob beide Standorte dieselben Kunden ansprechen, muss geprüft werden.`
+          : `${bestHub.name} liegt nur ${Math.round(bestHubKm)} km Luftlinie entfernt. Welche Kunden dort laden und wie viel Platz verfügbar ist, ist noch nicht geprüft.`,
     );
   } else {
-    reasons.push("Ladepark-Daten fehlen. Der Wettbewerb ist unbekannt, nicht unbesetzt.");
+    reasons.push("Ladepark-Daten fehlen. Andere Anbieter sind unbekannt, nicht ausgeschlossen.");
   }
   if (bestRegion) {
     reasons.push(
@@ -240,7 +240,7 @@ export function assessSite(
   }
   if (bestSub) {
     reasons.push(
-      `Nächstes Umspannwerk (≥110 kV) in ${(Math.round(bestSubKm * 10) / 10).toLocaleString("de-DE")} km — Netzanschluss-Proxy, ersetzt keine Prüfung beim Netzbetreiber.`,
+      `Ein Umspannwerk mit mindestens 110 kV liegt ${(Math.round(bestSubKm * 10) / 10).toLocaleString("de-DE")} km Luftlinie entfernt. Ob ein Anschluss möglich ist, muss der Netzbetreiber bestätigen.`,
     );
   }
 

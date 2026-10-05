@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import {
   DEFAULT_ASSUMPTIONS,
+  FEASIBILITY_LABELS,
   savingPerKmRange,
   aggregateReport,
   co2SavedKgPerKm,
@@ -11,6 +12,11 @@ import {
 } from "./korridor-report";
 
 const a = DEFAULT_ASSUMPTIONS;
+
+for (const copy of Object.values(FEASIBILITY_LABELS)) {
+  assert.doesNotMatch(copy.label, /heute elektrisch fahrbar|machbar/i);
+  assert.match(copy.description, /prüf|fehlt/i, "Reichweitenrechnung ersetzt keine betriebliche Prüfung");
+}
 
 // Kostenmodell: Diesel 26 l/100 km * 1,55 €/l = 0,403 €/km
 assert.ok(Math.abs(dieselCostPerKm(a) - 0.403) < 0.001);

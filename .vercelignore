@@ -5,5 +5,7 @@
 /tmp/
 /docs/briefings/
 /.playwright-mcp/
+/.playwright-cli/
+/.local/
 .env*.local
 *.tar.gz

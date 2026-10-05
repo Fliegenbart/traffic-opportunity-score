@@ -1,0 +1,24 @@
+.public-context { margin-top: 20px; border-top: 1px solid #e3e6e1; padding-top: 14px; min-width: 0; }
+.public-context > summary { font-weight: 600; font-size: 14px; cursor: pointer; }
+.context-section { padding: 16px 0; border-bottom: 1px solid #e2e6e5; min-width: 0; }
+.context-section h4, .context-section > summary { font-size: 13px; font-weight: 600; margin: 0 0 10px; }
+.context-section > summary { cursor: pointer; }
+.context-section p { font-size: 12px; line-height: 1.6; margin: 8px 0; }
+.context-section label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; margin-top: 12px; }
+.context-section input, .context-section select { width: 100%; min-width: 0; border: 1px solid #c8d0cd; border-radius: 4px; background: #fff; padding: 8px; color: #222e29; font-size: 12px; }
+.context-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.context-stats span { font-size: 11px; color: #59645f; overflow-wrap: anywhere; }
+.context-stats strong { display: block; font-size: 17px; font-weight: 600; color: #202926; }
+.context-note { font-size: 11px; line-height: 1.65; color: #62716b; margin: 10px 0; overflow-wrap: anywhere; }
+.context-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 12px 0; }
+.context-actions .economics-export { white-space: normal; max-width: 100%; text-align: left; }
+.context-icon { display: inline-flex; justify-content: center; align-items: center; width: 34px; height: 34px; border: 1px solid #c8d0cd; background: white; border-radius: 4px; color: #47564d; cursor: pointer; }
+.context-source { font-size: 11px; color: #62716b; margin-top: 12px; }
+.context-source summary { cursor: pointer; }
+.context-source a { display: inline; color: #277555; overflow-wrap: anywhere; }
+.context-source svg, .context-links svg { display: inline; vertical-align: middle; }
+.context-source code { display: block; font-size: 10px; overflow-wrap: anywhere; white-space: normal; }
+.context-directory { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; padding-left: 16px; margin: 12px 0; font-size: 12px; max-height: 210px; overflow: auto; }
+.context-directory li { overflow-wrap: anywhere; }
+.context-links { padding-left: 16px; font-size: 12px; line-height: 2; }
+.context-links a { color: #277555; }

@@ -1,0 +1,26 @@
+.traffic-tutorial-toggle { display: flex; align-items: center; gap: 9px; color: rgba(255,255,255,.75); font-size: 13px; font-weight: 500; }
+.traffic-tutorial-toggle > svg { color: #c6f24e; }
+.traffic-tutorial-toggle label { cursor: pointer; }
+[data-tour-active="true"] { outline: 3px solid #0a7c63; outline-offset: 5px; scroll-margin-top: 24px; }
+.traffic-tutorial-popover { z-index: 60; display: flex; flex-direction: column; width: min(368px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); overflow: hidden; border: 1px solid #b6c8ca; border-radius: 8px; padding: 16px; color: #0d1417; background: #fff; box-shadow: 0 8px 32px #0d141726; letter-spacing: 0; outline: none; }
+.traffic-tutorial-heading { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 12px; }
+.traffic-tutorial-body { min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.traffic-tutorial-progress { margin: 0; color: #0a7c63; font-size: 12px; font-weight: 700; }
+.traffic-tutorial-popover h2 { margin: 8px 0; font-size: 17px; line-height: 1.35; font-weight: 700; }
+.traffic-tutorial-popover p:not(.traffic-tutorial-progress) { margin: 10px 0 0; font-size: 13px; line-height: 1.55; overflow-wrap: anywhere; }
+.traffic-tutorial-popover .traffic-tutorial-caution { border-left: 2px solid #b57612; padding-left: 10px; color: #74501b; }
+.traffic-tutorial-task { color: #536066; font-weight: 600; }
+.traffic-tutorial-footer { display: flex; flex-shrink: 0; align-items: center; justify-content: space-between; gap: 8px; margin-top: 16px; border-top: 1px solid #e4e8e8; padding-top: 12px; }
+.traffic-tutorial-navigation { display: flex; align-items: center; gap: 8px; }
+.traffic-tutorial-icon { display: inline-flex; width: 32px; height: 32px; flex-shrink: 0; align-items: center; justify-content: center; border-radius: 4px; background: transparent; }
+.traffic-tutorial-icon:hover, .traffic-tutorial-back:hover { background: #eef3f3; }
+.traffic-tutorial-back, .traffic-tutorial-next { display: inline-flex; min-height: 36px; align-items: center; justify-content: center; gap: 6px; border-radius: 4px; padding: 0 10px; font-size: 13px; font-weight: 600; }
+.traffic-tutorial-next { background: #0a7c63; color: #fff; }
+.traffic-tutorial-next:hover { background: #08664f; }
+.traffic-tutorial-popover button:disabled { cursor: not-allowed; opacity: 0.45; }
+.traffic-tutorial-popover button:focus-visible { outline: 2px solid #0a7c63; outline-offset: 3px; }
+.traffic-tutorial-arrow { fill: #fff; }
+@media (max-width: 1023px) {
+  .traffic-tutorial-popover { max-height: min(48dvh, 370px); padding: 12px; }
+  .traffic-tutorial-popover h2 { font-size: 16px; }
+}

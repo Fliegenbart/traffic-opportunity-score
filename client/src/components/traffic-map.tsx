@@ -234,7 +234,7 @@ export default function TrafficMap({
         viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
         className={`h-auto w-full ${pinMode ? "cursor-crosshair" : ""}`}
         role="img"
-        aria-label="Karte der Lkw-Verkehrs-Hotspots in Deutschland"
+        aria-label="Karte verkehrsstarker Lkw-Strecken in Deutschland"
         onMouseLeave={() => setTooltip(null)}
         onClick={(event) => {
           if (!pinMode || !onMapClick) return;
@@ -510,7 +510,7 @@ export default function TrafficMap({
                   setTooltip({
                     x: midX,
                     y: midY,
-                    label: `${edge.label} · ≈ ${Math.round(edge.trucks2030 / 365).toLocaleString("de-DE")} Lkw/Tag${edge.whiteSpot ? " · Lade-Lücke" : ""}`,
+                    label: `${edge.label} · ≈ ${Math.round(edge.trucks2030 / 365).toLocaleString("de-DE")} Lkw/Tag im Modell 2030${edge.whiteSpot ? " · kein naher Ladepark bekannt" : ""}`,
                   })
                 }
               />
@@ -658,8 +658,8 @@ export default function TrafficMap({
               )}
               <path
                 d={`M ${x} ${y - r} L ${x + r} ${y} L ${x} ${y + r} L ${x - r} ${y} Z`}
-                fill={live ? palette.chargerFill : (dark ? "#141519" : "white")}
-                stroke={live ? (dark ? "#141519" : "white") : palette.chargerFill}
+                fill={live ? palette.chargerFill : (dark ? "#0b1215" : "white")}
+                stroke={live ? (dark ? "#0b1215" : "white") : palette.chargerFill}
                 strokeWidth={0.7}
                 opacity={0.95}
                 className="cursor-pointer"
@@ -715,7 +715,7 @@ export default function TrafficMap({
                 textAnchor="middle"
                 fontSize={4.6}
                 fontWeight={700}
-                fill="#141519"
+                fill="#0b1215"
               >
                 {pin.index}
               </text>
@@ -746,7 +746,7 @@ export default function TrafficMap({
               <line x1="7" y1="6" x2="19" y2="6" stroke={palette.edge} strokeWidth="1.8" opacity={0.55} />
               <line x1="7" y1="6" x2="19" y2="6" stroke="#7deef5" strokeWidth="1.3" strokeDasharray="2.2 3" />
             </svg>
-            Hotspot versorgt — Verkehr fließt
+            Verkehrsstarker Straßenabschnitt · Modell 2030
           </span>
         )}
         {edges.some((edge) => edge.whiteSpot) && (
@@ -756,7 +756,7 @@ export default function TrafficMap({
               <line x1="9" y1="6" x2="17" y2="6" stroke={palette.whiteSpotEdge} strokeWidth="1.8" />
               <circle cx="13" cy="6" r="1.4" fill="#ffc46b" />
             </svg>
-            Lade-Lücke (kein Lkw-Ladepark ≤ 25 km) — glüht
+            Kein dokumentierter Lkw-Ladepark im Umkreis von 25 km Luftlinie
           </span>
         )}
         {regions.length > 0 && (
@@ -772,8 +772,8 @@ export default function TrafficMap({
               aria-hidden
             />
             {routes.some((route) => route.path)
-              ? "Ihre Relation (Straßenroute)"
-              : "Ihre Relation (Luftlinie)"}
+              ? "Verbindung entlang der Straße"
+              : "Verbindung · Luftlinie, keine geprüfte Route"}
           </span>
         )}
         {chargers.length > 0 && (
@@ -782,7 +782,7 @@ export default function TrafficMap({
               className="inline-block h-3 w-3 rotate-45"
               style={{ background: palette.chargerFill }}
             />
-            Lkw-Ladepark (verifiziert; Umriss = angekündigt)
+            Dokumentierter Lkw-Ladepark · nur Umriss: angekündigt
           </span>
         )}
         {dark && (
@@ -790,9 +790,9 @@ export default function TrafficMap({
             type="button"
             onClick={() => setEpoch((value) => value + 1)}
             className="ml-auto rounded-full border border-white/15 px-3 py-1 text-xs font-semibold text-white/60 transition hover:border-white/30 hover:text-white"
-            title="Eingangs-Choreografie erneut abspielen"
+            title="Kartenanimation wiederholen"
           >
-            ↺ Intro
+            ↺ Animation
           </button>
         )}
       </div>

@@ -21,6 +21,18 @@ export const sourceSchema = z.object({
 }).strict().refine((s) => s.observedThrough <= s.retrievedAt.slice(0, 10), "Beobachtungsdatum nach Abrufdatum");
 export type SourceRef = z.infer<typeof sourceSchema>;
 
+export const parameterReferenceSchema = z.object({
+  field: z.enum(["electricityPrice", "energyKwh", "vehiclePowerKw"]),
+  appliedValue: z.number().finite().nonnegative().max(2000),
+  baselineValue: z.number().finite().nonnegative().max(2000),
+  source: sourceSchema, note: shortText,
+}).strict().superRefine((ref, ctx) => {
+  const min = ref.field === "electricityPrice" ? 0 : 1;
+  const max = ref.field === "electricityPrice" ? 5 : 2000;
+  if ([ref.appliedValue, ref.baselineValue].some((v) => v < min || v > max)) ctx.addIssue({ code: "custom", message: "Referenzwert außerhalb der Parametergrenzen" });
+});
+export type ParameterReference = z.infer<typeof parameterReferenceSchema>;
+
 export const profileSchema = z.object({
   source: sourceSchema,
   vehicleClass: z.enum(["truck", "heavy_traffic_proxy"]),
@@ -45,6 +57,7 @@ export type DemandInput = z.infer<typeof demandSchema>;
 const minute = z.number().int().min(0).max(1440).refine((v) => v % 5 === 0, "Fünf-Minuten-Raster erforderlich");
 export const capacitySchema = z.object({
   ports: z.number().int().min(1).max(100), portPowerKw: z.number().finite().min(1).max(2000),
+  vehiclePowerKw: z.number().finite().min(1).max(2000).optional(),
   gridPowerKw: nonnegative.max(100000).nullable(), lossPercent: nonnegative.max(30),
   turnaroundMinutes: minute.refine((v) => v <= 120),
   maxWaitMinutes: minute.refine((v) => v <= 240),
@@ -89,14 +102,21 @@ export const planningRequestSchema = z.object({
   site: z.object({
     id: shortText, label: shortText, lon: z.number().finite().min(5).max(16), lat: z.number().finite().min(47).max(56),
     access: z.object({ status: z.enum(["verified", "assumed", "unknown", "inaccessible"]), note: shortText,
-      directions: z.enum(["both", "r1", "r2"]).optional() }).strict(),
+      directions: z.enum(["both", "r1", "r2", "one_unknown"]).optional() }).strict(),
     gridStatus: z.enum(["verified", "assumed", "unknown"]), competitionStatus: z.enum(["reviewed", "unknown"]),
   }).strict(),
   traffic: trafficSchema,
   profiles: z.object({ weekday: profileSchema, saturday: profileSchema, sunday: profileSchema }).strict(),
   demand: demandSchema, capacity: capacitySchema, finance: financeSchema,
+  references: z.array(parameterReferenceSchema).max(3).optional(),
   scenarios: z.array(scenarioSchema).min(1).max(3),
 }).strict().superRefine((r, ctx) => {
+  const references = r.references || [];
+  if (new Set(references.map((x) => x.field)).size !== references.length) ctx.addIssue({ code: "custom", message: "Doppelte Parameterreferenz" });
+  for (const ref of references) {
+    const actual = ref.field === "electricityPrice" ? r.finance.electricityPricePerKwh : ref.field === "energyKwh" ? r.demand.energyKwh : r.capacity.vehiclePowerKw;
+    if (actual !== ref.appliedValue) ctx.addIssue({ code: "custom", message: "Parameterreferenz stimmt nicht mit Eingabe überein" });
+  }
   const signature = r.scenarios[0].years.map((y) => y.year).join(",");
   if (new Set(r.scenarios.map((s) => s.id)).size !== r.scenarios.length) ctx.addIssue({ code: "custom", message: "Doppelte Szenario-ID" });
   for (const s of r.scenarios) {

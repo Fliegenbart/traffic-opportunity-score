@@ -47,3 +47,9 @@ assert.equal(low.components.growth, 0);
 assert.equal(low.components.volume, 9);
 assert.equal(low.score, 13);
 assert.equal(classifyTrafficOpportunity(low.score).level, "Low Opportunity");
+
+for (const score of [0, 34, 35, 54, 55, 74, 75, 100]) {
+  const copy = classifyTrafficOpportunity(score);
+  assert.match(copy.label, /Verkehrspotenzial/, "Die Bewertung beschreibt Verkehr, keine bestätigte Ladenachfrage");
+  assert.doesNotMatch(copy.label, /Ladepunkt-Potenzial|investitionsreif/i);
+}

@@ -12,10 +12,11 @@ import {
   X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import SiteEconomics from "@/components/charging-planner";
+import SiteEconomics, { type VerdictSummary } from "@/components/charging-planner";
 import TrafficBasisSelect from "@/components/traffic-basis-select";
 import SiteEvidence from "@/components/site-evidence";
 import SiteAccessCheck from "@/components/site-access-check";
+import TrafficTutorial from "@/components/traffic-tutorial";
 import { loadPlanningData } from "@shared/charging-planning/data";
 import { resolveSiteTraffic, validateHotspotConsistency, type PlanningData, type BasisChoice } from "@shared/site-traffic";
 import { matchesRegionSearch } from "@shared/region-search";
@@ -343,7 +344,7 @@ function ScorePill({ score }: { score: number }) {
   const classification = classifyTrafficOpportunity(score);
   const palette =
     score >= 75
-      ? "bg-[#e1f0ef] text-[#087782]"
+      ? "bg-[#e1f0ef] text-[#0a7c63]"
       : score >= 55
         ? "bg-[#edf5f5] text-[#2a6f76]"
         : score >= 35
@@ -366,7 +367,7 @@ function ScoreDial({ score }: { score: number }) {
       }}
     >
       <div className="flex h-[5.4rem] w-[5.4rem] flex-col items-center justify-center rounded-full bg-white">
-        <span className="text-3xl font-bold tracking-[-0.04em] text-[#202426]">{score}</span>
+        <span className="text-3xl font-bold tracking-[-0.04em] text-[#0d1417]">{score}</span>
         <span className="text-[10px] font-medium text-[#5c676b]">/ 100</span>
       </div>
     </div>
@@ -385,8 +386,8 @@ function ComponentBar({
   return (
     <div title={explainer}>
       <div className="mb-1.5 flex items-center justify-between gap-4">
-        <p className="text-sm font-semibold text-[#202426]">{label}</p>
-        <span className="text-sm font-semibold text-[#087782] tabular-nums">{value}</span>
+        <p className="text-sm font-semibold text-[#0d1417]">{label}</p>
+        <span className="text-sm font-semibold text-[#0a7c63] tabular-nums">{value}</span>
       </div>
       <div className="h-1.5 rounded-full bg-[#dfe5e5]">
         <div
@@ -419,7 +420,7 @@ function TrendBars({ region }: { region: TrafficOpportunityRegion }) {
               style={{ width: `${Math.max(3, (point.value / max) * 100)}%` }}
             />
           </div>
-          <span className="w-16 shrink-0 text-right font-semibold text-[#202426] tabular-nums">
+          <span className="w-16 shrink-0 text-right font-semibold text-[#0d1417] tabular-nums">
             {formatCompact(point.value)}
           </span>
         </div>
@@ -430,17 +431,16 @@ function TrendBars({ region }: { region: TrafficOpportunityRegion }) {
 
 function LoadingState() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f3f5f5] px-6 text-center text-[#202426]">
+    <div className="flex min-h-screen items-center justify-center bg-[#f4f5f1] px-6 text-center text-[#0d1417]">
       <div>
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#e7f1f0] text-[#087782]">
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#e4f3ec] text-[#0a7c63]">
           <Gauge className="h-7 w-7 animate-pulse" />
         </div>
         <h1 className="mt-6 text-2xl font-semibold tracking-[-0.02em]">
           Verkehrsdaten werden geladen
         </h1>
         <p className="mt-2 max-w-md text-[#5c676b]">
-          Die App lädt die vorberechnete Deutschland-Datei. Die Rohdaten bleiben lokal und werden
-          nicht im Browser verarbeitet.
+          Die Daten für Deutschland werden vorbereitet. Das kann einen Moment dauern.
         </p>
       </div>
     </div>
@@ -449,14 +449,14 @@ function LoadingState() {
 
 function ErrorState() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f3f5f5] px-6 text-center text-[#202426]">
+    <div className="flex min-h-screen items-center justify-center bg-[#f4f5f1] px-6 text-center text-[#0d1417]">
       <div>
-        <AlertTriangle className="mx-auto h-10 w-10 text-[#087782]" />
+        <AlertTriangle className="mx-auto h-10 w-10 text-[#0a7c63]" />
         <h1 className="mt-6 text-2xl font-semibold tracking-[-0.02em]">Daten nicht gefunden</h1>
         <p className="mt-2 max-w-md text-[#5c676b]">
           Die Verkehrsdaten konnten nicht geladen werden. Bitte prüfe deine Verbindung und versuche es erneut.
         </p>
-        <button type="button" onClick={() => window.location.reload()} className="mt-5 rounded-md bg-[#087782] px-4 py-2 font-semibold text-white">Erneut laden</button>
+        <button type="button" onClick={() => window.location.reload()} className="mt-5 rounded-md bg-[#0a7c63] px-4 py-2 font-semibold text-white">Erneut laden</button>
       </div>
     </div>
   );
@@ -466,7 +466,7 @@ function DetailStat({ label, value, sub }: { label: string; value: string; sub?:
   return (
     <div>
       <p className="text-xs font-medium text-[#667278]">{label}</p>
-      <p className="mt-1 text-lg font-bold tracking-[-0.01em] text-[#202426] tabular-nums">{value}</p>
+      <p className="mt-1 text-lg font-bold tracking-[-0.01em] text-[#0d1417] tabular-nums">{value}</p>
       {sub && <p className="text-xs text-[#5c676b]">{sub}</p>}
     </div>
   );
@@ -502,8 +502,9 @@ export default function TrafficOpportunity() {
   const [placeQuery, setPlaceQuery] = useState("");
   const [placeSearching, setPlaceSearching] = useState(false);
   const [placeError, setPlaceError] = useState("");
-  const [lead, setLead] = useState({ name: "", email: "", company: "" });
-  const [leadStatus, setLeadStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [verdict, setVerdict] = useState<VerdictSummary | null>(null);
+  const [lead, setLead] = useState({ name: "", email: "", company: "", consent: false, website: "" });
+  const [leadStatus, setLeadStatus] = useState<"idle" | "sending" | "sent" | "error" | "limited">("idle");
   const embed = initialParams.embed;
 
   useEffect(() => {
@@ -515,7 +516,7 @@ export default function TrafficOpportunity() {
     setPlanningData(undefined);
     setPlanningDataError("");
     loadPlanningData().then((value) => { if (active) setPlanningData(value); })
-      .catch(() => { if (active) setPlanningDataError("Gemeinsame Standortdaten konnten nicht geladen oder validiert werden. Kein Ersatz durch die Hotspot-Auswahl."); });
+      .catch(() => { if (active) setPlanningDataError("Die Daten für die Standortrechnung konnten nicht geladen oder geprüft werden. Die Übersicht allein reicht für eine Berechnung nicht aus."); });
     return () => { active = false; };
   }, [planningRetry]);
 
@@ -524,7 +525,7 @@ export default function TrafficOpportunity() {
     try { validateHotspotConsistency(data.edgeHotspots, planningData.network); return planningData; }
     catch { return undefined; }
   }, [data, planningData]);
-  const siteDataError = planningDataError || (data && planningData && !consistentPlanningData ? "Hotspot-Auswahl und Verkehrsnetz widersprechen sich. Standortberechnung gesperrt." : "");
+  const siteDataError = planningDataError || (data && planningData && !consistentPlanningData ? "Die Verkehrsdaten der Übersicht stimmen nicht mit den Planungsdaten überein. Bis zur Klärung ist keine Standortrechnung möglich." : "");
 
   useEffect(() => {
     let active = true;
@@ -849,7 +850,7 @@ export default function TrafficOpportunity() {
       );
       const results = (await response.json()) as { lat: string; lon: string; display_name: string }[];
       if (!results.length) {
-        setPlaceError("Ort nicht gefunden — bitte präziser eingeben.");
+        setPlaceError("Kein passender Ort gefunden. Bitte ergänze Straße, Postleitzahl oder Ort.");
         return;
       }
       const hit = results[0];
@@ -860,14 +861,14 @@ export default function TrafficOpportunity() {
       );
       setPlaceQuery("");
     } catch {
-      setPlaceError("Suche nicht erreichbar — bitte direkt auf die Karte klicken.");
+      setPlaceError("Die Ortssuche ist gerade nicht verfügbar. Ein Standort lässt sich weiterhin auf der Karte auswählen.");
     } finally {
       setPlaceSearching(false);
     }
   };
 
   const submitLead = async () => {
-    if (!lead.name.trim() || !lead.email.trim() || leadStatus === "sending") return;
+    if (!lead.name.trim() || !lead.email.trim() || !lead.consent || leadStatus === "sending") return;
     setLeadStatus("sending");
     try {
       const summary = pins
@@ -883,6 +884,8 @@ export default function TrafficOpportunity() {
         body: JSON.stringify({
           tenant: "standort-check",
           url: window.location.href,
+          consent: true,
+          website: lead.website,
           contact: {
             name: lead.name.trim(),
             email: lead.email.trim(),
@@ -892,7 +895,7 @@ export default function TrafficOpportunity() {
           inputs: { pins, assessments: pins.map((pin) => assessments.get(pin.id)) },
         }),
       });
-      setLeadStatus(response.ok ? "sent" : "error");
+      setLeadStatus(response.ok ? "sent" : response.status === 429 ? "limited" : "error");
     } catch {
       setLeadStatus("error");
     }
@@ -911,7 +914,7 @@ export default function TrafficOpportunity() {
 
   const tabs: { id: WorkspaceTab; label: string }[] = [
     { id: "strecken", label: "Strecken" },
-    { id: "korridore", label: "Korridore" },
+    { id: "korridore", label: "Verbindungen" },
     { id: "regionen", label: "Regionen" },
     { id: "standort", label: "Standort-Check" },
   ];
@@ -950,104 +953,88 @@ export default function TrafficOpportunity() {
   })();
 
   return (
-    <div className="min-h-screen bg-[#f3f5f5] text-[#202426]">
-      <header className="border-b border-[#dce1e1] bg-white">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-3 px-4 py-3 sm:px-6 lg:px-12">
-          <div className="flex min-w-0 items-center gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#141519] text-[#19c8d4]">
-              <Gauge className="h-[18px] w-[18px]" aria-hidden="true" />
+    <div className="min-h-screen bg-[#f4f5f1] text-[#0d1417]">
+      <header className="z-40 border-b sm:sticky sm:top-0 border-white/10 bg-[#0b1215]/95 text-white backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-3 sm:px-6 lg:px-12">
+          <div className="flex min-w-0 flex-1 items-center gap-3 sm:flex-none">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#c6f24e] text-[#0b1215]">
+              <Gauge className="h-[17px] w-[17px]" aria-hidden="true" />
             </div>
-            <div className="min-w-0">
-              <p className="truncate text-[11px] font-semibold text-[#087782]">
-                Deutschland · Standortanalyse für Lkw-Ladeparks
-              </p>
-              <h1 className="text-lg font-bold leading-tight">
-                Traffic Opportunity
-              </h1>
+            <div className="min-w-0 leading-tight">
+              <h1 className="text-[15px] font-semibold tracking-[-0.01em]">Traffic Opportunity</h1>
+              <p className="truncate text-[11px] text-white/55">Standortanalyse für Lkw-Ladeparks</p>
             </div>
           </div>
-          {!embed && (
-            <nav className="flex items-center gap-1" aria-label="Weitere Werkzeuge">
-              <a
-                href="https://depot-readiness-check.vercel.app/"
-                className="inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-sm font-medium text-[#536066] transition hover:bg-[#f1f4f4] hover:text-[#202426]"
-              >
-                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                Readiness Check
-              </a>
-              <a
-                href="https://truckonomics.vercel.app/"
-                className="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium text-[#536066] transition hover:bg-[#f1f4f4] hover:text-[#202426]"
-              >
-                TCO-Rechner
-              </a>
-            </nav>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <TrafficTutorial hasSite={pins.length > 0} onTabChange={setActiveTab} autoStart={!embed} />
+            {!embed && (
+              <nav className="hidden items-center gap-1 sm:flex" aria-label="Weitere Werkzeuge">
+                <a
+                  href="https://depot-readiness-check.vercel.app/"
+                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[13px] font-medium text-white/70 transition hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c6f24e]"
+                >
+                  <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                  Depot-Check
+                </a>
+                <a
+                  href="https://truckonomics.vercel.app/"
+                  className="inline-flex items-center rounded-md px-3 py-1.5 text-[13px] font-medium text-white/70 transition hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#c6f24e]"
+                >
+                  Lkw-Kostenrechner
+                </a>
+              </nav>
+            )}
+          </div>
         </div>
       </header>
 
       <div>
-        <div className="mx-auto flex max-w-7xl flex-col px-4 sm:px-6 lg:px-12">
-          <p className="max-w-3xl pt-4 text-xs leading-relaxed text-[#5c676b] sm:text-sm">
-            Modellierte Lkw-Ströme 2030, historische Zähldaten und dokumentierte Ladeparks.
-            Eine Planungsgrundlage für halböffentliche Standorte, keine Investitionsempfehlung.
-          </p>
-          {chargingUnavailable && <p role="status" className="mt-3 flex items-start gap-2 border-l-2 border-[#b57612] bg-[#faf0df] py-2 pl-3 pr-3 text-sm text-[#7b5117]"><AlertTriangle size={16} className="mt-0.5 shrink-0" /> Ladepark-Daten nicht verfügbar. Wettbewerb und Lade-Lücken sind unbekannt.</p>}
-
-          <div className="-mx-4 mt-4 flex snap-x overflow-x-auto border-y border-[#dce1e1] bg-white sm:mx-0 sm:rounded-lg sm:border lg:grid lg:grid-cols-4 lg:overflow-visible">
-            <div className="min-w-[10.5rem] shrink-0 snap-start px-4 py-3 lg:min-w-0">
-              <p className="text-xl font-bold tabular-nums">
-                {formatCompact(data.summary.deTrucks2030)}
+        <section className="relative overflow-hidden bg-[#0b1215] text-white">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-60 [background:radial-gradient(60%_80%_at_85%_0%,rgba(198,242,78,0.16),transparent_60%),radial-gradient(50%_70%_at_0%_100%,rgba(10,124,99,0.35),transparent_60%)]" />
+          <div className="relative mx-auto grid max-w-7xl gap-8 px-4 pb-10 pt-10 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end lg:px-12">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-[#c6f24e]">Lkw-Laden in Deutschland</p>
+              <h2 className="mt-3 max-w-2xl text-[34px] font-semibold leading-[1.05] tracking-[-0.03em] sm:text-5xl">
+                Wo lohnt sich ein Lkw-Ladepark?
+              </h2>
+              <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/70 sm:text-[15px]">
+                Standort setzen, Verkehrsquelle und Fahrtrichtung wählen und in einer Minute sehen, ob eine vertiefte Prüfung lohnt.
+                Erste Einschätzung mit deinen Annahmen, keine Investitionsentscheidung.
               </p>
-              <p className="mt-0.5 text-xs leading-snug text-[#5c676b]">
-                Lkw-Fahrten mit DE-Bezug 2030
-              </p>
+              {activeTab !== "standort" && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("standort")}
+                  className="mt-6 inline-flex items-center gap-2 rounded-md bg-[#c6f24e] px-5 py-2.5 text-sm font-semibold text-[#0b1215] transition hover:bg-[#d7f97a] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  Standort prüfen
+                </button>
+              )}
             </div>
-            <div className="min-w-[10.5rem] shrink-0 snap-start border-l border-[#dce1e1] px-4 py-3 lg:min-w-0">
-              <p className="text-xl font-bold tabular-nums">
-                {charging ? (
-                  <>
-                    {whiteSpotCount}
-                    <span className="text-[#8a969a]"> / {data.edgeHotspots.length}</span>
-                  </>
-                ) : (
-                  formatNumber(data.summary.deRegionCount)
-                )}
-              </p>
-              <p className="mt-0.5 text-xs leading-snug text-[#5c676b]">
-                {charging
-                  ? `Hotspots ohne Lkw-Ladepark (${WHITE_SPOT_KM} km)`
-                  : "Deutsche Regionen"}
-              </p>
-            </div>
-            <div className="min-w-[10.5rem] shrink-0 snap-start border-l border-[#dce1e1] px-4 py-3 lg:min-w-0">
-              <p className="text-xl font-bold tabular-nums">
-                {validation
-                  ? new Intl.NumberFormat("de-DE", {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }).format(validation.spearman)
-                  : formatNumber(data.summary.deRegionCount)}
-              </p>
-              <p className="mt-0.5 text-xs leading-snug text-[#5c676b]">
-                {validation
-                  ? `Korrelation mit ${validation.stationCount} BASt-Zählstellen`
-                  : "Deutsche Regionen"}
-              </p>
-            </div>
-            <div className="min-w-[10.5rem] shrink-0 snap-start border-l border-[#dce1e1] px-4 py-3 lg:min-w-0">
-              <p className="text-xl font-bold tabular-nums">
-                {formatPercent(mediumShare * 100)}
-              </p>
-              <p className="mt-0.5 text-xs leading-snug text-[#5c676b]">
-                Verkehr im E-Lkw-Fenster 150–600 km
-              </p>
-            </div>
+            <dl className="grid grid-cols-3 gap-px overflow-hidden rounded-lg border border-white/10 bg-white/10">
+              <div className="min-w-0 bg-[#0b1215]/80 px-3 py-4 sm:px-4">
+                <dt className="text-[11px] leading-snug text-white/55">Fahrten 2030 mit Bezug zu Deutschland · Modell</dt>
+                <dd className="mt-2 whitespace-nowrap font-mono text-[15px] font-medium tabular-nums sm:text-lg xl:text-2xl">{formatCompact(data.summary.deTrucks2030)}</dd>
+              </div>
+              <div className="min-w-0 bg-[#0b1215]/80 px-3 py-4 sm:px-4">
+                <dt className="text-[11px] leading-snug text-white/55">{charging ? `Starke Abschnitte ohne Lkw-Ladepark (${WHITE_SPOT_KM} km)` : "Deutsche Regionen"}</dt>
+                <dd className="mt-2 whitespace-nowrap font-mono text-[15px] font-medium tabular-nums sm:text-lg xl:text-2xl">
+                  {charging ? <>{whiteSpotCount}<span className="text-white/40">/{data.edgeHotspots.length}</span></> : formatNumber(data.summary.deRegionCount)}
+                </dd>
+              </div>
+              <div className="min-w-0 bg-[#0b1215]/80 px-3 py-4 sm:px-4">
+                <dt className="text-[11px] leading-snug text-white/55">Fahrten mit 150–600 km · typische Ladedistanz</dt>
+                <dd className="mt-2 whitespace-nowrap font-mono text-[15px] font-medium tabular-nums sm:text-lg xl:text-2xl">{formatPercent(mediumShare * 100)}</dd>
+              </div>
+            </dl>
           </div>
+        </section>
+        <div className="mx-auto flex max-w-7xl flex-col px-4 sm:px-6 lg:px-12">
+          {chargingUnavailable && <p role="status" className="mt-4 flex items-start gap-2 rounded-md border border-[#ecd7ad] bg-[#faf0df] px-3 py-2 text-sm text-[#7b5117]"><AlertTriangle size={16} className="mt-0.5 shrink-0" /> Die Ladepark-Daten fehlen. Wo bereits geladen werden kann und wo Angebote fehlen, lässt sich derzeit nicht beurteilen.</p>}
 
           {/* Workspace: Karte bleibt stehen, der Inhalt bewegt sich. */}
           <div className="grid gap-6 pb-10 pt-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
-            <div className="self-start rounded-xl bg-[#141519] p-3 text-white sm:p-5 lg:sticky lg:top-4">
+            <div data-tour="map" className="self-start rounded-xl bg-[#0b1215] p-3 text-white sm:p-5 lg:sticky lg:top-4">
               <TrafficMap
                 backdrop={data.backdrop}
                 edges={mapEdges}
@@ -1077,17 +1064,17 @@ export default function TrafficOpportunity() {
             </div>
 
             <div className="min-w-0">
-              <div className="flex overflow-x-auto rounded-lg bg-[#e3e8e8] p-1">
+              <div data-tour="tabs" className="grid grid-cols-2 gap-1 rounded-lg border border-[#e3e6e1] bg-white p-1 xl:grid-cols-4">
                 {tabs.map((tab) => (
                   <button
                     key={tab.id}
                     type="button"
                     onClick={() => setActiveTab(tab.id)}
                     aria-pressed={activeTab === tab.id}
-                    className={`flex-1 whitespace-nowrap rounded-md px-2.5 py-2 text-[13px] font-semibold transition sm:px-3 sm:text-sm ${
+                    className={`truncate rounded-md px-2 py-2 text-[13px] font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0a7c63] ${
                       activeTab === tab.id
-                        ? "bg-white text-[#202426] shadow-[0_1px_2px_rgba(32,36,38,0.12)]"
-                        : "text-[#536066] hover:text-[#202426]"
+                        ? "bg-[#0b1215] text-white"
+                        : "text-[#536066] hover:bg-[#eef1ec] hover:text-[#0d1417]"
                     }`}
                   >
                     {tab.label}
@@ -1098,29 +1085,29 @@ export default function TrafficOpportunity() {
               {activeTab === "strecken" && (
                 <div className="mt-4 space-y-4">
                   {selectedEdge ? (
-                    <div className="rounded-lg border border-[#dce1e1] bg-white p-5">
+                    <div className="rounded-lg border border-[#e3e6e1] bg-white p-5">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-lg font-bold tracking-[-0.01em]">
                           {edgeLabel(selectedEdge)}
                         </p>
                         {selectedEdge.aCountry !== selectedEdge.bCountry && (
-                          <span className="rounded-full bg-[#e7f1f0] px-2.5 py-1 text-xs font-semibold text-[#087782]">
+                          <span className="rounded-full bg-[#e4f3ec] px-2.5 py-1 text-xs font-semibold text-[#0a7c63]">
                             Grenzraum {selectedEdge.aCountry}/{selectedEdge.bCountry}
                           </span>
                         )}
                         {selectedEdgeCharging?.whiteSpot && (
                           <span className="rounded-full bg-[#faf0df] px-2.5 py-1 text-xs font-semibold text-[#8b570b]">
-                            Weißer Fleck
+                            Kein Ladepark in der Nähe bekannt
                           </span>
                         )}
                       </div>
-                      <button type="button" className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#087782] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#06656e]" onClick={() => {
+                      <button type="button" className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#0a7c63] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#08664f]" onClick={() => {
                         addPin((selectedEdge.aLon + selectedEdge.bLon) / 2, (selectedEdge.aLat + selectedEdge.bLat) / 2, `Streckenmitte: ${edgeLabel(selectedEdge)}`);
                         setActiveTab("standort");
                       }}><MapPinIcon size={16} /> Standort an dieser Strecke prüfen</button>
                       <div className="mt-4 grid grid-cols-3 gap-4">
                         <DetailStat
-                          label="Lkw pro Tag 2030"
+                          label="Lkw pro Tag · berechnet für 2030"
                           value={`≈ ${formatNumber(selectedEdge.trucks2030 / 365)}`}
                         />
                         <DetailStat
@@ -1128,7 +1115,7 @@ export default function TrafficOpportunity() {
                           value={formatPercent(
                             growthPercent(selectedEdge.trucks2019, selectedEdge.trucks2030),
                           )}
-                          sub="vs. 2019"
+                          sub="im Modell gegenüber 2019"
                         />
                         <DetailStat
                           label="Abschnitt"
@@ -1140,7 +1127,7 @@ export default function TrafficOpportunity() {
                           className={`mt-4 text-sm ${selectedEdgeCharging.whiteSpot ? "text-[#8b570b]" : "text-[#536066]"}`}
                         >
                           Nächster Lkw-Ladepark: {selectedEdgeCharging.name} ·{" "}
-                          {formatNumber(selectedEdgeCharging.km)} km
+                          {formatNumber(selectedEdgeCharging.km)} km Luftlinie
                         </p>
                       )}
                       {selectedEdge.topFlows.length > 0 && (
@@ -1156,12 +1143,12 @@ export default function TrafficOpportunity() {
                       )}
 
                       {selectedEdgeTrend && (
-                        <div className="mt-5 border-t border-[#dce1e1] pt-4">
+                        <div className="mt-5 border-t border-[#e3e6e1] pt-4">
                           {selectedEdgeTrend.profile?.werktag && (
                             <div>
                               <div className="flex items-baseline justify-between gap-3">
                                 <p className="text-xs font-medium text-[#667278]">
-                                  Tagesgang Werktag (Lkw/h, gemessen)
+                                  Gemessene Lkw pro Stunde · Montag bis Freitag
                                 </p>
                                 <p className="text-xs text-[#667278] tabular-nums">
                                   max{" "}
@@ -1198,11 +1185,11 @@ export default function TrafficOpportunity() {
                           )}
                           {selectedEdgeTrend.trend && (
                             <p className="mt-3 text-sm text-[#536066]">
-                              Historisches 12-Monats-Modellszenario:{" "}
+                              Veränderung im damaligen 12-Monats-Modelltest:{" "}
                               <span
                                 className={`font-semibold ${
                                   selectedEdgeTrend.trend.trendPctP50 >= 0
-                                    ? "text-[#087782]"
+                                    ? "text-[#0a7c63]"
                                     : "text-[#8b570b]"
                                 }`}
                               >
@@ -1210,8 +1197,8 @@ export default function TrafficOpportunity() {
                                 {formatPercent(selectedEdgeTrend.trend.trendPctP50)}
                               </span>{" "}
                               <span className="text-[#667278]">
-                                (p10 {selectedEdgeTrend.trend.trendPctP10 > 0 ? "+" : ""}
-                                {formatPercent(selectedEdgeTrend.trend.trendPctP10)} · p90{" "}
+                                (unterer Modellwert {selectedEdgeTrend.trend.trendPctP10 > 0 ? "+" : ""}
+                                {formatPercent(selectedEdgeTrend.trend.trendPctP10)} · oberer Modellwert{" "}
                                 {selectedEdgeTrend.trend.trendPctP90 > 0 ? "+" : ""}
                                 {formatPercent(selectedEdgeTrend.trend.trendPctP90)})
                               </span>
@@ -1223,26 +1210,26 @@ export default function TrafficOpportunity() {
                             {selectedEdgeTrend.station.distanceKm.toLocaleString("de-DE")} km
                             entfernt
                             {selectedEdgeTrend.station.directionShareR1 != null &&
-                              ` · Richtungssplit ${Math.round(selectedEdgeTrend.station.directionShareR1 * 100)} / ${Math.round((1 - selectedEdgeTrend.station.directionShareR1) * 100)}`}
-                            {selectedEdgeTrend.trend && " · Chronos-2, Datenbasis bis 2023. Keine aktuelle Prognose."}
+                              ` · Verkehr je Richtung: ${Math.round(selectedEdgeTrend.station.directionShareR1 * 100)} % / ${Math.round((1 - selectedEdgeTrend.station.directionShareR1) * 100)} %`}
+                            {selectedEdgeTrend.trend && " · Historischer Chronos-2-Test mit Daten bis 2023. Keine Prognose für heute; die Modellspanne ist keine Garantie."}
                           </p>
                         </div>
                       )}
                     </div>
                   ) : (
-                    <p className="rounded-lg border border-dashed border-[#c5cdcf] px-5 py-4 text-sm text-[#5c676b]">
-                      Wähle einen Streckenabschnitt – in der Liste oder direkt auf der Karte.
+                    <p className="rounded-lg border border-dashed border-[#cdd2cc] px-5 py-4 text-sm text-[#5c676b]">
+                      Noch kein Straßenabschnitt ausgewählt.
                     </p>
                   )}
 
-                  <div className="flex items-center justify-between gap-3">
+                  <div data-tour="gaps" className="flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold text-[#3d474b]">
-                      Die {data.edgeHotspots.length} stärksten Abschnitte
+                      Die {data.edgeHotspots.length} verkehrsstärksten Abschnitte im Modell
                     </p>
                     {liveHubs.length > 0 && (
                       <label className="flex shrink-0 items-center gap-2 text-xs text-[#3d474b]">
                         <input type="checkbox" checked={onlyWhiteSpots} onChange={(event) => setOnlyWhiteSpots(event.target.checked)} className="accent-[#b57612]" />
-                        Lade-Lücken ({whiteSpotCount})
+                        Ohne nahen Ladepark ({whiteSpotCount})
                       </label>
                     )}
                   </div>
@@ -1261,24 +1248,24 @@ export default function TrafficOpportunity() {
                             )
                           }
                           className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition ${
-                            isSelected ? "bg-[#e7f1f0]" : "hover:bg-[#f1f4f4]"
+                            isSelected ? "bg-[#e4f3ec]" : "hover:bg-[#eef1ec]"
                           }`}
                         >
                           <span className="w-6 shrink-0 text-xs text-[#667278] tabular-nums">
                             {index + 1}
                           </span>
                           <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-semibold text-[#202426]">
+                            <span className="block truncate text-sm font-semibold text-[#0d1417]">
                               {edgeLabel(edge)}
                             </span>
                             <span className="block text-xs text-[#5c676b] tabular-nums">
-                              ≈ {formatNumber(edge.trucks2030 / 365)} Lkw/Tag
+                              ≈ {formatNumber(edge.trucks2030 / 365)} Lkw/Tag · Modell 2030
                             </span>
                           </span>
                           {info?.whiteSpot && (
                             <span
                               className="h-2 w-2 shrink-0 rounded-full bg-[#e8a13a]"
-                              title={`Kein Lkw-Ladepark im ${WHITE_SPOT_KM}-km-Umkreis`}
+                              title={`Kein dokumentierter Lkw-Ladepark im Umkreis von ${WHITE_SPOT_KM} km Luftlinie`}
                             />
                           )}
                         </button>
@@ -1289,9 +1276,9 @@ export default function TrafficOpportunity() {
               )}
 
               {activeTab === "korridore" && (
-                <div className="mt-4 space-y-4">
+                <div data-tour="corridors" className="mt-4 space-y-4">
                   {selectedCorridor ? (
-                    <div className="rounded-lg border border-[#dce1e1] bg-white p-5">
+                    <div className="rounded-lg border border-[#e3e6e1] bg-white p-5">
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="text-lg font-bold tracking-[-0.01em]">
                           {selectedCorridor.corridor.originRegion}
@@ -1299,7 +1286,7 @@ export default function TrafficOpportunity() {
                           {selectedCorridor.corridor.destinationRegion}
                         </p>
                         {selectedCorridor.corridor.crossBorder && (
-                          <span className="rounded-full bg-[#e7f1f0] px-2.5 py-1 text-xs font-semibold text-[#087782]">
+                          <span className="rounded-full bg-[#e4f3ec] px-2.5 py-1 text-xs font-semibold text-[#0a7c63]">
                             Grenzüberschreitend
                           </span>
                         )}
@@ -1315,30 +1302,30 @@ export default function TrafficOpportunity() {
                           value={`${formatNumber(selectedCorridor.corridor.totalDistanceKm)} km`}
                         />
                         <DetailStat
-                          label="Lkw 2030"
+                          label="Fahrten/Jahr · Modell 2030"
                           value={formatCompact(selectedCorridor.corridor.trucks2030)}
                           sub={`Wachstum ${formatPercent(selectedCorridor.score.growthPercent)}`}
                         />
                       </div>
                       <div className="mt-4">
                         <ComponentBar
-                          label="Distanzfit"
+                          label="Bewertung der Fahrtlänge"
                           value={selectedCorridor.score.components.distanceFit}
-                          explainer="Strecken zwischen 150 und 600 km passen am besten zu öffentlichem E-Lkw-Laden."
+                          explainer="Fahrten zwischen 150 und 600 km werden in diesem Score höher gewichtet. Das ist eine Planungsannahme, kein Nachweis für einen Ladestopp."
                         />
                       </div>
                       {corridorStats && (
                         <p className="mt-4 text-sm text-[#536066]">
                           {corridorStats.hubsOnRoute > 0
-                            ? `${corridorStats.hubsOnRoute} Lkw-Ladepark${corridorStats.hubsOnRoute > 1 ? "s" : ""} im Korridor · größte Ladelücke ≈ ${formatNumber(corridorStats.maxGapKm)} km`
-                            : "Noch kein Lkw-Ladepark im Korridor"}
+                            ? `${corridorStats.hubsOnRoute} bekannte Lkw-Ladepark${corridorStats.hubsOnRoute > 1 ? "s" : ""} im Umfeld der Verbindung · größter Abstand ohne erfassten Ladepark ≈ ${formatNumber(corridorStats.maxGapKm)} km. Grobe Näherung auf Basis der Luftlinie, keine Straßenroute.`
+                            : "In den verfügbaren Daten ist kein Lkw-Ladepark im Umfeld dieser Verbindung erfasst. Die tatsächliche Straßenroute ist nicht geprüft."}
                         </p>
                       )}
                     </div>
                   ) : (
-                    <p className="rounded-lg border border-dashed border-[#c5cdcf] px-5 py-4 text-sm text-[#5c676b]">
-                      Wähle einen Korridor – er erscheint als Route auf der Karte. Ladelücken
-                      werden über den Luftlinien-Korridor (±15 % Puffer) berechnet.
+                    <p className="rounded-lg border border-dashed border-[#cdd2cc] px-5 py-4 text-sm text-[#5c676b]">
+                      Noch keine Verbindung ausgewählt. Die Abstände zu Ladeparks werden
+                      entlang der Luftlinie geschätzt, nicht entlang einer geprüften Straßenroute.
                     </p>
                   )}
 
@@ -1352,14 +1339,14 @@ export default function TrafficOpportunity() {
                           type="button"
                           onClick={() => setSelectedCorridorKey(isSelected ? "" : key)}
                           className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition ${
-                            isSelected ? "bg-[#e7f1f0]" : "hover:bg-[#f1f4f4]"
+                            isSelected ? "bg-[#e4f3ec]" : "hover:bg-[#eef1ec]"
                           }`}
                         >
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#eef0f0] text-sm font-bold text-[#087782] tabular-nums">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#eef0f0] text-sm font-bold text-[#0a7c63] tabular-nums">
                             {score.score}
                           </span>
                           <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-semibold text-[#202426]">
+                            <span className="block truncate text-sm font-semibold text-[#0d1417]">
                               {shortName(corridor.originRegion)}
                               {corridor.originCountry !== "DE" && ` (${corridor.originCountry})`}
                               {" → "}
@@ -1369,11 +1356,11 @@ export default function TrafficOpportunity() {
                             </span>
                             <span className="block text-xs text-[#5c676b] tabular-nums">
                               {formatNumber(corridor.totalDistanceKm)} km ·{" "}
-                              {formatCompact(corridor.trucks2030)} Lkw 2030
+                              {formatCompact(corridor.trucks2030)} Fahrten/Jahr · Modell 2030
                             </span>
                           </span>
                           {corridor.crossBorder && (
-                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-[#087782]">
+                            <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-[#0a7c63]">
                               {corridor.originCountry !== "DE"
                                 ? corridor.originCountry
                                 : corridor.destinationCountry}
@@ -1388,13 +1375,13 @@ export default function TrafficOpportunity() {
 
               {activeTab === "regionen" && (
                 <div className="mt-4 space-y-4">
-                  <div className="rounded-lg border border-[#dce1e1] bg-white p-5">
+                  <div className="rounded-lg border border-[#e3e6e1] bg-white p-5">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="text-lg font-bold tracking-[-0.01em]">
                           {selected.region.name}
                         </p>
-                        <p className="mt-0.5 text-xs font-semibold text-[#087782]">
+                        <p className="mt-0.5 text-xs font-semibold text-[#0a7c63]">
                           Platz {selectedRank} von {scoredRegions.length} Regionen
                         </p>
                         <div className="mt-3">
@@ -1411,29 +1398,29 @@ export default function TrafficOpportunity() {
                       <ComponentBar
                         label="Verkehrsmenge"
                         value={selected.score.components.volume}
-                        explainer={`${formatCompact(selected.region.trucks2030)} Lkw-Fahrten 2030, Wurzelskala gegen die stärkste Region.`}
+                        explainer={`${formatCompact(selected.region.trucks2030)} berechnete Lkw-Fahrten im Jahr 2030. Verglichen mit der verkehrsstärksten Region; sehr große Unterschiede werden abgeschwächt.`}
                       />
                       <ComponentBar
                         label="Wachstum"
                         value={selected.score.components.growth}
-                        explainer={`${formatPercent(selected.score.growthPercent)} mehr als 2019 – Gesamt-Lkw, nicht E-Lkw-Hochlauf.`}
+                        explainer={`${formatPercent(selected.score.growthPercent)} Veränderung gegenüber 2019 im Modell. Gemeint sind alle Lkw, nicht nur elektrische.`}
                       />
                       <ComponentBar
-                        label="E-Lkw-Distanzfit"
+                        label="Bewertung der Fahrtlängen"
                         value={selected.score.components.distanceFit}
-                        explainer="Verkehrsgewichteter Anteil im 150–600-km-Fenster."
+                        explainer="Bewertet wird die Länge der Fahrten. Fahrten zwischen 150 und 600 km zählen stärker, weil unterwegs Laden eher relevant sein könnte."
                       />
                       <ComponentBar
-                        label="Korridor-Relevanz"
+                        label="Bedeutung der Verbindungen"
                         value={selected.score.components.corridorRelevance}
                         explainer={`${formatPercent(selected.region.crossBorderShare * 100)} grenzüberschreitend (${formatCompact(selected.region.crossBorderTrucks2030)} Fahrten).`}
                       />
                     </div>
 
-                    <div className="mt-5 grid gap-5 border-t border-[#dce1e1] pt-5 sm:grid-cols-2">
+                    <div className="mt-5 grid gap-5 border-t border-[#e3e6e1] pt-5 sm:grid-cols-2">
                       <div>
                         <p className="text-xs font-medium text-[#667278]">
-                          Verkehrstrend (Fahrten/Jahr)
+                          Berechneter Verkehr (Fahrten/Jahr)
                         </p>
                         <div className="mt-3">
                           <TrendBars region={selected.region} />
@@ -1451,11 +1438,11 @@ export default function TrafficOpportunity() {
                             >
                               <span className="flex min-w-0 items-center gap-2">
                                 {link.direction === "outbound" ? (
-                                  <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#087782]" />
+                                  <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#0a7c63]" />
                                 ) : (
-                                  <ArrowLeft className="h-3.5 w-3.5 shrink-0 text-[#087782]" />
+                                  <ArrowLeft className="h-3.5 w-3.5 shrink-0 text-[#0a7c63]" />
                                 )}
-                                <span className="truncate font-medium text-[#202426]">
+                                <span className="truncate font-medium text-[#0d1417]">
                                   {link.partnerName}
                                   {link.partnerCountry !== "DE" && ` (${link.partnerCountry})`}
                                 </span>
@@ -1470,14 +1457,14 @@ export default function TrafficOpportunity() {
                     </div>
                   </div>
 
-                  <label className="flex min-h-10 items-center gap-3 rounded-lg border border-[#dce1e1] bg-white px-4 text-sm focus-within:border-[#087782]">
+                  <label data-tour="region-search" className="flex min-h-10 items-center gap-3 rounded-lg border border-[#e3e6e1] bg-white px-4 text-sm focus-within:border-[#0a7c63]">
                     <Search className="h-4 w-4 text-[#667278]" />
                     <input
                       value={query}
                       onChange={(event) => setQuery(event.target.value)}
                       aria-label="Region suchen"
                       placeholder="Hamburg, Berlin, Köln..."
-                      className="w-full bg-transparent text-[#202426] placeholder:text-[#8a969a] outline-none"
+                      className="w-full bg-transparent text-[#0d1417] placeholder:text-[#8a969a] outline-none"
                     />
                   </label>
 
@@ -1492,20 +1479,20 @@ export default function TrafficOpportunity() {
                         onClick={() => setSelectedRegionId(region.id)}
                         className={`flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left transition ${
                           region.id === selected.region.id
-                            ? "bg-[#e7f1f0]"
-                            : "hover:bg-[#f1f4f4]"
+                            ? "bg-[#e4f3ec]"
+                            : "hover:bg-[#eef1ec]"
                         }`}
                       >
                         <span className="min-w-0">
-                          <span className="block truncate text-sm font-semibold text-[#202426]">
+                          <span className="block truncate text-sm font-semibold text-[#0d1417]">
                             {region.name}
                           </span>
                           <span className="block text-xs text-[#5c676b] tabular-nums">
                             Platz {regionRank.get(region.id)} ·{" "}
-                            {formatCompact(region.trucks2030)} Lkw 2030
+                            {formatCompact(region.trucks2030)} Fahrten/Jahr · Modell 2030
                           </span>
                         </span>
-                        <span className="shrink-0 text-base font-bold text-[#087782] tabular-nums">
+                        <span className="shrink-0 text-base font-bold text-[#0a7c63] tabular-nums">
                           {score.score}
                         </span>
                       </button>
@@ -1516,8 +1503,8 @@ export default function TrafficOpportunity() {
 
               {activeTab === "standort" && (
                 <div className="mt-4 space-y-4">
-                  <div className="flex gap-2">
-                    <label className="flex min-h-10 min-w-0 flex-1 items-center gap-3 rounded-lg border border-[#dce1e1] bg-white px-4 text-sm focus-within:border-[#087782]">
+                  <div data-tour="site-search" className="flex gap-2">
+                    <label className="flex min-h-10 min-w-0 flex-1 items-center gap-3 rounded-lg border border-[#e3e6e1] bg-white px-4 text-sm focus-within:border-[#0a7c63]">
                       <Search className="h-4 w-4 shrink-0 text-[#667278]" />
                       <input
                         value={placeQuery}
@@ -1527,14 +1514,14 @@ export default function TrafficOpportunity() {
                         }}
                         aria-label="Adresse oder Ort"
                         placeholder="Adresse oder Ort"
-                        className="w-full bg-transparent text-[#202426] placeholder:text-[#8a969a] outline-none"
+                        className="w-full bg-transparent text-[#0d1417] placeholder:text-[#8a969a] outline-none"
                       />
                     </label>
                     <button
                       type="button"
                       onClick={() => void searchPlace()}
                       disabled={placeSearching}
-                      className="rounded-lg bg-[#087782] px-4 text-sm font-semibold text-white transition hover:bg-[#06656e] disabled:opacity-50"
+                      className="rounded-lg bg-[#0a7c63] px-4 text-sm font-semibold text-white transition hover:bg-[#08664f] disabled:opacity-50"
                     >
                       {placeSearching ? "…" : "Prüfen"}
                     </button>
@@ -1542,7 +1529,7 @@ export default function TrafficOpportunity() {
                   {placeError && <p className="text-xs text-[#8b570b]">{placeError}</p>}
 
                   {pins.length === 0 && (
-                    <p className="rounded-lg border border-dashed border-[#c5cdcf] px-5 py-4 text-sm leading-relaxed text-[#5c676b]">
+                    <p className="rounded-lg border border-dashed border-[#cdd2cc] px-5 py-4 text-sm leading-relaxed text-[#5c676b]">
                       Noch kein Standort ausgewählt.
                     </p>
                   )}
@@ -1555,7 +1542,7 @@ export default function TrafficOpportunity() {
                           className={`group flex min-w-0 max-w-full items-center gap-2 rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                             pin.id === (activePin?.id || "")
                               ? "bg-[#e8a13a] text-[#3a2a08]"
-                              : "bg-[#eef0f0] text-[#3d474b] hover:text-[#202426]"
+                              : "bg-[#eef0f0] text-[#3d474b] hover:text-[#0d1417]"
                           }`}
                         >
                           <button type="button" onClick={() => setActivePinId(pin.id)} className="min-w-0 break-words text-left" aria-pressed={pin.id === activePin?.id}>
@@ -1580,9 +1567,19 @@ export default function TrafficOpportunity() {
                   )}
 
                   {activePin && activeAssessment && (
-                    <div className="rounded-lg border border-[#dce1e1] bg-white p-5">
-                      <TrafficBasisSelect id="screening-basis" context={activeTraffic} choice={basisChoices[activePin.id]} onChange={(choice) => changeBasis(activePin.id, choice)} unavailable={siteDataError || (!consistentPlanningData ? "Standortdaten werden geladen" : undefined)} />
-                      {siteDataError && <button type="button" onClick={() => setPlanningRetry((n) => n + 1)} className="mt-2 text-xs font-semibold text-[#087782]">Erneut laden</button>}
+                    <div className="rounded-lg border border-[#e3e6e1] bg-white p-5">
+                      <div data-tour="basis"><TrafficBasisSelect id="screening-basis" siteLabel={activePin.label} context={activeTraffic} choice={basisChoices[activePin.id]} onChange={(choice) => changeBasis(activePin.id, choice)} unavailable={siteDataError || (!consistentPlanningData ? "Standortdaten werden geladen" : undefined)} /></div>
+                      {verdict && verdict.siteId === activePin.id && (
+                        <a href="#wirtschaftlichkeit" className="group block rounded-lg bg-[#0b1215] p-4 text-white transition hover:bg-[#121c20] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0a7c63]">
+                          <span className="text-[11px] text-white/55">Ergebnis unter deinen Annahmen</span>
+                          <span className={`mt-1 block text-lg font-semibold leading-tight tracking-[-0.02em] ${verdict.tone === "good" ? "text-[#c6f24e]" : verdict.tone === "mixed" ? "text-[#ffc46b]" : "text-[#ff8f86]"}`}>{verdict.title}</span>
+                          <span className="mt-2 block font-mono text-[13px] tabular-nums text-white/80">
+                            Kapitalwert {[verdict.low, verdict.base, verdict.high].map((v) => `${v < 0 ? "−" : ""}${Math.abs(v / 1e6).toLocaleString("de-DE", { maximumFractionDigits: 2 })}`).join(" · ")} Mio. €
+                          </span>
+                          <span className="mt-2 block text-xs text-white/55 group-hover:text-white">Niedrig · Basis · Hoch — Details und Annahmen ansehen ↓</span>
+                        </a>
+                      )}
+                      {siteDataError && <button type="button" onClick={() => setPlanningRetry((n) => n + 1)} className="mt-2 text-xs font-semibold text-[#0a7c63]">Erneut laden</button>}
                       <SiteEvidence context={activeTraffic} networkSize={consistentPlanningData?.network.edges.length} />
                       <ul className="mt-3 space-y-1.5 text-sm leading-relaxed text-[#536066]">
                         {activeAssessment.reasons.filter((reason) => !reason.includes("Modellstrecke")).map((reason) => (
@@ -1592,9 +1589,9 @@ export default function TrafficOpportunity() {
                           </li>
                         ))}
                       </ul>
-                      <div className="mt-4 grid grid-cols-2 gap-4 border-t border-[#dce1e1] pt-4 sm:grid-cols-4">
+                      <div className="mt-4 grid grid-cols-2 gap-4 border-t border-[#e3e6e1] pt-4 sm:grid-cols-4">
                         <DetailStat
-                          label="Modellkontext · Strecke"
+                          label="Berechneter Straßenabschnitt"
                           value={
                             activeAssessment.edge
                               ? `#${activeAssessment.edge.edgeId}`
@@ -1602,18 +1599,18 @@ export default function TrafficOpportunity() {
                           }
                           sub={
                             activeAssessment.edge
-                              ? `${activeAssessment.edge.km.toLocaleString("de-DE")} km geometrisch`
+                              ? `${activeAssessment.edge.km.toLocaleString("de-DE")} km Abstand auf der Karte`
                               : consistentPlanningData ? "Keine Strecke ≤ 10 km" : "Zuordnung offen"
                           }
                         />
                         <DetailStat
-                          label="Lkw-Lader · Luftlinie"
+                          label="Nächster bekannter Lkw-Ladepark"
                           value={
                             activeAssessment.hub
                               ? `${activeAssessment.hub.km.toLocaleString("de-DE")} km`
                               : "—"
                           }
-                          sub={activeAssessment.hub?.name}
+                          sub={activeAssessment.hub ? `${activeAssessment.hub.name} · Luftlinie` : undefined}
                         />
                         <DetailStat
                           label="Region"
@@ -1625,7 +1622,7 @@ export default function TrafficOpportunity() {
                           }
                         />
                         <DetailStat
-                          label="Netz-Proxy"
+                          label="Nächstes Umspannwerk"
                           value={
                             activeAssessment.substation
                               ? `${activeAssessment.substation.km.toLocaleString("de-DE")} km`
@@ -1633,27 +1630,27 @@ export default function TrafficOpportunity() {
                           }
                           sub={
                             activeAssessment.substation
-                              ? `Umspannwerk ${activeAssessment.substation.kv} kV`
+                              ? `${activeAssessment.substation.kv} kV · keine Zusage für einen Netzanschluss`
                               : undefined
                           }
                         />
                       </div>
                       <SiteAccessCheck key={`${activePin.id}:${activeTraffic?.edge?.edge.edgeId ?? "none"}`} site={{ ...activePin, label: activePin.label || "Standort" }} context={activeTraffic} />
                       {activePin && (
-                        <div className="mt-4 border-t border-[#dce1e1] pt-4">
-                          <a href="#wirtschaftlichkeit" className="inline-flex items-center gap-2 text-sm font-semibold text-[#087782]">Wirtschaftlichkeit berechnen <ArrowRight size={16} /></a>
-                          <p className="mt-2 text-xs leading-relaxed text-[#5c676b]">Planungszeitraum 2027–2036 mit Quellenwahl, Hochlauf, Warteschlangen und Kapitalwert.</p>
+                        <div className="mt-4 border-t border-[#e3e6e1] pt-4">
+                          <a href="#wirtschaftlichkeit" className="inline-flex items-center gap-2 text-sm font-semibold text-[#0a7c63]">Wirtschaftlichkeit berechnen <ArrowRight size={16} /></a>
+                          <p className="mt-2 text-xs leading-relaxed text-[#5c676b]">Einnahmen, Kosten und mögliche Ladungen für 2027–2036 unter deinen Annahmen.</p>
                         </div>
                       )}
                       <p className="mt-3 text-xs leading-relaxed text-[#667278]">
-                        Standort-Screening, keine Investitions- oder Bauempfehlung. Netzanschluss,
-                        Fläche und Genehmigung erfordern eine separate Prüfung.
+                        Erste Einschätzung, keine Bau- oder Investitionsempfehlung. Netzanschluss,
+                        Fläche und Genehmigung müssen separat geklärt werden.
                       </p>
                     </div>
                   )}
 
                   {pins.length >= 2 && (
-                    <div className="rounded-lg border border-[#dce1e1] bg-white p-4">
+                    <div className="rounded-lg border border-[#e3e6e1] bg-white p-4">
                       <p className="text-xs font-medium text-[#667278]">
                         Vergleich
                       </p>
@@ -1701,37 +1698,38 @@ export default function TrafficOpportunity() {
           onRetry={() => setPlanningRetry((n) => n + 1)}
           choices={basisChoices}
           onBasisChange={changeBasis}
+          onVerdict={setVerdict}
         />
       )}
       {activeTab === "standort" && pins.length > 0 && !embed && (
         <section className="mx-auto max-w-7xl px-4 pt-10 sm:px-6 lg:px-12">
-        <div className="rounded-lg border border-[#dce1e1] bg-white p-5">
+        <div className="rounded-lg border border-[#e3e6e1] bg-white p-5">
           {leadStatus === "sent" ? (
             <p className="text-sm leading-relaxed text-[#3d474b]">
-              Danke! Wir melden uns mit der Detail-Analyse zu deinen Standorten.
+              Danke für deine Anfrage! Wir melden uns, um deine Standorte und die nächsten Prüfungen zu besprechen.
             </p>
           ) : (
             <>
-              <p className="text-sm font-semibold text-[#202426]">
-                Detail-Analyse anfordern
+              <p className="text-sm font-semibold text-[#0d1417]">
+                Standorte gemeinsam prüfen
               </p>
               <p className="mt-1 text-xs leading-relaxed text-[#5c676b]">
-                Wir prüfen deine Standorte vertieft — inklusive Netzanschluss-Frage
-                und Wirtschaftlichkeit über DepotOne.
+                Lass uns besprechen, welche Kundendaten, Netzangebote und Kostenangaben
+                für eine belastbare Planung deiner Standorte noch fehlen.
               </p>
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
                 <input
                   value={lead.name}
                   onChange={(event) => setLead({ ...lead, name: event.target.value })}
                   placeholder="Name*"
-                  className="rounded-lg border border-[#dce1e1] bg-white px-3 py-2 text-sm text-[#202426] placeholder:text-[#8a969a] outline-none focus:border-[#087782]"
+                  className="rounded-lg border border-[#e3e6e1] bg-white px-3 py-2 text-sm text-[#0d1417] placeholder:text-[#8a969a] outline-none focus:border-[#0a7c63]"
                 />
                 <input
                   value={lead.email}
                   onChange={(event) => setLead({ ...lead, email: event.target.value })}
                   placeholder="E-Mail*"
                   type="email"
-                  className="rounded-lg border border-[#dce1e1] bg-white px-3 py-2 text-sm text-[#202426] placeholder:text-[#8a969a] outline-none focus:border-[#087782]"
+                  className="rounded-lg border border-[#e3e6e1] bg-white px-3 py-2 text-sm text-[#0d1417] placeholder:text-[#8a969a] outline-none focus:border-[#0a7c63]"
                 />
                 <input
                   value={lead.company}
@@ -1739,32 +1737,61 @@ export default function TrafficOpportunity() {
                     setLead({ ...lead, company: event.target.value })
                   }
                   placeholder="Firma"
-                  className="rounded-lg border border-[#dce1e1] bg-white px-3 py-2 text-sm text-[#202426] placeholder:text-[#8a969a] outline-none focus:border-[#087782]"
+                  className="rounded-lg border border-[#e3e6e1] bg-white px-3 py-2 text-sm text-[#0d1417] placeholder:text-[#8a969a] outline-none focus:border-[#0a7c63]"
+                />
+                {/* Honeypot: hidden from people and assistive tech, filled only by bots. */}
+                <input
+                  value={lead.website}
+                  onChange={(event) => setLead({ ...lead, website: event.target.value })}
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] h-px w-px opacity-0"
                 />
               </div>
+              <label className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-[#5c676b]">
+                <input
+                  type="checkbox"
+                  checked={lead.consent}
+                  onChange={(event) => setLead({ ...lead, consent: event.target.checked })}
+                  className="mt-0.5"
+                />
+                <span>
+                  Ich bin einverstanden, dass meine Angaben und die gewählten Standorte per E-Mail an das Truckonomics-Team
+                  übermittelt und nur zur Beantwortung dieser Anfrage verwendet werden. Ich kann die Einwilligung jederzeit
+                  per E-Mail widerrufen.*
+                </span>
+              </label>
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <Button
                   onClick={() => void submitLead()}
                   disabled={
                     leadStatus === "sending" ||
                     !lead.name.trim() ||
-                    !lead.email.trim()
+                    !lead.email.trim() ||
+                    !lead.consent
                   }
-                  className="rounded-md bg-[#087782] px-5 text-white hover:bg-[#06656e]"
+                  className="rounded-md bg-[#0a7c63] px-5 text-white hover:bg-[#08664f]"
                 >
                   {leadStatus === "sending" ? "Sende…" : "Anfrage senden"}
                 </Button>
                 <a href="https://depot-readiness-check.vercel.app/">
                   <Button
                     variant="outline"
-                    className="rounded-md border-[#c5cdcf] bg-white text-[#202426] hover:bg-[#f1f4f4]"
+                    className="rounded-md border-[#cdd2cc] bg-white text-[#0d1417] hover:bg-[#eef1ec]"
                   >
-                    Readiness Check starten
+                    Depot-Check öffnen
                   </Button>
                 </a>
+                {leadStatus === "limited" && (
+                  <span className="text-xs text-[#8b570b]">
+                    Gerade sind zu viele Anfragen eingegangen. Bitte versuche es in einer Stunde erneut.
+                  </span>
+                )}
                 {leadStatus === "error" && (
                   <span className="text-xs text-[#8b570b]">
-                    Senden fehlgeschlagen — bitte später erneut versuchen.
+                    Die Anfrage konnte nicht gesendet werden. Bitte versuche es später erneut.
                   </span>
                 )}
               </div>
@@ -1776,34 +1803,36 @@ export default function TrafficOpportunity() {
 
       <main className="mx-auto max-w-7xl space-y-10 px-4 py-12 sm:px-6 lg:px-12">
         <section id="methodik">
-          <p className="text-xs font-semibold text-[#087782]">
-            Methodik & Quellen
+          <p className="text-xs font-semibold text-[#0a7c63]">
+            Daten & Aussagekraft
           </p>
           <h2 className="mt-1.5 max-w-2xl text-2xl font-bold leading-tight">
-            Synthetische Flüsse, reale Zähldaten, dokumentierte Ladeparks
+            Was die Daten zeigen. Und was noch offen ist.
           </h2>
 
           <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <div className="rounded-lg border border-[#dce1e1] bg-white p-5 sm:p-6">
+            <div className="rounded-lg border border-[#e3e6e1] bg-white p-5 sm:p-6">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="mt-1 h-5 w-5 shrink-0 text-[#087782]" />
+                <AlertTriangle className="mt-1 h-5 w-5 shrink-0 text-[#0a7c63]" />
                 <div>
-                  <h3 className="text-base font-bold">Evidenzgrenze</h3>
+                  <h3 className="text-base font-bold">Viel Verkehr heißt nicht automatisch viele Ladekunden</h3>
                   <p className="mt-2.5 text-sm leading-relaxed text-[#536066]">
-                    Der Score bewertet Verkehrspotenzial, keine Wirtschaftlichkeit. Er ist der
-                    erste Filter, bevor Netzanschluss, Fläche, Haltezeiten, Wettbewerb und
-                    Kundenverträge geprüft werden. Der Score zeigt, wo Verkehr ist, nicht wie
-                    schnell er elektrisch wird. Die getrennte Ladepark-Planung verwendet
-                    ausdrücklich angenommene E-Lkw-Hochlaufszenarien, keine Prognose.
+                    Der Score vergleicht Regionen und Verbindungen nach ihrem berechneten
+                    Lkw-Verkehr. Er sagt nicht, wie viele dieser Lkw elektrisch fahren oder
+                    hier laden würden. Die Werte für 2010, 2019 und 2030 stammen aus einem
+                    synthetischen Datensatz: Die Fahrten sind berechnet, nicht einzeln beobachtet.
                   </p>
                   <p className="mt-2.5 text-sm leading-relaxed text-[#536066]">
-                    {data.metadata.knownCaveat}
+                    Die Wirtschaftlichkeitsrechnung ist davon getrennt und verwendet deine
+                    Annahmen. Netzanschluss, Fläche, Zufahrt, Haltezeiten und feste Kunden
+                    müssen vor einer Investition zusätzlich geprüft werden.
                   </p>
+                  <details className="mt-3 text-xs leading-relaxed text-[#667278]"><summary>Bekannte Einschränkung des Verkehrsmodells</summary><p className="mt-2">Einzelne Strecken können im Ausgangsdatensatz in der falschen Fahrtrichtung aufgeführt sein. Die Richtung einer Modellstrecke ist deshalb kein gesicherter Nachweis.</p><p className="mt-2">{data.metadata.knownCaveat}</p></details>
                   <a
                     href={data.metadata.sourceUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#087782]"
+                    className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#0a7c63]"
                   >
                     Quelle ansehen
                     <ExternalLink className="h-4 w-4" />
@@ -1813,34 +1842,38 @@ export default function TrafficOpportunity() {
             </div>
 
             {validation && (
-              <div className="rounded-lg border border-[#dce1e1] border-l-[3px] border-l-[#087782] bg-white p-5 sm:p-6">
+              <div className="rounded-lg border border-[#e3e6e1] border-l-[3px] border-l-[#0a7c63] bg-white p-5 sm:p-6">
                 <div className="flex items-start gap-3">
-                  <BadgeCheck className="mt-1 h-5 w-5 shrink-0 text-[#087782]" />
+                  <BadgeCheck className="mt-1 h-5 w-5 shrink-0 text-[#0a7c63]" />
                   <div>
                     <h3 className="text-base font-bold">
-                      Mit realen Zähldaten geprüft
+                      Mit Verkehrszählungen verglichen
                     </h3>
                     <p className="mt-2.5 text-sm leading-relaxed text-[#536066]">
-                      Die modellierten Streckenwerte korrelieren mit den
-                      Schwerverkehrsmessungen von {validation.stationCount}{" "}
-                      BASt-Autobahn-Dauerzählstellen ({validation.year}): Rangkorrelation{" "}
-                      <strong className="text-[#202426]">
+                      Berechnete Abschnitte mit viel Verkehr sind meist auch in den Messungen
+                      stärker befahren. Der Vergleich mit {validation.stationCount}{" "}
+                      Autobahn-Zählstellen aus {validation.year} ergibt eine Ähnlichkeit der Rangfolge von{" "}
+                      <strong className="text-[#0d1417]">
                         {new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 }).format(
                           validation.spearman,
                         )}
                       </strong>{" "}
-                      über {validation.matchedEdges} abgeglichene Streckenabschnitte.
+                      über {validation.matchedEdges} zugeordnete Abschnitte. Das ist keine
+                      Aussage wie „81 % genau“ und bestätigt keine Ladekundenzahl.
                     </p>
                     <p className="mt-2.5 text-xs leading-relaxed text-[#667278]">
-                      {validation.methodNote}
-                    </p>
+                      Verglichen werden berechnete Werte für 2019 mit Messungen von {validation.year}.
+                      Die Messungen enthalten auch Busse. Die Zuordnung erfolgt nach Nähe
+                      auf der Karte, nicht nach einer geprüften Straßenverbindung.
+                  </p>
+                    <details className="mt-3 text-xs leading-relaxed text-[#667278]"><summary>Genaue Vergleichsmethode</summary><p className="mt-2">{validation.methodNote}</p></details>
                     <a
                       href={validation.sourceUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#087782]"
+                      className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#0a7c63]"
                     >
-                      BASt-Zählstellen ansehen
+                      Verkehrszählstellen der BASt ansehen
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </div>
@@ -1849,58 +1882,63 @@ export default function TrafficOpportunity() {
             )}
 
             {charging && (
-              <div className="rounded-lg border border-[#dce1e1] bg-white p-5 sm:p-6">
+              <div className="rounded-lg border border-[#e3e6e1] bg-white p-5 sm:p-6">
                 <div className="flex items-start gap-3">
                   <PlugZap className="mt-1 h-5 w-5 shrink-0 text-[#7c3aed]" />
                   <div>
                     <h3 className="text-base font-bold">
-                      Lkw-Ladepark-Datenbasis
+                      Welche Ladeparks erfasst sind
                     </h3>
                     <p className="mt-2.5 text-sm leading-relaxed text-[#536066]">
-                      {liveHubs.length} verifizierte Lkw-Ladeparks in Betrieb (Milence, Aral
+                      {liveHubs.length} dokumentierte Lkw-Ladeparks in Betrieb (Milence, Aral
                       pulse, Daimler TruckCharge, E.ON Drive/MAN u. a.), dazu{" "}
                       {charging.verified.length - liveHubs.length} angekündigte. Quelle:
-                      BNetzA-Ladesäulenregister (Stand{" "}
+                      Ladepunktregister der Bundesnetzagentur (Stand{" "}
                       {new Date(charging.metadata.bnetzaDataDate).toLocaleDateString("de-DE")})
                       und Betreiber-Pressemitteilungen, je Standort dokumentiert.
                     </p>
                     <p className="mt-2.5 text-xs leading-relaxed text-[#667278]">
-                      {charging.metadata.methodNote}
-                    </p>
+                      Als Lkw-Ladepark zählt hier ein Standort mit einem belegten Angebot
+                      für Lkw. Hohe Ladeleistung allein genügt dafür nicht: Ein Sattelzug
+                      muss den Platz auch erreichen und dort rangieren können. Die Liste
+                      ist keine Garantie für vollständigen Bestand oder freie Ladeplätze.
+                  </p>
+                    <details className="mt-3 text-xs leading-relaxed text-[#667278]"><summary>So werden die Standorte ausgewählt</summary><p className="mt-2">{charging.metadata.methodNote}</p></details>
                   </div>
                 </div>
               </div>
             )}
 
             {trendData && (
-              <div className="rounded-lg border border-[#dce1e1] bg-white p-5 sm:p-6">
+              <div className="rounded-lg border border-[#e3e6e1] bg-white p-5 sm:p-6">
                 <div className="flex items-start gap-3">
-                  <Gauge className="mt-1 h-5 w-5 shrink-0 text-[#087782]" />
+                  <Gauge className="mt-1 h-5 w-5 shrink-0 text-[#0a7c63]" />
                   <div>
                     <h3 className="text-base font-bold">
-                      Historischer Modelltest & Tagesgang (Chronos-2)
+                      Was der bisherige Prognosetest gezeigt hat
                     </h3>
                     <p className="mt-2.5 text-sm leading-relaxed text-[#536066]">
-                      {Object.keys(trendData.edges).length} Hotspot-Strecken sind mit realen
-                      Stundenmessungen der nächstgelegenen BASt-Dauerzählstelle (2016–2023)
-                      hinterlegt. Der gespeicherte Chronos-2-Lauf ist keine aktuelle Prognose.
-                      Im Backtest gegen das zurückgehaltene letzte Jahr deckte das 80-%-Band{" "}
-                      {formatPercent((trendData.metadata.meanCoverage80 || 0) * 100)} der
-                      Realität ab ({trendData.metadata.stationsBacktested} Stationen).
+                      Für {Object.keys(trendData.edges).length} verkehrsstarke Abschnitte
+                      liegen Stundenmessungen nahe gelegener Zählstellen aus 2016–2023 vor.
+                      Mit dem KI-Modell Chronos-2 wurde geprüft, wie gut sich ein damals
+                      noch zurückgehaltenes Jahr vorhersagen ließ. Nur{" "}
+                      {trendData.metadata.stationsBeatingNaive} von {trendData.metadata.stationsBacktested}{" "}
+                      getesteten Stationen waren besser als die einfache Annahme:
+                      „Diese Woche wird wie dieselbe Woche im Vorjahr.“
                     </p>
                     <p className="mt-2.5 text-xs leading-relaxed text-[#667278]">
-                      Median-Skill gegenüber Saisonal-Naiv: {trendData.metadata.medianSkillVsSeasonalNaive === null ? "nicht verfügbar" : formatPercent(trendData.metadata.medianSkillVsSeasonalNaive * 100)}.
-                      Nur {trendData.metadata.stationsBeatingNaive} von {trendData.metadata.stationsBacktested} Stationen schlagen die Baseline.
-                      Das belegt keinen durchgängigen Prognosevorteil und keine heutige Standortnachfrage.
-                      Die Wirtschaftlichkeitsszenarien werden davon nicht hochgerechnet. {trendData.metadata.methodNote}
-                    </p>
+                      Das Modell war nicht durchgängig besser. Es liefert keine aktuelle
+                      Prognose und verändert die angenommene Ladekundenzahl in der
+                      Wirtschaftlichkeitsrechnung nicht.
+                  </p>
+                    <details className="mt-3 text-xs leading-relaxed text-[#667278]"><summary>Testergebnisse & Rechenmethode</summary><p className="mt-2">Typische Verbesserung gegenüber dem Vorjahresvergleich (Median): {trendData.metadata.medianSkillVsSeasonalNaive === null ? "nicht verfügbar" : formatPercent(trendData.metadata.medianSkillVsSeasonalNaive * 100)}. Ein negativer Wert bedeutet einen größeren Fehler als beim einfachen Vergleich. Der für 80 % der Werte vorgesehene Modellbereich enthielt {trendData.metadata.meanCoverage80 === null ? "einen nicht verfügbaren Anteil" : formatPercent(trendData.metadata.meanCoverage80 * 100)} der gemessenen Werte. Das ist keine Garantie für künftige Vorhersagen.</p><p className="mt-2">{trendData.metadata.methodNote}</p></details>
                     <a
                       href={trendData.metadata.sourceUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#087782]"
+                      className="mt-3 inline-flex items-center gap-2 text-sm font-semibold text-[#0a7c63]"
                     >
-                      BASt-Stundenwerte ansehen
+                      Stündliche Verkehrsmessungen ansehen
                       <ExternalLink className="h-4 w-4" />
                     </a>
                   </div>
@@ -1912,31 +1950,31 @@ export default function TrafficOpportunity() {
         </section>
 
         {!embed && (
-          <section className="rounded-lg border border-[#dce1e1] bg-white p-5 sm:p-8">
+          <section className="rounded-lg border border-[#e3e6e1] bg-white p-5 sm:p-8">
             <div className="flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
               <div>
                 <h2 className="max-w-2xl text-xl font-bold leading-snug">
-                  Region sieht gut aus? Dann prüfe als Nächstes dein Depot.
+                  Ein eigenes Depot elektrifizieren?
                 </h2>
                 <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#536066]">
-                  Der Traffic Opportunity Score zeigt das Verkehrspotenzial. Der DepotOne
-                  Readiness Check bewertet, wie bereit ein konkreter Standort für die
-                  Elektrifizierung ist – Netzanschluss, Fläche, Fuhrpark.
+                  Der Traffic Opportunity Score betrachtet Verkehr und mögliche externe
+                  Ladekunden. Für die eigene Flotte geht es zusätzlich um Netzanschluss,
+                  Fläche und Fahrzeuge. Dafür gibt es den getrennten Depot-Check.
                 </p>
               </div>
               <div className="flex flex-wrap gap-3">
                 <a href="https://depot-readiness-check.vercel.app/">
-                  <Button className="rounded-md bg-[#087782] px-5 text-white hover:bg-[#06656e]">
-                    Readiness Check starten
+                  <Button className="rounded-md bg-[#0a7c63] px-5 text-white hover:bg-[#08664f]">
+                    Depot-Check öffnen
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </a>
                 <a href="https://truckonomics.vercel.app/">
                   <Button
                     variant="outline"
-                    className="rounded-md border-[#c5cdcf] bg-white px-5 text-[#202426] hover:bg-[#f1f4f4]"
+                    className="rounded-md border-[#cdd2cc] bg-white px-5 text-[#0d1417] hover:bg-[#eef1ec]"
                   >
-                    TCO-Rechner öffnen
+                    Lkw-Kosten vergleichen
                   </Button>
                 </a>
               </div>
@@ -1945,14 +1983,14 @@ export default function TrafficOpportunity() {
         )}
 
         <footer className="pb-6 text-center text-xs text-[#667278]">
-          Datenstand:{" "}
+          Verkehrsauswertung erstellt am:{" "}
           {new Date(data.metadata.generatedAt).toLocaleDateString("de-DE", {
             year: "numeric",
             month: "long",
             day: "numeric",
           })}{" "}
           · {data.metadata.source} · {formatNumber(data.summary.flowRows)} ausgewertete
-          Verkehrsbeziehungen
+          Verbindungen zwischen Start- und Zielregionen. Die weiteren Quellen haben jeweils ihren eigenen Datenstand.
         </footer>
       </main>
     </div>

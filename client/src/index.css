@@ -1,37 +1,3 @@
-/* E.ON Corporate Fonts */
-@font-face {
-  font-family: 'EON Head';
-  src: url('./assets/fonts/EONScreen-Head.woff2') format('woff2'),
-       url('./assets/fonts/EONScreen-Head.woff') format('woff');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'EON Brix Sans';
-  src: url('./assets/fonts/Schrift_EON_BrixSans-Regular.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'EON Brix Sans';
-  src: url('./assets/fonts/EON_BrixSans-Medium.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'EON Brix Sans';
-  src: url('./assets/fonts/EON_BrixSans-Bold.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -50,10 +16,10 @@
   --elevate-2: rgba(0,0,0, .06);
 
   /* E.ON Light Grey Background */
-  --background: 0 0% 96%;
+  --background: 75 12% 95%;
 
   /* E.ON Dark Grey Text */
-  --foreground: 0 0% 25%;
+  --foreground: 195 28% 7%;
 
   /* E.ON Border Grey */
   --border: 0 0% 91%;
@@ -72,7 +38,7 @@
   --sidebar-border: 0 0% 16%;
 
   /* E.ON Red - signature accent */
-  --sidebar-primary: 5 95% 48%;
+  --sidebar-primary: 164 85% 26%;
 
   --sidebar-primary-foreground: 0 0% 100%;
 
@@ -80,7 +46,7 @@
 
   --sidebar-accent-foreground: 0 0% 98%;
 
-  --sidebar-ring: 5 95% 48%;
+  --sidebar-ring: 164 85% 26%;
 
   --popover: 0 0% 100%;
 
@@ -89,7 +55,7 @@
   --popover-border: 0 0% 91%;
 
   /* E.ON Red Primary - energetic and confident */
-  --primary: 5 95% 48%;
+  --primary: 164 85% 26%;
 
   --primary-foreground: 0 0% 100%;
 
@@ -106,25 +72,25 @@
   --accent-foreground: 0 0% 25%;
 
   /* E.ON Red for destructive actions */
-  --destructive: 5 95% 48%;
+  --destructive: 164 85% 26%;
 
   --destructive-foreground: 0 0% 100%;
 
   --input: 0 0% 84%;
-  --ring: 5 95% 48%;
+  --ring: 164 85% 26%;
 
   /* Chart colors - E.ON compatible palette */
-  --chart-1: 5 95% 48%;
+  --chart-1: 164 85% 26%;
   --chart-2: 142 76% 36%;
   --chart-3: 211 100% 50%;
   --chart-4: 25 95% 53%;
   --chart-5: 280 70% 50%;
 
   /* E.ON Typography */
-  --font-sans: 'EON Brix Sans', system-ui, -apple-system, sans-serif;
-  --font-serif: 'EON Head', Georgia, serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  --radius: .25rem; /* 4px - Editorial Premium: subtle corners */
+  --font-sans: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-serif: 'Geist', system-ui, -apple-system, sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, monospace;
+  --radius: .5rem; /* 4px - Editorial Premium: subtle corners */
 
   /* Neutral shadows */
   --shadow-2xs: 0px 1px 2px 0px hsl(0 0% 0% / 0.03);
@@ -139,7 +105,7 @@
   --spacing: 0.25rem;
 
   /* E.ON gradient mesh colors */
-  --gradient-1: 5 95% 48%;
+  --gradient-1: 164 85% 26%;
   --gradient-2: 5 80% 38%;
   --gradient-3: 330 70% 45%;
 
@@ -743,6 +709,8 @@ textarea:focus-visible {
   --chart-1: 0 0% 20%;
   --chart-2: 0 0% 35%;
   --chart-3: 0 0% 50%;
-  --chart-4: 5 95% 48%; /* E.ON Red accent only */
+  --chart-4: 164 85% 26%; /* E.ON Red accent only */
   --chart-5: 0 0% 65%;
 }
+/* Zahlen im ganzen Interface mit gleicher Breite und in Geist Mono, wo sie Ergebnisse sind. */
+.tabular-nums, [data-testid="planning-npv"] { font-feature-settings: "tnum" 1; }

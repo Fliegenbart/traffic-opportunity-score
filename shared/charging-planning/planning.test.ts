@@ -96,7 +96,7 @@ const request = {
   scenarios: [{ id: "basis", label: "Basis", years: [{ year: 2027, evShare: 0.1, trafficMultiplier: 1 }, { year: 2028, evShare: 0.2, trafficMultiplier: 1 }] }],
 };
 const result = runChargingPlan(request);
-assert.equal(result.modelVersion, "charging-planning-v1");
+assert.equal(result.modelVersion, "charging-planning-v2");
 assert.equal(result.status, "scenario_only");
 assert.equal(result.scenarios[0].years[0].calendarDays, 365);
 assert.equal(result.scenarios[0].years[1].calendarDays, 366);

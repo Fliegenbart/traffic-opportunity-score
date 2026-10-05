@@ -44,7 +44,7 @@ export function simulateDay(input: ChargingSession[], rawCapacity: CapacityInput
     peakQueue = Math.max(peakQueue, queue.length);
     const active = open ? ports.filter((p) => p.session) : [];
     // Port power is delivered DC power; shared grid power is upstream AC power.
-    const powerPerPort = active.length ? Math.min(capacity.portPowerKw, capacity.gridPowerKw * efficiency / active.length) : 0;
+    const powerPerPort = active.length ? Math.min(capacity.portPowerKw, capacity.vehiclePowerKw ?? 2000, capacity.gridPowerKw * efficiency / active.length) : 0;
     let delivered = 0;
     for (const port of active) {
       const s = port.session!;

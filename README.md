@@ -22,6 +22,13 @@ prüft diese Projektgrenzen; die Prüfung ist Teil von `npm test`.
 ## Traffic Opportunity Score
 
 - Frontend: `client/src/pages/traffic-opportunity.tsx`, Karte in `client/src/components/traffic-map.tsx`
+- Tutorial: ein- und ausschaltbare, nicht blockierende Führung mit 13 Schritten, markierten
+  Bedienelementen und Hinweisen zu Annahmen und offenen Prüfungen. Startet beim ersten
+  regulären Besuch; Einstellung und Fortschritt bleiben lokal im Browser gespeichert.
+  Im Embed-Modus kein automatischer Start. Das Tutorial setzt keine Standorte oder
+  Berechnungsannahmen selbst. Ohne Standort wartet die Führung bei der Auswahl.
+  Komponente: `client/src/components/traffic-tutorial.tsx`, Inhalte und Zustandsprüfung:
+  `client/src/lib/traffic-tutorial.ts`; Tests: `npm run test:tutorial` (Teil von `npm test`).
 - Score-Logik: `shared/traffic-opportunity.ts` (Test: `npm run test:traffic`)
 - Daten: `client/public/data/traffic-opportunity-de.json`, generiert aus der lokalen Mendeley-ZIP
   (liegt bewusst nicht im Repo) per `python3 scripts/build_traffic_opportunity_de.py`
@@ -87,7 +94,7 @@ die Streckenmitte ist eine Suchposition, keine bestätigte Zufahrt oder verfügb
   gegen das vollständige Netz geprüft. Widersprüche sperren Standortberechnungen.
   BASt-Tageswert ist der Mittelwert gültiger Stunden × 24, kein Jahres-DTV.
 - Nachfrage aus erreichbarem Verkehr, angenommenem E-Lkw-Anteil und Anhaltequote sowie Ankerkunden.
-- Fünf-Minuten-Simulation mit Ladeplätzen, Netzleistung, Warteschlange, Öffnungszeit,
+- Fünf-Minuten-Simulation mit Fahrzeugobergrenze, Ladeplätzen, Netzleistung, Warteschlange, Öffnungszeit,
   Wechselzeiten und Ladeverlusten.
 - Jahrescashflows 2027–2036, Kapitalwert und diskontierte Amortisation einschließlich
   Kostenentwicklung, Ersatzinvestitionen und Restwert.
@@ -106,6 +113,23 @@ Rechenlogik: `shared/charging-planning/`. Der frühere Traffic-Tagesmittelrechne
 in `shared/site-economics.ts` bleibt als getestetes Legacy-Modul erhalten, ist aber nicht
 an die Oberfläche angebunden. Vollständiger Rechenvertrag und Datenstand:
 [Ladepark-Planungsengine](docs/charging-planning-engine.md).
+
+Öffentliche Referenzen stehen im vorhandenen Planer: SMARD-Preisjahr 2025 mit frei
+festgelegtem Bezugsaufschlag, DWD-Temperaturkontext mit explizitem Energiestress,
+BASt-Vergleich Januar/Juli 2026, Renault-Leistungsobergrenzen und historische
+DHL-Namensreferenzen. Eine Anzeige verändert keine Annahme automatisch. Übernommene
+Parameter behalten Quellen und Methodennotizen im CSV/JSON; manuelle Änderungen
+entfernen die betreffende Referenz. MaStR/VNBdigital/PVGIS bleiben offene
+Recherchezugänge, keine bestätigte Netzkapazität oder importierten Standortlasten.
+
+HERE-Lkw-Routing ist unter `/api/site-access` implementiert und separat getestet.
+Serverseitig sind `HERE_API_KEY` und die explizite Aktivierung `HERE_ROUTING_ENABLED=1`
+erforderlich. Niemals den Schlüssel als `VITE_`-Variable verwenden. Vor öffentlicher
+Aktivierung müssen Anbieterbudget und kommerzielle Nutzung geprüft werden;
+Instanz-Ratenlimits sind keine globale Kostenbegrenzung. Der Korridor-Report verwendet
+weiterhin seine eigene OSRM-Konfiguration, nicht automatisch HERE.
+Importverfahren, Hash-Bereiche, Nutzungsrechte und Grenzen:
+[Öffentliche Referenzdaten](docs/public-context.md).
 
 ### Stack
 

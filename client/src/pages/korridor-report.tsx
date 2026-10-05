@@ -181,7 +181,7 @@ export default function KorridorReport() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.title = "Korridor-Report – Truckonomics";
+    document.title = "Streckenanalyse · Traffic Opportunity";
     const params = new URLSearchParams(window.location.search);
     const id = (params.get("id") || "demo").replace(/[^a-z0-9-]/gi, "");
     Promise.all([
@@ -355,9 +355,9 @@ export default function KorridorReport() {
       <div className="flex min-h-screen items-center justify-center bg-[#fbfbfd] px-6 text-center">
         <div>
           <AlertTriangle className="mx-auto h-10 w-10 text-[#0A99A4]" />
-          <h1 className="mt-6 text-2xl font-semibold tracking-[-0.02em]">{error}</h1>
+          <h1 className="mt-6 text-2xl font-semibold tracking-[-0.02em]">Bericht nicht verfügbar</h1>
           <p className="mt-2 text-[#6e6e73]">
-            Konfigurationen liegen unter client/public/data/reports/&lt;id&gt;.json
+            Die Daten für diesen Bericht fehlen oder konnten nicht geladen werden. Bitte prüfe den Berichtslink.
           </p>
         </div>
       </div>
@@ -426,46 +426,47 @@ export default function KorridorReport() {
 
         <div className="mt-16">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#0A99A4]">
-            Korridor-Report
+            Streckenanalyse
           </p>
           <h1 className="mt-3 text-5xl font-semibold leading-[1.04] tracking-[-0.025em]">
             {config.company}
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#6e6e73]">
-            Welche Ihrer Strecken sind heute schon elektrisch wirtschaftlich – und wo entsteht
-            Ladeinfrastruktur entlang Ihrer Korridore? Kein Prospekt. Ihre Zahlen.
+            Welche Strecken kommen für E-Lkw infrage? Ein erster Vergleich von Fahrtlängen,
+            bekannten Ladeparks und möglichen Betriebskosten unter den angegebenen Annahmen.
+            Kein Nachweis der tatsächlichen Machbarkeit oder Wirtschaftlichkeit.
           </p>
           {config.isDemo && (
             <p className="mt-4 inline-flex rounded-full bg-amber-100 px-4 py-1.5 text-sm font-semibold text-amber-800">
-              Demo-Exemplar mit fiktiven Relationen
+              Beispielbericht mit erfundenen Strecken
             </p>
           )}
         </div>
 
         <div className="mt-12 grid grid-cols-2 gap-4">
           <KpiTile
-            label="Relationen analysiert"
+            label="Untersuchte Strecken"
             value={String(totals.relationCount)}
             detail={`Flotte: ${config.fleet.trucks} Fahrzeuge · ${formatNumber(totals.annualKm)} km/Jahr auf diesen Strecken.`}
           />
           <KpiTile
-            label="Heute elektrisch fahrbar"
+            label="Reichweite rechnerisch ausreichend"
             value={`${totals.readyCount} von ${totals.relationCount}`}
             detail={
               totals.plannableCount > 0
-                ? `Plus ${totals.plannableCount} mit fester Ladeplanung machbar.`
-                : "Auf Basis verifizierter Lkw-Ladeparks und Reichweite."
+                ? `Weitere ${totals.plannableCount} ${totals.plannableCount === 1 ? "Strecke benötigt" : "Strecken benötigen"} eine konkrete Ladeplanung. Zufahrt und Ladezeiten sind nicht bestätigt.`
+                : "Auf Basis angenommener Reichweite und bekannter Ladeparks. Kein betrieblicher Fahrbarkeitsnachweis."
             }
           />
           <KpiTile
-            label="Energie-, Maut- & THG-Vorteil"
+            label="Kostenunterschied zu Diesel · angenommen"
             value={`≈ ${formatEur(totals.annualSavingEur)}/Jahr`}
-            detail={`Sensitivitäts-Spanne ${formatEur(evaluated.reduce((sum, r) => sum + r.annualSavingLowEur, 0))} – ${formatEur(evaluated.reduce((sum, r) => sum + r.annualSavingHighEur, 0))}; Annahmen auf der letzten Seite.`}
+            detail={`Bei veränderten Preisannahmen: ${formatEur(evaluated.reduce((sum, r) => sum + r.annualSavingLowEur, 0))} bis ${formatEur(evaluated.reduce((sum, r) => sum + r.annualSavingHighEur, 0))}. Ohne Fahrzeuganschaffung; Annahmen auf der letzten Seite.`}
           />
           <KpiTile
-            label="CO₂-Einsparung"
+            label="Berechnete CO₂-Differenz"
             value={`≈ ${formatNumber(totals.annualCo2SavedTons)} t/Jahr`}
-            detail="Für Ihre Kundenkommunikation und Scope-3-Berichte."
+            detail="Unter den angegebenen Verbrauchs- und Emissionsannahmen. Kein gemessener oder zertifizierter Klimanachweis."
           />
         </div>
 
@@ -473,11 +474,11 @@ export default function KorridorReport() {
           <p className="flex items-start gap-2 text-sm leading-relaxed text-[#6e6e73]">
             <BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#0A99A4]" />
             <span>
-              Datenbasis: {formatNumber(1514573)} modellierte Verkehrsbeziehungen (
+              Datenbasis: {formatNumber(1514573)} berechnete Start-Ziel-Verbindungen (
               {traffic.metadata.source})
               {validation &&
-                `, validiert gegen ${validation.stationCount} BASt-Zählstellen (Rangkorrelation ${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 }).format(validation.spearman)})`}
-              ; Lkw-Ladeparks aus dem BNetzA-Ladesäulenregister (Stand{" "}
+                `, verglichen mit ${validation.stationCount} Verkehrszählstellen. Ähnlichkeit der Rangfolge: ${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 }).format(validation.spearman)}, kein Genauigkeitswert`}
+              . Lkw-Ladeparks aus dem Register der Bundesnetzagentur (Stand{" "}
               {new Date(charging.metadata.bnetzaDataDate).toLocaleDateString("de-DE")}) und
               dokumentierten Betreiberquellen.
             </span>
@@ -488,12 +489,12 @@ export default function KorridorReport() {
       {/* Seite 2: Karte */}
       <section className="report-page">
         <h2 className="text-3xl font-semibold tracking-[-0.02em]">
-          Ihre Korridore im Verkehrs- und Ladebild
+          Ihre Strecken und bekannte Ladeparks
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#6e6e73]">
-          Gestrichelte Linien: Ihre Relationen (Luftlinie). Violette Rauten: verifizierte
-          Lkw-Ladeparks (Umriss = angekündigt). Nur Parks in Betrieb zählen in die
-          Lücken-Berechnung.
+          Die Karte zeigt die Verbindungen zwischen Start und Ziel sowie bekannte
+          Lkw-Ladeparks. Je nach Datenlage ist eine Straßenroute oder nur eine Luftlinie
+          hinterlegt. Angekündigte Ladeparks zählen noch nicht als Lademöglichkeit.
         </p>
         <div className="mx-auto mt-5 w-[98mm] rounded-2xl border border-black/[0.08] bg-[#fbfbfd] p-4">
           <TrafficMap
@@ -514,10 +515,10 @@ export default function KorridorReport() {
               <span className="font-semibold text-[#1d1d1f]">{row.relation.name}</span> ·{" "}
               {formatNumber(row.distanceKm)} km{" "}
               {row.distanceSource === "route"
-                ? "(OSRM-Route)"
+                ? "(berechnete Straßenroute)"
                 : row.distanceSource === "korridor"
-                  ? "(Straßenroute)"
-                  : "(Luftlinie × 1,25)"} ·{" "}
+                  ? "(Entfernung aus dem Verkehrsmodell)"
+                  : "(geschätzt: Luftlinie plus 25 %)"} ·{" "}
               {row.relation.tripsPerWeek} Fahrten/Woche
             </p>
           ))}
@@ -527,11 +528,10 @@ export default function KorridorReport() {
           <div className="report-card mt-4 rounded-2xl border border-black/[0.08] bg-white p-4">
             <div className="flex items-baseline justify-between gap-4">
               <h3 className="text-sm font-semibold tracking-[-0.01em]">
-                Ihr Ladefenster: Tagesgang des Lkw-Verkehrs an Ihren Routen
+                Verkehr im Tagesverlauf nahe Ihren Strecken
               </h3>
               <p className="text-xs text-[#9b9ba0]">
-                {aggregatedProfile.stationCount} BASt-Zählstellen, Werktag, in % der
-                Tagesspitze
+                {aggregatedProfile.stationCount} Zählstellen · Montag bis Freitag · Anteil am Tageshöchstwert
               </p>
             </div>
             <div className="mt-2 flex h-10 items-end gap-[3px]">
@@ -553,8 +553,8 @@ export default function KorridorReport() {
               <span>24 Uhr</span>
             </div>
             <p className="mt-2 text-xs leading-relaxed text-[#9b9ba0]">
-              Wann sieht ein Ladepark an Ihren Korridoren Nachfrage? Relevant für
-              Ladestopp-Planung und die Auslastungsrechnung eines eigenen Standorts.
+              Die Messungen zeigen, wann viel Verkehr unterwegs war. Daraus lassen sich
+              weder die Ladezeiten Ihrer Flotte noch die Nachfrage eines Ladeparks direkt ableiten.
             </p>
           </div>
         )}
@@ -562,11 +562,12 @@ export default function KorridorReport() {
 
       {/* Seite 3: Relationen im Detail */}
       <section className="report-page">
-        <h2 className="text-3xl font-semibold tracking-[-0.02em]">Relationen im Detail</h2>
+        <h2 className="text-3xl font-semibold tracking-[-0.02em]">Die einzelnen Strecken</h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#6e6e73]">
-          Bewertung je Strecke: Machbarkeit heute (Reichweite {assumptions.truckRangeKm} km,
-          Depotladung an Start und Ziel), Lade-Realität entlang der Route und der jährliche
-          Energie- und Mautvorteil gegenüber Diesel.
+          Angenommen werden {assumptions.truckRangeKm} km Reichweite sowie Laden am Start-
+          und Zieldepot. Verglichen werden bekannte Ladeparks und Kosten für Energie,
+          Maut und Erlöse aus der Treibhausgasquote (THG). Zufahrt, tatsächliche Ladezeiten und komplette
+          Fahrzeugkosten sind damit nicht geprüft.
         </p>
 
         <div className="mt-4 space-y-2.5">
@@ -593,13 +594,13 @@ export default function KorridorReport() {
                     </p>
                     <p className="mt-1 font-semibold">{formatNumber(row.distanceKm)} km</p>
                     <p className="text-xs text-[#6e6e73]">
-                      Distanzfit {row.distanceFitScore}/100
+                      Bewertung der Fahrtlänge: {row.distanceFitScore}/100
                     </p>
                   </div>
                   <div>
                     <p className="text-xs font-medium uppercase tracking-wide text-[#9b9ba0]">
                       <PlugZap className="mr-1 inline h-3.5 w-3.5" />
-                      Lade-Realität
+                      Bekannte Ladeparks
                     </p>
                     <p className="mt-1 font-semibold">
                       {row.hubsOnRoute} Ladepark{row.hubsOnRoute === 1 ? "" : "s"}
@@ -638,16 +639,16 @@ export default function KorridorReport() {
                   if (!entry) return null;
                   return (
                     <p className="mt-1.5 text-sm text-[#6e6e73]">
-                      Gemessener Realtrend (12 Mon.):{" "}
+                      Historischer Modelltest · 12 Monate:{" "}
                       <span className="font-semibold text-[#1d1d1f]">
                         {entry.trend!.trendPctP50 > 0 ? "+" : ""}
                         {entry.trend!.trendPctP50.toLocaleString("de-DE")} %
                       </span>{" "}
                       <span className="text-[11px]">
-                        (p10 {entry.trend!.trendPctP10.toLocaleString("de-DE")} % · p90{" "}
+                        (Modellspanne {entry.trend!.trendPctP10.toLocaleString("de-DE")} % bis{" "}
                         {entry.trend!.trendPctP90 > 0 ? "+" : ""}
                         {entry.trend!.trendPctP90.toLocaleString("de-DE")} % · Zählstelle{" "}
-                        {entry.station.name}, {entry.station.strasse}, Chronos-2)
+                        {entry.station.name}, {entry.station.strasse}, Chronos-2 mit Daten bis 2023; keine aktuelle Prognose)
                       </span>
                     </p>
                   );
@@ -664,7 +665,7 @@ export default function KorridorReport() {
       {/* Seite 4: Annahmen, Methodik, nächste Schritte */}
       <section className="report-page">
         <h2 className="text-3xl font-semibold tracking-[-0.02em]">
-          Annahmen, Methodik und nächste Schritte
+          Annahmen und noch nötige Prüfungen
         </h2>
 
         <div className="mt-6 grid grid-cols-2 gap-6">
@@ -698,10 +699,10 @@ export default function KorridorReport() {
                   <td className="text-right">{formatEurPerKm(assumptions.tollAdvantagePerKm)}</td>
                 </tr>
                 <tr>
-                  <td className="text-[#6e6e73]">THG-Quotenerlös</td>
+                  <td className="text-[#6e6e73]">Erlös aus Treibhausgasquote (THG)</td>
                   <td className="text-right">
                     {assumptions.thgBonusPerKwh.toLocaleString("de-DE", { minimumFractionDigits: 2 })}{" "}
-                    €/kWh (konservativ)
+                    €/kWh (angenommen)
                   </td>
                 </tr>
                 <tr>
@@ -719,44 +720,43 @@ export default function KorridorReport() {
             </table>
             <p className="mt-3 text-xs leading-relaxed text-[#9b9ba0]">
               Energie-, Maut- und THG-Modell ohne Anschaffung, Wartung und Restwert — die
-              Vollkostenrechnung liefert der TCO-Rechner. Sensitivitäts-Spanne: Diesel ±0,15 €/l,
+              vollständigen Fahrzeugkosten behandelt der getrennte Lkw-Kostenrechner. Der Preisvergleich variiert Diesel um ±0,15 €/l,
               öffentlicher Strom +0,10/−0,05 €/kWh, THG-Erlös 0 bis voll.
             </p>
           </div>
 
           <div className="rounded-2xl border border-black/[0.08] bg-white p-5">
-            <h3 className="font-semibold">Methodik und Grenzen</h3>
+            <h3 className="font-semibold">Was die Rechnung nicht bestätigt</h3>
             <ul className="mt-3 space-y-2 text-sm leading-relaxed text-[#6e6e73]">
               <li>
-                Verkehrsdaten: synthetische ETISplus-Lkw-Flüsse (2010/2019/2030)
+                Verkehr: berechnete ETISplus-Fahrten für 2010, 2019 und 2030,
+                keine beobachteten Einzelfahrten
                 {validation &&
-                  `, gegen ${validation.stationCount} BASt-Autobahn-Zählstellen ${validation.year} geprüft (Spearman ${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 }).format(validation.spearman)})`}
+                  `; mit ${validation.stationCount} Autobahn-Zählstellen aus ${validation.year} verglichen (Ähnlichkeit der Rangfolge: ${new Intl.NumberFormat("de-DE", { maximumFractionDigits: 2 }).format(validation.spearman)}, kein Genauigkeitswert)`}
                 .
               </li>
               <li>
-                Lkw-Ladeparks: BNetzA-Ladesäulenregister plus dokumentierte Betreiberquellen;
-                nur verifizierte Parks zählen in die Lücken-Berechnung.
+                Ladeparks: dokumentierte Lkw-Angebote in Betrieb aus Register und Betreiberquellen.
+                Freie Plätze und Zufahrt sind nicht bestätigt.
               </li>
               <li>
-                Routen: echte Straßenführung via OSRM/OpenStreetMap (Pkw-Profil; auf
-                Autobahnen für Distanz und Verlauf ausreichend); Ladelücken dann ±10 km
-                entlang der Route. Ohne Routing-Dienst: Luftlinien-Näherung (Puffer ±15 %,
-                mind. 20 km), entsprechend gekennzeichnet.
+                Straßenrouten: OSRM/OpenStreetMap mit Pkw-Einstellungen, kein Lkw-Nachweis.
+                Ladeparksuche im Umkreis von 10 km entlang der Route. Ohne Route:
+                Umfeld der Luftlinie mit 15 % der Strecke als Puffer, mindestens 20 km.
               </li>
               {trendData && (
                 <li>
-                  Realtrend & Tagesgang: BASt-Stundenwerte 2016–2023 der nächstgelegenen
-                  Dauerzählstellen; 12-Monats-Trend mit Amazon Chronos-2, backtested gegen das
-                  zurückgehaltene letzte Jahr (80-%-Band deckte{" "}
+                  Historischer Chronos-2-Test mit Zähldaten aus 2016–2023. Der für 80 %
+                  der Werte vorgesehene Modellbereich enthielt{" "}
                   {((trendData.metadata.meanCoverage80 || 0) * 100).toLocaleString("de-DE", {
                     maximumFractionDigits: 1,
                   })}{" "}
-                  % ab, {trendData.metadata.stationsBacktested} Stationen). Die Punktprognose liegt
-                  auf dem Niveau der Saisonfigur – belastbar ist das Band, nicht die einzelne
-                  Zahl.
+                  % der Messwerte an {trendData.metadata.stationsBacktested} getesteten
+                  Stationen. Kein durchgängiger Vorteil gegenüber dem Vorjahresvergleich,
+                  keine aktuelle Prognose.
                 </li>
               )}
-              <li>Der E-Lkw-Hochlauf selbst ist nicht modelliert.</li>
+              <li>Wie schnell der Anteil elektrischer Lkw wächst, wird in diesem Bericht nicht berechnet.</li>
             </ul>
           </div>
         </div>
@@ -766,24 +766,25 @@ export default function KorridorReport() {
           <ol className="mt-4 space-y-2.5 text-sm leading-relaxed text-white/80">
             <li className="flex gap-3">
               <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-[#0DBBC8]" />
-              Die {totals.readyCount} heute fahrbaren Relationen mit 2–3 Fahrzeugen pilotieren –
-              dort entsteht der Business Case mit den wenigsten Annahmen.
+              Für die {totals.readyCount} rechnerisch passenden Strecken: Reichweite,
+              Ladefenster und Zufahrt mit realen Touren- und Fahrzeugdaten abgleichen.
             </li>
             <li className="flex gap-3">
               <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-[#0DBBC8]" />
-              Depot-Ladefähigkeit prüfen (Netzanschluss, Fläche, Lastmanagement) – der DepotOne
-              Readiness Check liefert die strukturierte Bewertung.
+              Laden im eigenen Depot prüfen: Netzanschluss, Fläche und Verteilung der
+              Ladeleistung. Dabei unterstützt der getrennte Depot-Check.
             </li>
             <li className="flex gap-3">
               <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-[#0DBBC8]" />
-              Für Relationen mit Ladelücken: Ladestopps heute planen, denn entlang Ihrer
-              Korridore sind weitere Parks angekündigt – die Lücken schließen sich.
+              Für Strecken mit großen Abständen zwischen Ladeparks: konkrete Ladestopps
+              und Ausweichmöglichkeiten prüfen. Angekündigte Standorte sind noch keine
+              gesicherte Ladeoption.
             </li>
           </ol>
         </div>
 
         <p className="mt-auto pt-6 text-center text-xs text-[#9b9ba0]">
-          Korridor-Report · Truckonomics / DepotOne · Erstellt am{" "}
+          Streckenanalyse · Truckonomics / DepotOne · Erstellt am{" "}
           {reportDate.toLocaleDateString("de-DE")} · Alle Quellen dokumentiert und auf Anfrage
           einsehbar
         </p>

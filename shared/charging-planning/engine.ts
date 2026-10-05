@@ -3,7 +3,7 @@ import { generateArrivals } from "./demand.js";
 import { simulateDay } from "./simulation.js";
 import { calculateCashflows } from "./finance.js";
 
-export const MODEL_VERSION = "charging-planning-v1";
+export const MODEL_VERSION = "charging-planning-v2";
 const daytypes = ["weekday", "saturday", "sunday"] as const;
 export function calendarCounts(year: number) {
   const counts = { weekday: 0, saturday: 0, sunday: 0 };
@@ -16,12 +16,12 @@ export function calendarCounts(year: number) {
 
 export function runChargingPlan(raw: PlanningRequest) {
   const input = planningRequestSchema.parse(raw);
-  const sources = [input.traffic.source, ...(input.traffic.contextSource ? [input.traffic.contextSource] : []), ...daytypes.map((d) => input.profiles[d].source)];
+  const sources = [input.traffic.source, ...(input.traffic.contextSource ? [input.traffic.contextSource] : []), ...daytypes.map((d) => input.profiles[d].source), ...(input.references || []).map((ref) => ref.source)];
   const gaps = ["charging_demand_not_validated", "local_and_depot_traffic_not_inferred", "scenario_assumptions_not_probabilities", "annual_seasonality_not_modelled", "truck_duty_cycle_and_energy_mix_assumed"];
   const blockers: string[] = [];
   const directions = input.site.access.directions || "both";
   const r1Share = input.traffic.directionShareR1;
-  const directionShare = directions === "both" ? 1 : r1Share == null ? null : directions === "r1" ? r1Share : 1 - r1Share;
+  const directionShare = directions === "both" ? 1 : directions === "one_unknown" ? 0.5 : r1Share == null ? null : directions === "r1" ? r1Share : 1 - r1Share;
   if (directionShare === null) blockers.push("traffic_direction_split_unknown");
   if (input.capacity.gridPowerKw === null || input.site.gridStatus === "unknown") blockers.push("grid_power_unknown");
   if (input.site.access.status === "inaccessible") blockers.push("site_inaccessible");
@@ -29,7 +29,8 @@ export function runChargingPlan(raw: PlanningRequest) {
   if (input.site.gridStatus !== "verified") gaps.push("grid_offer_not_verified");
   if (input.site.competitionStatus === "unknown") gaps.push("competition_not_reviewed");
   if (input.traffic.vehicleClass === "heavy_traffic_proxy") gaps.push("heavy_traffic_includes_other_vehicles");
-  if (directions !== "both") gaps.push("direction_split_assumed_constant_by_hour");
+  if (directions === "r1" || directions === "r2") gaps.push("direction_split_assumed_constant_by_hour");
+  if (directions === "one_unknown") gaps.push("direction_share_assumed_half");
   if (daytypes.some((d) => input.profiles[d].vehicleClass === "heavy_traffic_proxy")) gaps.push("hourly_profile_uses_heavy_traffic_proxy");
   if (daytypes.some((d) => input.profiles[d].matchStatus !== "reviewed")) gaps.push("counting_station_match_not_reviewed");
   if (sources.some((s) => s.commercialUse !== "allowed")) gaps.push("source_commercial_rights_unresolved");
@@ -64,7 +65,7 @@ export function runChargingPlan(raw: PlanningRequest) {
         - (input.finance.variableCostPerKwh + input.finance.electricityPricePerKwh / (1 - input.capacity.lossPercent / 100)) * costFactor;
       const requiredEnergyKwhPerYear = contribution > 0 ? input.finance.fixedCostAnnual * costFactor / contribution : null;
       const hoursOpen = input.capacity.opening.reduce((s, w) => s + (w.endMinute - w.startMinute) / 60, 0);
-      const capacityUpperBoundKwhPerYear = Math.min(input.capacity.ports * input.capacity.portPowerKw,
+      const capacityUpperBoundKwhPerYear = Math.min(input.capacity.ports * Math.min(input.capacity.portPowerKw, input.capacity.vehiclePowerKw ?? 2000),
         input.capacity.gridPowerKw! * (1 - input.capacity.lossPercent / 100)) * hoursOpen * calendarDays;
       return { year: year.year, evShare: year.evShare, trafficMultiplier: year.trafficMultiplier, calendarDays,
         deliveredKwh: sum("deliveredKwh"), gridKwh: sum("gridKwh"), completedSessions: sum("completedSessions"),

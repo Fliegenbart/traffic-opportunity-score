@@ -258,18 +258,18 @@ export const FEASIBILITY_LABELS: Record<
   { label: string; description: string }
 > = {
   ready: {
-    label: "Heute elektrisch fahrbar",
+    label: "Reichweite rechnerisch ausreichend",
     description:
-      "Strecke liegt in Reichweite oder die größte Ladelücke ist mit heutiger Infrastruktur überbrückbar.",
+      "Reichweite passt im Modell. Zufahrt, Ladezeit und freie Ladeplätze müssen noch geprüft werden.",
   },
   plannable: {
-    label: "Fahrbar mit Ladeplanung",
+    label: "Reichweite mit Ladestopps prüfen",
     description:
-      "Machbar, wenn Ladestopps fest in die Tourenplanung eingebaut werden; Reserven sind knapp.",
+      "Wenig Reichweitenreserve. Ladestopps, Zufahrt und Zeitbedarf mit realen Tourendaten prüfen.",
   },
   hard: {
-    label: "Noch schwierig",
+    label: "Große Abstände zwischen Ladeparks",
     description:
-      "Die größte Lücke zwischen Lademöglichkeiten übersteigt die Reichweitenreserve deutlich.",
+      "Der größte Abstand zwischen bekannten Ladeparks übersteigt die angenommene Reichweitenreserve deutlich. Eine konkrete Ladeplanung fehlt noch.",
   },
 };

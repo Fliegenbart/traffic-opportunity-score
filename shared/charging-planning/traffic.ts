@@ -18,6 +18,8 @@ export function matchTrafficEdge(point: GeoPoint, input: NetworkEdge[], maxDista
   const edges = z.array(networkEdgeSchema).max(20000).parse(input);
   let best: { edge: NetworkEdge; distanceKm: number; accessVerified: false } | null = null;
   for (const edge of edges) {
+    // Edges without modelled truck traffic are not a usable traffic source; matching them would silently yield zero demand.
+    if (edge.trucks2030 <= 0) continue;
     const distance = pointToSegmentKm(point, { lon: edge.aLon, lat: edge.aLat }, { lon: edge.bLon, lat: edge.bLat });
     if (distance <= maxDistanceKm && (!best || distance < best.distanceKm)) best = { edge, distanceKm: distance, accessVerified: false };
   }

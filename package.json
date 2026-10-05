@@ -11,11 +11,12 @@
     "preview": "vite preview --host 127.0.0.1",
     "test:boundaries": "node --test scripts/test_project_boundaries.mjs",
     "test:traffic": "npx --yes tsx shared/traffic-opportunity.test.ts",
-    "test": "npm run test:boundaries && npm run test:traffic && npm run test:geo && npm run test:report && npm run test:standort",
+    "test": "npm run test:boundaries && npm run test:traffic && npm run test:geo && npm run test:report && npm run test:standort && npm run test:tutorial",
+    "test:tutorial": "node --import tsx --test client/src/lib/traffic-tutorial.test.ts",
     "check": "tsc",
     "test:geo": "npx --yes tsx shared/geo.test.ts",
     "test:report": "npx --yes tsx shared/korridor-report.test.ts",
-    "test:standort": "npx --yes tsx shared/standort-check.test.ts && npx --yes tsx shared/site-economics.test.ts && node --import tsx shared/site-traffic.test.ts && node --import tsx shared/site-access.test.ts && node --import tsx shared/site-access-api.test.ts"
+    "test:standort": "npx --yes tsx shared/standort-check.test.ts && npx --yes tsx shared/site-economics.test.ts && node --import tsx shared/site-traffic.test.ts && node --import tsx shared/site-access.test.ts && node --import tsx shared/site-access-api.test.ts && node --import tsx shared/here-routing.test.ts && node --import tsx shared/public-context.test.ts && node --import tsx shared/leads-api.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

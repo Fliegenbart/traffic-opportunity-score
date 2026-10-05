@@ -16,6 +16,7 @@ export function runSensitivity(raw: PlanningRequest, rawChanges: SensitivityChan
     const financeFields = ["capex", "electricityPricePerKwh", "salePricePerKwh"];
     const demandFields = ["captureShare", "reachableShare"];
     const next = { ...input,
+      references: change.field === "electricityPricePerKwh" ? input.references?.filter((ref) => ref.field !== "electricityPrice") : input.references,
       finance: financeFields.includes(change.field) ? { ...input.finance, [change.field]: change.value } : input.finance,
       demand: demandFields.includes(change.field) ? { ...input.demand, [change.field]: change.value } : input.demand,
       capacity: ["ports", "gridPowerKw"].includes(change.field) ? { ...input.capacity, [change.field]: change.value } : input.capacity };
@@ -35,6 +36,8 @@ export function compareSitePlans(raw: PlanningRequest[]) {
   const basis = inputs[0].scenarios.map((s) => [s.id, s.years.map((y) => [y.year, y.evShare])]);
   if (inputs.some((r) => JSON.stringify(r.scenarios.map((s) => [s.id, s.years.map((y) => [y.year, y.evShare])])) !== JSON.stringify(basis)
     || r.finance.discountRate !== inputs[0].finance.discountRate)) throw new Error("Standortvergleich benötigt gleiche Szenarien, Jahre und Diskontierung");
+  const sourceSignature = (r: PlanningRequest) => `${r.traffic.source.kind}:${r.traffic.referenceYear}`;
+  if (inputs.some((r) => sourceSignature(r) !== sourceSignature(inputs[0]))) throw new Error("Standortvergleich benötigt dieselbe Art von Verkehrsdaten (Zählstelle oder Modell) und dasselbe Bezugsjahr");
   const plans = inputs.map(runChargingPlan);
   return { modelVersion: plans[0].modelVersion,
     scenarios: inputs[0].scenarios.map((s) => ({ id: s.id, ranking: plans.flatMap((p) => {

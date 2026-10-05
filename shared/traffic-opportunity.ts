@@ -107,34 +107,34 @@ export function classifyTrafficOpportunity(score: number): TrafficOpportunityCla
   if (score >= 75) {
     return {
       level: "High Opportunity",
-      label: "Hohes Ladepunkt-Potenzial",
+      label: "Sehr hohes Verkehrspotenzial",
       description:
-        "Sehr starkes Verkehrs- und Korridorsignal. Der Standort oder die Region sollte früh für halböffentliches Lkw-Laden geprüft werden.",
+        "Viel berechneter Lkw-Verkehr und bedeutende Verbindungen. Die Region lohnt eine nähere Prüfung; tatsächliche Ladekunden und ein geeigneter Standort sind damit noch nicht bestätigt.",
     };
   }
 
   if (score >= 55) {
     return {
       level: "Strong Candidate",
-      label: "Starker Kandidat",
+      label: "Hohes Verkehrspotenzial",
       description:
-        "Gutes Potenzial, besonders wenn Netzanschluss, Fläche und Haltezeiten passen.",
+        "Die Verkehrsdaten sprechen für eine nähere Prüfung. Ob ein Ladepark sinnvoll ist, hängt zusätzlich von Kunden, Zufahrt, Fläche und Netzanschluss ab.",
     };
   }
 
   if (score >= 35) {
     return {
       level: "Watchlist",
-      label: "Beobachtungsliste",
+      label: "Mittleres Verkehrspotenzial",
       description:
-        "Ein möglicher Standort, aber die Wirtschaftlichkeit hängt stark von lokalen Zusatzdaten ab.",
+        "Das berechnete Verkehrsaufkommen liegt im Mittelfeld. Feste Kunden aus der Umgebung könnten wichtig sein; dazu fehlen bisher Betriebsdaten.",
     };
   }
 
   return {
     level: "Low Opportunity",
-    label: "Niedriges Verkehrssignal",
+      label: "Geringes Verkehrspotenzial",
     description:
-      "Das synthetische Verkehrssignal reicht allein noch nicht für eine belastbare Ladepunkt-Priorisierung.",
+      "In diesem Verkehrsmodell fällt die Region weniger auf. Das schließt einen sinnvollen Ladepark für lokale Flotten oder feste Kunden nicht aus.",
   };
 }

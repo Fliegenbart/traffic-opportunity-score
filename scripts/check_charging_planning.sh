@@ -3,6 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 export PYTHONPATH="${PWD}/data/planning-python${PYTHONPATH:+:${PYTHONPATH}}"
 python3 -m unittest discover -s scripts -p 'test_planning_data.py'
+python3 -m unittest discover -s scripts -p 'test_public_context.py'
 if [[ -x node_modules/.bin/tsx ]]; then
   node_modules/.bin/tsx shared/charging-planning/planning.test.ts
   node_modules/.bin/tsx shared/charging-planning/site-input.test.ts
