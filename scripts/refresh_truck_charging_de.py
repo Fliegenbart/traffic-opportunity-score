@@ -53,7 +53,7 @@ def main():
             staged = output.name
         os.replace(staged, OUTPUT)
     print(f"Imported {len(rows)} stations; provider date {metadata['bnetzaDataDate']}")
-    print("Source: public CSV, not the daily REST service. Curated operator entries are unchanged.")
+    print(f"Source: public {metadata['registerSourceMode'].removeprefix('public_').upper()}, not the daily REST service. Curated operator entries are unchanged.")
 
 
 if __name__ == "__main__":

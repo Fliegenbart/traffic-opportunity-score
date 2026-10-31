@@ -1,4 +1,4 @@
-"""Manual source refresh. No schedule, guessed URLs, or automatic deployment."""
+"""Source refresh for BASt counts and the Mendeley network. Run monthly by .github/workflows/refresh-planning.yml; never guesses URLs."""
 from __future__ import annotations
 
 import argparse
@@ -106,6 +106,15 @@ def main():
     metadata = ROOT / "data/raw/bast/license.ttl"
     download(METADATA_URL, metadata, 2000000, timeout=60)
     selected = select_bast_month(metadata.read_text(encoding="utf-8"), args.month)
+    current = ROOT / "client/public/data/planning/bast-hourly-de.json"
+    if current.exists() and not args.month:
+        import json
+        previous_month = json.loads(current.read_text())["period"]["start"][:7]
+        if selected["month"] < previous_month:
+            raise ValueError(f"BASt month regressed ({selected['month']} < {previous_month}); keeping previous data")
+        if selected["month"] == previous_month:
+            print(f"Unchanged BASt month {previous_month}; nothing to rebuild.")
+            return
     archive = ROOT / "data/raw/bast" / selected["filename"]
     download(selected["url"], archive, 300000000)
     bast = import_bast_archive(archive, selected["start"], selected["end"], metadata)

@@ -1,0 +1,35 @@
+name: Refresh Autobahn services snapshot
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 4 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: autobahn-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s scripts -p 'test_autobahn*.py'
+      - run: python scripts/refresh_autobahn_services_de.py
+      - name: Commit validated snapshot when the source changed
+        run: |
+          git add client/public/data/autobahn-services-de.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Update Autobahn services snapshot'
+          git push

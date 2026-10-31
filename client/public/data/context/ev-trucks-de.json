@@ -1,0 +1,647 @@
+{
+  "schemaVersion": 1,
+  "metadata": {
+    "generatedAt": "2026-10-31T16:40:01Z",
+    "dataMonth": "2026-09",
+    "source": {
+      "title": "Kraftfahrt-Bundesamt, FZ 28 Neuzulassungen von Kraftfahrzeugen mit alternativem Antrieb (Tabelle FZ 28.1)",
+      "url": "https://www.kba.de/SharedDocs/Downloads/DE/Statistik/Fahrzeuge/FZ28/fz28_2026_09.xlsx?__blob=publicationFile",
+      "license": "unklar – Quellenangabe Kraftfahrt-Bundesamt",
+      "commercialUse": "unknown",
+      "attribution": "Kraftfahrt-Bundesamt"
+    },
+    "sha256": "98c868f90f244ca88ccd7ec66c6b11635d4b7895c1c61e1244937d2feddb338e"
+  },
+  "series": [
+    {
+      "month": "2023-01",
+      "class": "lkw_total",
+      "bev": 740,
+      "all": 20816,
+      "bevShare": 0.03555
+    },
+    {
+      "month": "2023-01",
+      "class": "sattelzug",
+      "bev": 14,
+      "all": 3647,
+      "bevShare": 0.003839
+    },
+    {
+      "month": "2023-02",
+      "class": "lkw_total",
+      "bev": 1021,
+      "all": 21866,
+      "bevShare": 0.046693
+    },
+    {
+      "month": "2023-02",
+      "class": "sattelzug",
+      "bev": 4,
+      "all": 3263,
+      "bevShare": 0.001226
+    },
+    {
+      "month": "2023-03",
+      "class": "lkw_total",
+      "bev": 1667,
+      "all": 27877,
+      "bevShare": 0.059798
+    },
+    {
+      "month": "2023-03",
+      "class": "sattelzug",
+      "bev": 15,
+      "all": 4670,
+      "bevShare": 0.003212
+    },
+    {
+      "month": "2023-04",
+      "class": "lkw_total",
+      "bev": 1303,
+      "all": 20062,
+      "bevShare": 0.064949
+    },
+    {
+      "month": "2023-04",
+      "class": "sattelzug",
+      "bev": 20,
+      "all": 3533,
+      "bevShare": 0.005661
+    },
+    {
+      "month": "2023-05",
+      "class": "lkw_total",
+      "bev": 1965,
+      "all": 24619,
+      "bevShare": 0.079816
+    },
+    {
+      "month": "2023-05",
+      "class": "sattelzug",
+      "bev": 25,
+      "all": 3573,
+      "bevShare": 0.006997
+    },
+    {
+      "month": "2023-06",
+      "class": "lkw_total",
+      "bev": 2459,
+      "all": 26230,
+      "bevShare": 0.093748
+    },
+    {
+      "month": "2023-06",
+      "class": "sattelzug",
+      "bev": 13,
+      "all": 3731,
+      "bevShare": 0.003484
+    },
+    {
+      "month": "2023-07",
+      "class": "lkw_total",
+      "bev": 2656,
+      "all": 24591,
+      "bevShare": 0.108007
+    },
+    {
+      "month": "2023-07",
+      "class": "sattelzug",
+      "bev": 22,
+      "all": 3518,
+      "bevShare": 0.006254
+    },
+    {
+      "month": "2023-08",
+      "class": "lkw_total",
+      "bev": 5262,
+      "all": 29471,
+      "bevShare": 0.178548
+    },
+    {
+      "month": "2023-08",
+      "class": "sattelzug",
+      "bev": 32,
+      "all": 5288,
+      "bevShare": 0.006051
+    },
+    {
+      "month": "2023-09",
+      "class": "lkw_total",
+      "bev": 905,
+      "all": 22479,
+      "bevShare": 0.04026
+    },
+    {
+      "month": "2023-09",
+      "class": "sattelzug",
+      "bev": 19,
+      "all": 2834,
+      "bevShare": 0.006704
+    },
+    {
+      "month": "2023-10",
+      "class": "lkw_total",
+      "bev": 1249,
+      "all": 23492,
+      "bevShare": 0.053167
+    },
+    {
+      "month": "2023-10",
+      "class": "sattelzug",
+      "bev": 40,
+      "all": 3141,
+      "bevShare": 0.012735
+    },
+    {
+      "month": "2023-11",
+      "class": "lkw_total",
+      "bev": 1352,
+      "all": 26364,
+      "bevShare": 0.051282
+    },
+    {
+      "month": "2023-11",
+      "class": "sattelzug",
+      "bev": 32,
+      "all": 3308,
+      "bevShare": 0.009674
+    },
+    {
+      "month": "2023-12",
+      "class": "lkw_total",
+      "bev": 1211,
+      "all": 22826,
+      "bevShare": 0.053054
+    },
+    {
+      "month": "2023-12",
+      "class": "sattelzug",
+      "bev": 63,
+      "all": 1920,
+      "bevShare": 0.032813
+    },
+    {
+      "month": "2024-01",
+      "class": "lkw_total",
+      "bev": 1134,
+      "all": 23596,
+      "bevShare": 0.048059
+    },
+    {
+      "month": "2024-01",
+      "class": "sattelzug",
+      "bev": 58,
+      "all": 3622,
+      "bevShare": 0.016013
+    },
+    {
+      "month": "2024-02",
+      "class": "lkw_total",
+      "bev": 1656,
+      "all": 26579,
+      "bevShare": 0.062305
+    },
+    {
+      "month": "2024-02",
+      "class": "sattelzug",
+      "bev": 40,
+      "all": 3461,
+      "bevShare": 0.011557
+    },
+    {
+      "month": "2024-03",
+      "class": "lkw_total",
+      "bev": 1470,
+      "all": 29619,
+      "bevShare": 0.04963
+    },
+    {
+      "month": "2024-03",
+      "class": "sattelzug",
+      "bev": 65,
+      "all": 3180,
+      "bevShare": 0.02044
+    },
+    {
+      "month": "2024-04",
+      "class": "lkw_total",
+      "bev": 1475,
+      "all": 27528,
+      "bevShare": 0.053582
+    },
+    {
+      "month": "2024-04",
+      "class": "sattelzug",
+      "bev": 36,
+      "all": 3338,
+      "bevShare": 0.010785
+    },
+    {
+      "month": "2024-05",
+      "class": "lkw_total",
+      "bev": 1038,
+      "all": 25239,
+      "bevShare": 0.041127
+    },
+    {
+      "month": "2024-05",
+      "class": "sattelzug",
+      "bev": 42,
+      "all": 2502,
+      "bevShare": 0.016787
+    },
+    {
+      "month": "2024-06",
+      "class": "lkw_total",
+      "bev": 2685,
+      "all": 39546,
+      "bevShare": 0.067896
+    },
+    {
+      "month": "2024-06",
+      "class": "sattelzug",
+      "bev": 85,
+      "all": 4650,
+      "bevShare": 0.01828
+    },
+    {
+      "month": "2024-07",
+      "class": "lkw_total",
+      "bev": 1264,
+      "all": 24500,
+      "bevShare": 0.051592
+    },
+    {
+      "month": "2024-07",
+      "class": "sattelzug",
+      "bev": 36,
+      "all": 2137,
+      "bevShare": 0.016846
+    },
+    {
+      "month": "2024-08",
+      "class": "lkw_total",
+      "bev": 640,
+      "all": 19850,
+      "bevShare": 0.032242
+    },
+    {
+      "month": "2024-08",
+      "class": "sattelzug",
+      "bev": 15,
+      "all": 1615,
+      "bevShare": 0.009288
+    },
+    {
+      "month": "2024-09",
+      "class": "lkw_total",
+      "bev": 780,
+      "all": 20990,
+      "bevShare": 0.037161
+    },
+    {
+      "month": "2024-09",
+      "class": "sattelzug",
+      "bev": 27,
+      "all": 1752,
+      "bevShare": 0.015411
+    },
+    {
+      "month": "2024-10",
+      "class": "lkw_total",
+      "bev": 1752,
+      "all": 27459,
+      "bevShare": 0.063804
+    },
+    {
+      "month": "2024-10",
+      "class": "sattelzug",
+      "bev": 40,
+      "all": 2302,
+      "bevShare": 0.017376
+    },
+    {
+      "month": "2024-11",
+      "class": "lkw_total",
+      "bev": 1623,
+      "all": 26323,
+      "bevShare": 0.061657
+    },
+    {
+      "month": "2024-11",
+      "class": "sattelzug",
+      "bev": 23,
+      "all": 2273,
+      "bevShare": 0.010119
+    },
+    {
+      "month": "2024-12",
+      "class": "lkw_total",
+      "bev": 1490,
+      "all": 25699,
+      "bevShare": 0.057979
+    },
+    {
+      "month": "2024-12",
+      "class": "sattelzug",
+      "bev": 54,
+      "all": 1389,
+      "bevShare": 0.038877
+    },
+    {
+      "month": "2025-01",
+      "class": "lkw_total",
+      "bev": 1276,
+      "all": 23824,
+      "bevShare": 0.053559
+    },
+    {
+      "month": "2025-01",
+      "class": "sattelzug",
+      "bev": 42,
+      "all": 2536,
+      "bevShare": 0.016562
+    },
+    {
+      "month": "2025-02",
+      "class": "lkw_total",
+      "bev": 1472,
+      "all": 21052,
+      "bevShare": 0.069922
+    },
+    {
+      "month": "2025-02",
+      "class": "sattelzug",
+      "bev": 61,
+      "all": 1879,
+      "bevShare": 0.032464
+    },
+    {
+      "month": "2025-03",
+      "class": "lkw_total",
+      "bev": 1823,
+      "all": 25560,
+      "bevShare": 0.071322
+    },
+    {
+      "month": "2025-03",
+      "class": "sattelzug",
+      "bev": 36,
+      "all": 2383,
+      "bevShare": 0.015107
+    },
+    {
+      "month": "2025-04",
+      "class": "lkw_total",
+      "bev": 1459,
+      "all": 23121,
+      "bevShare": 0.063103
+    },
+    {
+      "month": "2025-04",
+      "class": "sattelzug",
+      "bev": 42,
+      "all": 2278,
+      "bevShare": 0.018437
+    },
+    {
+      "month": "2025-05",
+      "class": "lkw_total",
+      "bev": 2035,
+      "all": 22805,
+      "bevShare": 0.089235
+    },
+    {
+      "month": "2025-05",
+      "class": "sattelzug",
+      "bev": 47,
+      "all": 2682,
+      "bevShare": 0.017524
+    },
+    {
+      "month": "2025-06",
+      "class": "lkw_total",
+      "bev": 2496,
+      "all": 26364,
+      "bevShare": 0.094675
+    },
+    {
+      "month": "2025-06",
+      "class": "sattelzug",
+      "bev": 70,
+      "all": 3413,
+      "bevShare": 0.02051
+    },
+    {
+      "month": "2025-07",
+      "class": "lkw_total",
+      "bev": 2573,
+      "all": 26990,
+      "bevShare": 0.095332
+    },
+    {
+      "month": "2025-07",
+      "class": "sattelzug",
+      "bev": 90,
+      "all": 2399,
+      "bevShare": 0.037516
+    },
+    {
+      "month": "2025-08",
+      "class": "lkw_total",
+      "bev": 2667,
+      "all": 23141,
+      "bevShare": 0.11525
+    },
+    {
+      "month": "2025-08",
+      "class": "sattelzug",
+      "bev": 92,
+      "all": 1977,
+      "bevShare": 0.046535
+    },
+    {
+      "month": "2025-09",
+      "class": "lkw_total",
+      "bev": 2647,
+      "all": 25759,
+      "bevShare": 0.10276
+    },
+    {
+      "month": "2025-09",
+      "class": "sattelzug",
+      "bev": 102,
+      "all": 2365,
+      "bevShare": 0.043129
+    },
+    {
+      "month": "2025-10",
+      "class": "lkw_total",
+      "bev": 2720,
+      "all": 26296,
+      "bevShare": 0.103438
+    },
+    {
+      "month": "2025-10",
+      "class": "sattelzug",
+      "bev": 79,
+      "all": 2559,
+      "bevShare": 0.030871
+    },
+    {
+      "month": "2025-11",
+      "class": "lkw_total",
+      "bev": 3184,
+      "all": 26575,
+      "bevShare": 0.119812
+    },
+    {
+      "month": "2025-11",
+      "class": "sattelzug",
+      "bev": 107,
+      "all": 2554,
+      "bevShare": 0.041895
+    },
+    {
+      "month": "2025-12",
+      "class": "lkw_total",
+      "bev": 2923,
+      "all": 24108,
+      "bevShare": 0.121246
+    },
+    {
+      "month": "2025-12",
+      "class": "sattelzug",
+      "bev": 158,
+      "all": 2047,
+      "bevShare": 0.077186
+    },
+    {
+      "month": "2026-01",
+      "class": "lkw_total",
+      "bev": 1964,
+      "all": 18738,
+      "bevShare": 0.104814
+    },
+    {
+      "month": "2026-01",
+      "class": "sattelzug",
+      "bev": 169,
+      "all": 2528,
+      "bevShare": 0.066851
+    },
+    {
+      "month": "2026-02",
+      "class": "lkw_total",
+      "bev": 1972,
+      "all": 19997,
+      "bevShare": 0.098615
+    },
+    {
+      "month": "2026-02",
+      "class": "sattelzug",
+      "bev": 108,
+      "all": 2403,
+      "bevShare": 0.044944
+    },
+    {
+      "month": "2026-03",
+      "class": "lkw_total",
+      "bev": 2690,
+      "all": 25074,
+      "bevShare": 0.107282
+    },
+    {
+      "month": "2026-03",
+      "class": "sattelzug",
+      "bev": 140,
+      "all": 3150,
+      "bevShare": 0.044444
+    },
+    {
+      "month": "2026-04",
+      "class": "lkw_total",
+      "bev": 2976,
+      "all": 22513,
+      "bevShare": 0.13219
+    },
+    {
+      "month": "2026-04",
+      "class": "sattelzug",
+      "bev": 172,
+      "all": 2884,
+      "bevShare": 0.059639
+    },
+    {
+      "month": "2026-05",
+      "class": "lkw_total",
+      "bev": 2821,
+      "all": 21490,
+      "bevShare": 0.13127
+    },
+    {
+      "month": "2026-05",
+      "class": "sattelzug",
+      "bev": 133,
+      "all": 2489,
+      "bevShare": 0.053435
+    },
+    {
+      "month": "2026-06",
+      "class": "lkw_total",
+      "bev": 4059,
+      "all": 28029,
+      "bevShare": 0.144814
+    },
+    {
+      "month": "2026-06",
+      "class": "sattelzug",
+      "bev": 253,
+      "all": 3764,
+      "bevShare": 0.067216
+    },
+    {
+      "month": "2026-07",
+      "class": "lkw_total",
+      "bev": 3879,
+      "all": 24819,
+      "bevShare": 0.156292
+    },
+    {
+      "month": "2026-07",
+      "class": "sattelzug",
+      "bev": 96,
+      "all": 2327,
+      "bevShare": 0.041255
+    },
+    {
+      "month": "2026-08",
+      "class": "lkw_total",
+      "bev": 2933,
+      "all": 22357,
+      "bevShare": 0.131189
+    },
+    {
+      "month": "2026-08",
+      "class": "sattelzug",
+      "bev": 77,
+      "all": 1795,
+      "bevShare": 0.042897
+    },
+    {
+      "month": "2026-09",
+      "class": "lkw_total",
+      "bev": 3821,
+      "all": 24646,
+      "bevShare": 0.155035
+    },
+    {
+      "month": "2026-09",
+      "class": "sattelzug",
+      "bev": 107,
+      "all": 2567,
+      "bevShare": 0.041683
+    }
+  ]
+}

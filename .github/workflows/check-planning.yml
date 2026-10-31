@@ -10,6 +10,7 @@ on:
       - 'vercel.json'
       - 'vite.config.ts'
       - 'scripts/*planning*'
+      - 'scripts/*.py'
       - 'scripts/run_charging_plan.ts'
       - 'scripts/test_charging_runtime.mjs'
       - 'client/public/data/planning/**'
@@ -32,7 +33,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: npm ci
-      - run: pip install -r scripts/requirements-planning.txt
+      - run: pip install -r scripts/requirements-planning.txt -r scripts/requirements-charging.txt -r scripts/requirements-kba.txt
       - run: bash scripts/check_charging_planning.sh
       - run: npm test
       - run: npm run build

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import SiteEconomics, { type VerdictSummary } from "@/components/charging-planner";
 import TrafficBasisSelect from "@/components/traffic-basis-select";
 import SiteEvidence from "@/components/site-evidence";
+import SiteSurroundings from "@/components/site-surroundings";
 import SiteAccessCheck from "@/components/site-access-check";
 import TrafficTutorial from "@/components/traffic-tutorial";
 import { loadPlanningData } from "@shared/charging-planning/data";
@@ -1573,6 +1574,7 @@ export default function TrafficOpportunity() {
                       <div data-tour="basis"><TrafficBasisSelect id="screening-basis" siteLabel={activePin.label} context={activeTraffic} choice={basisChoices[activePin.id]} onChange={(choice) => changeBasis(activePin.id, choice)} unavailable={siteDataError || (!consistentPlanningData ? "Standortdaten werden geladen" : undefined)} /></div>
                       {siteDataError && <button type="button" onClick={() => setPlanningRetry((n) => n + 1)} className="mt-2 text-xs font-semibold text-[#1d3bff]">Erneut laden</button>}
                       <SiteEvidence context={activeTraffic} networkSize={consistentPlanningData?.network.edges.length} />
+                      <SiteSurroundings site={activePin} />
                       {verdict && verdict.siteId === activePin.id && (
                         <a href="#wirtschaftlichkeit" className="group mt-5 block bg-[#1d3bff] p-5 text-white transition hover:bg-[#0f27d6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0a0a0b]">
                           <span className="font-mono text-[11px] text-white/70">Ergebnis unter deinen Annahmen</span>

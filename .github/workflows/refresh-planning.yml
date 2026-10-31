@@ -1,0 +1,55 @@
+name: Refresh BASt counting data
+
+# BASt publishes unvalidated monthly raw data a few weeks after month end.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 5 8 * *'
+    - cron: '37 5 22 * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: planning-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: |
+            scripts/requirements-planning.txt
+            scripts/requirements-charging.txt
+      # The Mendeley v2 archive is versioned and ~400 MB; download it once and reuse it.
+      - uses: actions/cache@v4
+        with:
+          path: data/raw/mendeley_py2zkrb65h_v2
+          key: mendeley-py2zkrb65h-v2
+      - run: pip install -r scripts/requirements-planning.txt -r scripts/requirements-charging.txt
+      - run: npm ci
+      - run: python -m unittest discover -s scripts -p 'test_planning_data.py'
+      - run: python scripts/refresh_planning_data.py
+      # Only publish data that still passes the full engine and app checks.
+      - run: bash scripts/check_charging_planning.sh
+      - run: npm test
+      - name: Commit validated planning data when the month changed
+        run: |
+          git add client/public/data/planning/bast-hourly-de.json client/public/data/planning/network-de.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Update BASt counting data'
+          git push

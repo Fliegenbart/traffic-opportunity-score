@@ -1,0 +1,37 @@
+name: Watch for new data sources
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '11 7 * * 1'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s scripts -p 'test_watch_sources.py'
+      - run: python scripts/watch_sources.py > found.json
+      - name: Open one issue per newly available source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          for item in json.load(open("found.json")):
+              title = f"Neue Datenquelle: {item['title']}"
+              existing = subprocess.run(["gh", "issue", "list", "--state", "all", "--search", f"in:title \"{title}\"", "--json", "number"],
+                                        capture_output=True, text=True, check=True).stdout
+              if json.loads(existing):
+                  continue
+              body = f"{item['detail']}\n\nQuelle: {item['url']}\n\nAutomatisch erkannt von scripts/watch_sources.py. Vor dem Einbau Format und Lizenz prüfen."
+              subprocess.run(["gh", "issue", "create", "--title", title, "--body", body], check=True)
+          PY

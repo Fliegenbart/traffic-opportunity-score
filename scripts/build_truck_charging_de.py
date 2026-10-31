@@ -30,7 +30,7 @@ import argparse
 import os
 import tempfile
 
-from bnetza_register import parse_csv
+from bnetza_register import parse_register
 
 ROOT = Path(__file__).resolve().parents[1]
 BNETZA_CSV = ROOT / "data" / "external" / "bnetza_ladesaeulen.csv"
@@ -121,7 +121,7 @@ def main() -> None:
     if not CURATED_JSON.exists():
         raise SystemExit(f"Missing curated list: {CURATED_JSON}")
 
-    register, register_metadata = parse_csv(args.csv.read_bytes())
+    register, register_metadata = parse_register(args.csv.read_bytes())
     if args.import_metadata:
         imported = json.loads(args.import_metadata.read_text())
         if imported["registerSha256"] != register_metadata["registerSha256"]:
