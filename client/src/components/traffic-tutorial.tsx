@@ -88,7 +88,7 @@ export default function TrafficTutorial({ hasSite, onTabChange, autoStart = true
     <div className="traffic-tutorial-toggle" data-tour="tutorial-control">
       <BookOpen size={16} aria-hidden="true" />
       <label htmlFor="traffic-tutorial-switch">Tutorial</label>
-      <Switch ref={toggleRef} id="traffic-tutorial-switch" className="data-[state=checked]:bg-[#c6f24e] data-[state=unchecked]:bg-white/20" checked={state.enabled} onCheckedChange={(enabled) => setState((current) => ({ ...current, enabled }))} aria-label="Tutorial ein- oder ausschalten" />
+      <Switch ref={toggleRef} id="traffic-tutorial-switch" className="data-[state=checked]:bg-[#1d3bff] data-[state=unchecked]:bg-[#cfcfcb]" checked={state.enabled} onCheckedChange={(enabled) => setState((current) => ({ ...current, enabled }))} aria-label="Tutorial ein- oder ausschalten" />
     </div>
     <Popover.Root open={state.enabled} onOpenChange={(enabled) => { if (!enabled) close(); }} modal={false}>
       <Popover.Anchor virtualRef={anchor} />

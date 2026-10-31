@@ -14,7 +14,7 @@ export default function NotFound() {
           <p className="mt-4 text-sm text-gray-600">
             Diese Adresse führt zu keiner verfügbaren Seite.
           </p>
-          <a href="/traffic-opportunity" className="mt-4 inline-block text-sm font-semibold text-[#0a7c63] underline">Zur Standortanalyse</a>
+          <a href="/traffic-opportunity" className="mt-4 inline-block text-sm font-semibold text-[#1d3bff] underline">Zur Standortanalyse</a>
         </CardContent>
       </Card>
     </div>

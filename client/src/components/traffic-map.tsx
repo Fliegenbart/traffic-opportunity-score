@@ -160,7 +160,7 @@ export default function TrafficMap({
   pins?: MapPin[];
   /** Verkehrsnetz als gebündelte Adern-Pfade (Bühne hinter den Hotspots). */
   network?: NetworkLayer[];
-  variant?: "light" | "dark";
+  variant?: "light" | "dark" | "swiss";
   /** Im Pin-Modus setzt jeder Karten-Klick einen Standort statt zu selektieren. */
   pinMode?: boolean;
   showCities?: boolean;
@@ -178,8 +178,40 @@ export default function TrafficMap({
   const [tooltip, setTooltip] = useState<TooltipState | null>(null);
   // Remount des SVG spielt die Eingangs-Choreografie erneut ab („↺ Intro").
   const [epoch, setEpoch] = useState(0);
-  const dark = variant === "dark";
-  const palette = dark
+  const swiss = variant === "swiss";
+  // Die animierte Darstellung gilt für "dark" und "swiss"; Farben kommen aus der Palette.
+  const dark = variant === "dark" || swiss;
+  const palette = swiss
+    ? {
+        landFill: "#ffffff",
+        landStroke: "#d6d6d2",
+        landGlow: "transparent",
+        cityText: "#8e8e93",
+        backdropDot: "#dcdcd8",
+        textureDot: "#b9b9b4",
+        network: "#1d3bff",
+        edgeCasing: "rgba(29,59,255,0.10)",
+        edge: "#1d3bff",
+        edgeSelected: "#0a0a0b",
+        whiteSpotEdge: "#ff4f00",
+        regionStroke: "#ffffff",
+        regionFill: "#1d3bff",
+        chargerFill: "#0a0a0b",
+        chargerStroke: "#ffffff",
+        hollowFill: "#ffffff",
+        selectedStroke: "#0a0a0b",
+        routeLine: "#0a0a0b",
+        routeDraw: "#0a0a0b",
+        flow: "#ffffff",
+        glow: "#1d3bff",
+        glowHot: "#ff8a4c",
+        glowHotEdge: "#ff4f00",
+        pinActive: "#1d3bff",
+        pinActiveText: "#ffffff",
+        replayBtn: "border-[#cfcfcb] text-[#6b6b70] hover:border-[#0a0a0b] hover:text-[#0a0a0b]",
+        legendText: "text-[#6b6b70]",
+      }
+    : variant === "dark"
     ? {
         landFill: "#1b1e24",
         landStroke: "rgba(255,255,255,0.14)",
@@ -194,6 +226,19 @@ export default function TrafficMap({
         regionStroke: "#17181c",
         chargerFill: "#a78bfa",
         chargerStroke: "#17181c",
+        textureDot: "#3c424c",
+        regionFill: "#3d8b95",
+        hollowFill: "#0b1215",
+        selectedStroke: "white",
+        routeLine: "rgba(255,255,255,0.85)",
+        routeDraw: "rgba(255,255,255,0.9)",
+        flow: "#7deef5",
+        glow: "#19c8d4",
+        glowHot: "#ffc46b",
+        glowHotEdge: "#e8a13a",
+        pinActive: "#e8a13a",
+        pinActiveText: "#0b1215",
+        replayBtn: "border-white/15 text-white/60 hover:border-white/30 hover:text-white",
         legendText: "text-white/55",
       }
     : {
@@ -210,6 +255,19 @@ export default function TrafficMap({
         regionStroke: "white",
         chargerFill: "#7c3aed",
         chargerStroke: "white",
+        textureDot: "#3c424c",
+        regionFill: "#3d8b95",
+        hollowFill: "white",
+        selectedStroke: "#1d1d1f",
+        routeLine: "#1d1d1f",
+        routeDraw: "rgba(255,255,255,0.9)",
+        flow: "#7deef5",
+        glow: "#19c8d4",
+        glowHot: "#ffc46b",
+        glowHotEdge: "#e8a13a",
+        pinActive: "#e8a13a",
+        pinActiveText: "#0b1215",
+        replayBtn: "border-white/15 text-white/60 hover:border-white/30 hover:text-white",
         legendText: "text-[#6e6e73]",
       };
 
@@ -248,14 +306,14 @@ export default function TrafficMap({
       >
         <defs>
           <radialGradient id="tmGlowCyan">
-            <stop offset="0%" stopColor="#19c8d4" stopOpacity={0.55} />
-            <stop offset="45%" stopColor="#19c8d4" stopOpacity={0.18} />
-            <stop offset="100%" stopColor="#19c8d4" stopOpacity={0} />
+            <stop offset="0%" stopColor={palette.glow} stopOpacity={swiss ? 0.28 : 0.55} />
+            <stop offset="45%" stopColor={palette.glow} stopOpacity={swiss ? 0.08 : 0.18} />
+            <stop offset="100%" stopColor={palette.glow} stopOpacity={0} />
           </radialGradient>
           <radialGradient id="tmGlowAmber">
-            <stop offset="0%" stopColor="#ffc46b" stopOpacity={0.9} />
-            <stop offset="38%" stopColor="#e8a13a" stopOpacity={0.32} />
-            <stop offset="100%" stopColor="#e8a13a" stopOpacity={0} />
+            <stop offset="0%" stopColor={palette.glowHot} stopOpacity={0.9} />
+            <stop offset="38%" stopColor={palette.glowHotEdge} stopOpacity={0.32} />
+            <stop offset="100%" stopColor={palette.glowHotEdge} stopOpacity={0} />
           </radialGradient>
         </defs>
 
@@ -295,7 +353,7 @@ export default function TrafficMap({
                 cx={x}
                 cy={y}
                 r={dark ? (textureEmphasis ? 0.75 : 0.45) : 1.0}
-                fill={textureEmphasis ? "#3c424c" : palette.backdropDot}
+                fill={textureEmphasis ? palette.textureDot : palette.backdropDot}
               />
             );
           })}
@@ -366,8 +424,8 @@ export default function TrafficMap({
               r={radius}
               // Im Dark-Hero gehört Amber den Lade-Lücken — Regionen bleiben
               // dort einfarbig und treten zurück.
-              fill={dark ? "#3d8b95" : scoreColor(region.score)}
-              stroke={selected ? (dark ? "white" : "#1d1d1f") : palette.regionStroke}
+              fill={dark ? palette.regionFill : scoreColor(region.score)}
+              stroke={selected ? palette.selectedStroke : palette.regionStroke}
               strokeWidth={selected ? 1.8 : 0.9}
               opacity={selected ? 0.95 : dark ? 0.5 : 0.78}
               className={pinMode ? undefined : "cursor-pointer"}
@@ -470,7 +528,7 @@ export default function TrafficMap({
                   y1={sy1}
                   x2={sx2}
                   y2={sy2}
-                  stroke="#7deef5"
+                  stroke={palette.flow}
                   strokeWidth={0.7 + norm * 1.0}
                   strokeDasharray="1.4 2.1"
                   opacity={0.6}
@@ -492,7 +550,7 @@ export default function TrafficMap({
                 cy={midY}
                 r={glowR * 0.8}
                 fill="none"
-                stroke="rgba(255,255,255,0.75)"
+                stroke={palette.selectedStroke}
                 strokeWidth={0.5}
                 opacity={selected ? 0.9 : 0}
                 style={{ transition: "opacity 0.3s ease" }}
@@ -521,7 +579,7 @@ export default function TrafficMap({
         {routes.map((route, index) => {
           const [x1, y1] = project(route.aLon, route.aLat);
           const [x2, y2] = project(route.bLon, route.bLat);
-          const lineColor = dark ? "rgba(255,255,255,0.85)" : "#1d1d1f";
+          const lineColor = palette.routeLine;
           return (
             <g key={`route-${index}`}>
               {route.path && route.path.length > 1 ? (
@@ -555,7 +613,7 @@ export default function TrafficMap({
                         <path
                           d={d}
                           fill="none"
-                          stroke="rgba(255,255,255,0.9)"
+                          stroke={palette.routeDraw}
                           strokeWidth={1.8}
                           strokeLinejoin="round"
                           pathLength={1}
@@ -658,8 +716,8 @@ export default function TrafficMap({
               )}
               <path
                 d={`M ${x} ${y - r} L ${x + r} ${y} L ${x} ${y + r} L ${x - r} ${y} Z`}
-                fill={live ? palette.chargerFill : (dark ? "#0b1215" : "white")}
-                stroke={live ? (dark ? "#0b1215" : "white") : palette.chargerFill}
+                fill={live ? palette.chargerFill : palette.hollowFill}
+                stroke={live ? palette.hollowFill : palette.chargerFill}
                 strokeWidth={0.7}
                 opacity={0.95}
                 className="cursor-pointer"
@@ -705,7 +763,7 @@ export default function TrafficMap({
                 cx={x}
                 cy={y}
                 r={4.4}
-                fill={pin.active ? "#e8a13a" : "white"}
+                fill={pin.active ? palette.pinActive : "white"}
                 stroke="rgba(20,21,25,0.9)"
                 strokeWidth={0.7}
               />
@@ -715,7 +773,7 @@ export default function TrafficMap({
                 textAnchor="middle"
                 fontSize={4.6}
                 fontWeight={700}
-                fill="#0b1215"
+                fill={pin.active ? palette.pinActiveText : "#0b1215"}
               >
                 {pin.index}
               </text>
@@ -744,7 +802,7 @@ export default function TrafficMap({
             <svg width="26" height="12" viewBox="0 0 26 12" aria-hidden>
               <circle cx="13" cy="6" r="5" fill={palette.edge} opacity={0.18} />
               <line x1="7" y1="6" x2="19" y2="6" stroke={palette.edge} strokeWidth="1.8" opacity={0.55} />
-              <line x1="7" y1="6" x2="19" y2="6" stroke="#7deef5" strokeWidth="1.3" strokeDasharray="2.2 3" />
+              <line x1="7" y1="6" x2="19" y2="6" stroke={swiss ? palette.edge : palette.flow} strokeWidth="1.3" strokeDasharray="2.2 3" />
             </svg>
             Verkehrsstarker Straßenabschnitt · Modell 2030
           </span>
@@ -754,7 +812,7 @@ export default function TrafficMap({
             <svg width="26" height="12" viewBox="0 0 26 12" aria-hidden>
               <circle cx="13" cy="6" r="5.4" fill={palette.whiteSpotEdge} opacity={0.25} />
               <line x1="9" y1="6" x2="17" y2="6" stroke={palette.whiteSpotEdge} strokeWidth="1.8" />
-              <circle cx="13" cy="6" r="1.4" fill="#ffc46b" />
+              <circle cx="13" cy="6" r="1.4" fill={palette.glowHot} />
             </svg>
             Kein dokumentierter Lkw-Ladepark im Umkreis von 25 km Luftlinie
           </span>
@@ -789,7 +847,7 @@ export default function TrafficMap({
           <button
             type="button"
             onClick={() => setEpoch((value) => value + 1)}
-            className="ml-auto rounded-full border border-white/15 px-3 py-1 text-xs font-semibold text-white/60 transition hover:border-white/30 hover:text-white"
+            className={`ml-auto border px-3 py-1 text-xs font-semibold transition ${palette.replayBtn}`}
             title="Kartenanimation wiederholen"
           >
             ↺ Animation
