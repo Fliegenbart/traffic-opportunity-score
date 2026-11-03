@@ -1,27 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Printer, Search, SlidersHorizontal } from "lucide-react";
-import TrafficMap, { type MapCharger, type MapEdge, type NetworkLayer } from "@/components/traffic-map";
+import { ArrowLeft, ArrowRight, Pause, Play, Printer, Search, SlidersHorizontal } from "lucide-react";
+import TrafficMap, { type MapCharger, type MapFlow } from "@/components/traffic-map";
 import { WatchButton } from "@/components/watchlist";
 import { verdictOf } from "@/components/charging-planner";
 import { useWatchlist } from "@/lib/use-watchlist";
-import { useNearbyParking, useSnapshots, loadTiles } from "@/lib/surroundings-data";
+import { useNearbyParking, useSnapshots } from "@/lib/surroundings-data";
 import type { PlanEntry, WorkerReply } from "@/lib/charging-planning.worker";
 import { loadPlanningData } from "@shared/charging-planning/data";
 import { buildSiteRequest, DEFAULT_SITE_INPUT, PLANNING_STORAGE_KEY, siteInputSchema } from "@shared/charging-planning/site-input";
 import { resolveSiteTraffic, type BasisChoice, type PlanningData } from "@shared/site-traffic";
 import { assessSite } from "@shared/standort-check";
-import { finderRoads, rankRoadSites } from "@shared/site-finder";
-import type { OccupancyProfile } from "@shared/surroundings";
-import { distanceKm } from "@shared/geo";
+import { computeGaps, eTruckShare, largestGaps, FULL_GAP_DENSITY, GAP_FIRST_YEAR, GAP_LAST_YEAR, type GapSpot } from "@shared/charging-gaps";
+import type { LorryParking } from "@shared/surroundings";
 
 type Site = { lon: number; lat: number; label: string };
-type Hub = { id: string; name: string; operator: string; type: "mcs" | "hpc"; status: "live" | "announced"; lon: number; lat: number };
+type Hub = { id: string; name: string; operator: string; type: "mcs" | "hpc"; status: "live" | "announced"; lon: number; lat: number; chargePoints?: number | null };
 type Charging = { metadata: { bnetzaDataDate: string }; verified: Hub[]; proxy: { lon: number; lat: number; chargePoints: number; maxKw: number }[] };
-type Hotspot = { edgeId: number; aLabel: string; bLabel: string; aLon: number; aLat: number; bLon: number; bLat: number; trucks2030: number };
-type Atlas = { backdrop: [number, number][]; edgeHotspots: Hotspot[] };
+type Atlas = { backdrop: [number, number][] };
 type Direction = "one_unknown" | "both";
 
-const WHITE_SPOT_KM = 25;
 const json = <T,>(url: string) => fetch(url).then((r) => (r.ok ? (r.json() as Promise<T>) : null)).catch(() => null);
 const number = (v: number, digits = 0) => v.toLocaleString("de-DE", { maximumFractionDigits: digits });
 const million = (v: number) => Math.abs(v) < 50000 ? "≈ 0" : `${v < 0 ? "−" : "+"}${number(Math.abs(v) / 1e6, 1)}`;
@@ -56,41 +53,53 @@ function Fact({ label, value, note }: { label: string; value: string; note?: str
   </div>;
 }
 
-function RoadPicks({ data, hubs, substations, onPick }: { data?: PlanningData; hubs: Hub[]; substations: [number, number, number][]; onPick: (site: Site) => void }) {
-  const snapshots = useSnapshots();
-  const services = snapshots?.[0] ?? null, index = snapshots?.[2] ?? null;
-  const [road, setRoad] = useState("A7");
-  const [profiles, setProfiles] = useState<OccupancyProfile[]>([]);
-  useEffect(() => {
-    if (!services || !index) return;
-    let alive = true;
-    const keys = new Set(services.parking.filter((p) => p.road === road).map((p) => `${Math.floor(p.lat)}_${Math.floor(p.lon)}`));
-    loadTiles(Array.from(keys).filter((k) => index.tiles.includes(k))).then((rows) => { if (alive) setProfiles(rows); });
-    return () => { alive = false; };
-  }, [services, index, road]);
-  const live = useMemo(() => hubs.filter((h) => h.status === "live"), [hubs]);
-  const ranked = useMemo(() => services && data ? rankRoadSites(road, services.parking, profiles, data.network.edges, live, substations, 5) : [], [services, data, road, profiles, live, substations]);
-  if (!services) return null;
+function GapList({ spots, year, onPick }: { spots: GapSpot[]; year: number; onPick: (site: Site) => void }) {
+  if (!spots.length) return null;
   return <div className="mt-10">
-    <div className="flex flex-wrap items-center gap-2 text-sm text-[#55555a]">
-      Oder direkt die besten Standorte an der
-      <select value={road} onChange={(e) => setRoad(e.target.value)} aria-label="Autobahn" className="rounded-md border border-[#cfcfcb] bg-white px-2 py-1 text-sm font-semibold text-[#0a0a0b]">
-        {finderRoads(services.parking).map((r) => <option key={r.road} value={r.road}>{r.road}</option>)}
-      </select>
-    </div>
+    <h2 className="text-sm font-semibold text-[#0a0a0b]">Die größten Lücken {year}</h2>
+    <p className="mt-1 text-xs text-[#6b6b70]">Hier fahren viele E-Lkw, aber es gibt keinen oder zu wenig Lkw-Ladeparks. Klick öffnet die Rechnung für einen neuen Ladepark an dieser Stelle.</p>
     <ol className="mt-3 divide-y divide-[#e4e4e1] border-y border-[#e4e4e1]">
-      {ranked.map((c) => <li key={c.id}>
-        <button type="button" onClick={() => onPick({ lon: c.lon, lat: c.lat, label: `${c.name} (${c.road})` })} className="group flex w-full items-center gap-3 py-2.5 text-left">
-          <span className="w-8 shrink-0 text-sm font-bold tabular-nums text-[#1d3bff]">{c.score}</span>
+      {spots.map((spot, i) => <li key={`${spot.lon},${spot.lat}`}>
+        <button type="button" onClick={() => onPick({ lon: spot.lon, lat: spot.lat, label: spot.road ? `${spot.place} (${spot.road})` : spot.place })} className="group flex w-full items-center gap-3 py-2.5 text-left">
+          <span className="w-5 shrink-0 text-sm font-bold tabular-nums text-[#e3261b]">{i + 1}</span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-semibold text-[#0a0a0b]">{c.name}</span>
-            <span className="block truncate text-xs text-[#6b6b70]">{c.trucksPerNight !== null ? `nachts ≈ ${number(c.trucksPerNight)} Lkw` : `${c.truckSpaces ?? "?"} Lkw-Stellplätze`} · {c.hub ? `Lkw-Ladepark ${number(c.hub.km)} km` : "kein Lkw-Ladepark in der Nähe"}</span>
+            <span className="block truncate text-sm font-semibold text-[#0a0a0b]">{spot.road ? `${spot.road} · ` : ""}{spot.place}</span>
+            <span className="block text-xs leading-snug text-[#6b6b70]">{spot.hubKm === null || spot.hubKm > 50 ? `Kein Lkw-Ladepark in ${spot.hubKm === null ? "der Nähe" : `${number(spot.hubKm)} km`}` : `Lkw-Ladepark in ${number(spot.hubKm)} km reicht nicht`} · ≈ {number(Math.round(spot.eTrucks / 10) * 10)} E-Lkw/Tag · es fehlen ≈ {number(spot.missingPoints)} Ladepunkte</span>
           </span>
-          <ArrowRight size={16} className="shrink-0 text-[#cfcfcb] group-hover:text-[#1d3bff]" />
+          <ArrowRight size={16} className="shrink-0 text-[#cfcfcb] group-hover:text-[#0a0a0b]" />
         </button>
       </li>)}
     </ol>
-    <p className="mt-2 text-[11px] text-[#6b6b70]">Punkte aus Standzeit, Verkehr, Abstand zum nächsten Lkw-Ladepark und Nähe zum Umspannwerk.</p>
+  </div>;
+}
+
+function YearControl({ year, setYear, missingPoints }: { year: number; setYear: (y: number | ((y: number) => number)) => void; missingPoints: number | null }) {
+  const [playing, setPlaying] = useState(false);
+  useEffect(() => {
+    if (!playing) return;
+    const timer = window.setInterval(() => setYear((y) => {
+      if (y >= GAP_LAST_YEAR) { setPlaying(false); return y; }
+      return y + 1;
+    }), 900);
+    return () => window.clearInterval(timer);
+  }, [playing, setYear]);
+  const toggle = () => { if (!playing && year >= GAP_LAST_YEAR) setYear(GAP_FIRST_YEAR); setPlaying(!playing); };
+  return <div className="mb-3">
+    <div className="flex items-end justify-between gap-4">
+      <div>
+        <p className="text-4xl font-semibold tabular-nums tracking-[-0.04em]" aria-live="polite">{year}</p>
+        <p className="mt-1 text-xs text-[#55555a]">{Math.round(eTruckShare(year) * 100)} % der Lkw fahren elektrisch</p>
+      </div>
+      {missingPoints !== null && <div className="text-right">
+        <p className="text-2xl font-semibold tabular-nums tracking-[-0.03em] text-[#e3261b]">≈ {number(Math.round(missingPoints / 10) * 10)}</p>
+        <p className="mt-1 text-xs text-[#55555a]">Lkw-Ladepunkte fehlen</p>
+      </div>}
+    </div>
+    <div className="mt-3 flex items-center gap-3">
+      <button type="button" onClick={toggle} aria-label={playing ? "Anhalten" : "Jahre abspielen"} className="grid h-8 w-8 shrink-0 place-items-center bg-[#0a0a0b] text-white hover:bg-[#1d3bff]">{playing ? <Pause size={14} /> : <Play size={14} />}</button>
+      <input type="range" min={GAP_FIRST_YEAR} max={GAP_LAST_YEAR} step={1} value={year} onChange={(e) => { setPlaying(false); setYear(Number(e.target.value)); }} aria-label="Jahr" className="w-full accent-[#1d3bff]" />
+    </div>
+    <div className="mt-1 flex justify-between pl-11 text-[10px] tabular-nums text-[#8e8e93]"><span>{GAP_FIRST_YEAR}</span><span>{GAP_LAST_YEAR}</span></div>
   </div>;
 }
 
@@ -143,7 +152,7 @@ export default function Standort() {
   const [atlas, setAtlas] = useState<Atlas | null>(null);
   const [charging, setCharging] = useState<Charging | null>(null);
   const [substations, setSubstations] = useState<[number, number, number][]>([]);
-  const [network, setNetwork] = useState<NetworkLayer[]>([]);
+  const [year, setYear] = useState(2030);
   const [data, setData] = useState<PlanningData>();
   const [entry, setEntry] = useState<PlanEntry | null>(null);
   const [busy, setBusy] = useState(false);
@@ -153,7 +162,6 @@ export default function Standort() {
     json<Atlas>("/data/traffic-opportunity-de.json").then(setAtlas);
     json<Charging>("/data/truck-charging-de.json").then((c) => setCharging(c && Array.isArray(c.verified) && Array.isArray(c.proxy) ? c : null));
     json<{ points: [number, number, number][] }>("/data/substations-de.json").then((s) => s && setSubstations(s.points));
-    json<{ layers: NetworkLayer[] }>("/data/network-de.json").then((n) => n && setNetwork(n.layers));
     loadPlanningData().then(setData).catch(() => undefined);
   }, []);
 
@@ -167,11 +175,15 @@ export default function Standort() {
 
   const hubs = charging?.verified ?? [];
   const live = useMemo(() => hubs.filter((h) => h.status === "live"), [hubs]);
-  const mapEdges = useMemo<MapEdge[]>(() => (atlas?.edgeHotspots ?? []).map((e) => {
-    const mid = { lon: (e.aLon + e.bLon) / 2, lat: (e.aLat + e.bLat) / 2 };
-    return { edgeId: e.edgeId, label: e.aLabel === e.bLabel ? `bei ${e.aLabel}` : `${e.aLabel} – ${e.bLabel}`, aLon: e.aLon, aLat: e.aLat, bLon: e.bLon, bLat: e.bLat,
-      trucks2030: e.trucks2030, whiteSpot: !live.some((h) => distanceKm(mid, h) <= WHITE_SPOT_KM) };
-  }), [atlas, live]);
+  const gaps = useMemo(() => data ? computeGaps(data.network.edges, hubs, year) : null, [data, hubs, year]);
+  const flows = useMemo<MapFlow[]>(() => (gaps?.sections ?? []).map(({ edge, trucks, eTrucks, missing, density, hubKm }) => ({
+    edgeId: edge.edgeId, aLon: edge.aLon, aLat: edge.aLat, bLon: edge.bLon, bLat: edge.bLat,
+    weight: Math.min(1, Math.sqrt(trucks / 40000)), gap: Math.min(1, density / FULL_GAP_DENSITY),
+    label: `${edge.label.replace(" - ", " – ")} · ${year}: ≈ ${number(Math.round(trucks / 100) * 100)} Lkw/Tag, davon ≈ ${number(Math.round(eTrucks / 10) * 10)} elektrisch · ${missing >= 1 ? (hubKm === null || hubKm > 50 ? "kein Lkw-Ladepark in der Nähe" : `Lkw-Ladepark in ${number(hubKm)} km reicht nicht`) : "durch Lkw-Ladeparks abgedeckt"}`,
+  })), [gaps, year]);
+  const snapshots = useSnapshots();
+  const lorryParking = useMemo<LorryParking[]>(() => snapshots?.[0]?.parking ?? [], [snapshots]);
+  const spots = useMemo(() => gaps ? largestGaps(gaps, lorryParking, live) : [], [gaps, lorryParking, live]);
   const mapChargers = useMemo<MapCharger[]>(() => hubs.map(({ id, name, lon, lat, status, type }) => ({ id, name, lon, lat, status, type })), [hubs]);
 
   const { parking } = useNearbyParking(site ? [{ id: "site", ...site }] : []);
@@ -239,7 +251,7 @@ export default function Standort() {
       <section className="lg:col-span-5">
         {!site ? <>
           <h1 className="text-[40px] font-semibold leading-[0.98] tracking-[-0.04em] [text-wrap:balance] sm:text-6xl">Wo lohnt sich ein Lkw-Ladepark?</h1>
-          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[#55555a]">Adresse eingeben oder auf die Karte klicken. Du siehst sofort, wie viele Lkw dort fahren und stehen, wer in der Nähe schon lädt und was ein Ladepark einbringen kann.</p>
+          <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[#55555a]">Die Karte zeigt, wie der Lkw-Verkehr bis {GAP_LAST_YEAR} wächst und wo Ladeparks für E-Lkw fehlen. Für einen bestimmten Ort: Adresse eingeben oder auf die Karte klicken.</p>
           <div className="mt-7 flex gap-2">
             <label className="flex min-h-12 min-w-0 flex-1 items-center gap-3 border border-[#0a0a0b] bg-white px-4 focus-within:border-[#1d3bff]">
               <Search className="h-4 w-4 shrink-0 text-[#6b6b70]" />
@@ -248,10 +260,11 @@ export default function Standort() {
             <button type="button" onClick={() => void search()} disabled={searching} className="bg-[#1d3bff] px-5 text-sm font-semibold text-white hover:bg-[#0f27d6] disabled:opacity-50">{searching ? "…" : "Prüfen"}</button>
           </div>
           {searchError && <p className="mt-2 text-xs text-[#8b570b]">{searchError}</p>}
-          <RoadPicks data={data} hubs={hubs} substations={substations} onPick={setSite} />
+          <GapList spots={spots} year={year} onPick={setSite} />
         </> : <>
           <button type="button" onClick={() => setSite(null)} className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#6b6b70] hover:text-[#0a0a0b] print:hidden"><ArrowLeft size={14} /> Anderen Standort prüfen</button>
           <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.03em] [text-wrap:balance]">{site.label || `${site.lat.toFixed(3)}, ${site.lon.toFixed(3)}`}</h1>
+          {assessment && <p className="mt-2 text-sm text-[#55555a]">{assessment.hub && assessment.hub.km < 1 ? `Hier gibt es schon einen Lkw-Ladepark: ${assessment.hub.name}.` : `Hier gibt es noch keinen Lkw-Ladepark${assessment.hub ? `, der nächste ist ${number(assessment.hub.km)} km entfernt` : ""}.`} Unten steht, was ein neuer Ladepark an dieser Stelle bringen würde.</p>}
 
           <fieldset className="mt-5 print:hidden">
             <legend className="text-xs text-[#6b6b70]">Wie erreichen Lkw den Standort?</legend>
@@ -294,15 +307,16 @@ export default function Standort() {
 
       <section className="lg:col-span-7 print:hidden">
         <div className="bg-[#f2f2ef] p-3 sm:p-5 lg:sticky lg:top-6">
-          {atlas ? <TrafficMap backdrop={atlas.backdrop} edges={mapEdges} regions={[]} chargers={mapChargers} network={network} variant="swiss" showCities pinMode
+          {!site && <YearControl year={year} setYear={setYear} missingPoints={gaps?.missingPoints ?? null} />}
+          {atlas ? <TrafficMap backdrop={atlas.backdrop} edges={[]} flows={flows} regions={[]} chargers={mapChargers} variant="swiss" showCities pinMode
             pins={site ? [{ id: "site", lon: site.lon, lat: site.lat, index: 1, active: true }] : []}
             onMapClick={(lon, lat) => setSite({ lon: Math.round(lon * 1e4) / 1e4, lat: Math.round(lat * 1e4) / 1e4, label: "" })}
             selectedRegionId="" selectedEdgeId={null} onSelectRegion={() => undefined} onSelectEdge={() => undefined} />
             : <div className="aspect-[4/5]" />}
           <p className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-[#6b6b70]">
-            <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-4 bg-[#1d3bff]" />viel Lkw-Verkehr 2030</span>
-            <span className="flex items-center gap-1.5"><span className="inline-block h-0.5 w-4 bg-[#ff4f00]" />ohne Lkw-Ladepark in 25 km</span>
-            <span>Klick auf die Karte setzt einen Standort.</span>
+            <span className="flex items-center gap-1.5"><span className="inline-block h-1 w-4 bg-[#1d3bff] opacity-60" />Lkw-Verkehr · je dicker, desto mehr</span>
+            <span className="flex items-center gap-1.5"><span className="inline-block h-1 w-4 bg-[#e3261b]" />hier fehlen Ladeparks für E-Lkw</span>
+            <span>Punkte: Lkw-Ladeparks · {site ? `Stand ${year}` : "Klick auf die Karte prüft einen Standort."}</span>
           </p>
         </div>
       </section>

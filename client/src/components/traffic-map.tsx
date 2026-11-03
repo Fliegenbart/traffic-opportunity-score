@@ -110,6 +110,18 @@ export interface MapRoute {
   subtle?: boolean;
 }
 
+/** Straßenabschnitt in einem Prognosejahr: Breite ∝ Lkw-Verkehr, Rot ∝ fehlende Lademöglichkeit (beides 0–1). */
+export interface MapFlow {
+  edgeId: number;
+  aLon: number;
+  aLat: number;
+  bLon: number;
+  bLat: number;
+  weight: number;
+  gap: number;
+  label: string;
+}
+
 export interface NetworkLayer {
   id: string;
   width: number;
@@ -139,6 +151,7 @@ export default function TrafficMap({
   routes = [],
   pins = [],
   network = [],
+  flows = [],
   variant = "light",
   pinMode = false,
   showCities = false,
@@ -160,6 +173,7 @@ export default function TrafficMap({
   pins?: MapPin[];
   /** Verkehrsnetz als gebündelte Adern-Pfade (Bühne hinter den Hotspots). */
   network?: NetworkLayer[];
+  flows?: MapFlow[];
   variant?: "light" | "dark" | "swiss";
   /** Im Pin-Modus setzt jeder Karten-Klick einen Standort statt zu selektieren. */
   pinMode?: boolean;
@@ -442,6 +456,30 @@ export default function TrafficMap({
             />
           );
         })}
+
+        {flows.length > 0 && (
+          <g>
+            {flows.map((flow) => {
+              const [x1, y1] = project(flow.aLon, flow.aLat);
+              const [x2, y2] = project(flow.bLon, flow.bLat);
+              const width = 0.35 + flow.weight * 2.4;
+              return (
+                <g key={`flow-${flow.edgeId}`}>
+                  <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#1d3bff" strokeWidth={width} strokeOpacity={0.25 + flow.weight * 0.45} strokeLinecap="round" />
+                  {flow.gap > 0.08 && (
+                    <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#e3261b" strokeWidth={width} strokeOpacity={Math.min(1, flow.gap ** 1.2)} strokeLinecap="round" />
+                  )}
+                  <line
+                    x1={x1} y1={y1} x2={x2} y2={y2}
+                    stroke="transparent"
+                    strokeWidth={Math.max(3, width + 2)}
+                    onMouseEnter={() => setTooltip({ x: (x1 + x2) / 2, y: (y1 + y2) / 2, label: flow.label })}
+                  />
+                </g>
+              );
+            })}
+          </g>
+        )}
 
         {/* Hotspot-Strecken als Energie-Knoten: Glow + ehrliche dünne Geometrie
             + gerichteter Verkehrsfluss (Dash-Drift) bzw. Glut für Lade-Lücken.
@@ -843,7 +881,7 @@ export default function TrafficMap({
             Dokumentierter Lkw-Ladepark · nur Umriss: angekündigt
           </span>
         )}
-        {dark && (
+        {dark && flows.length === 0 && (
           <button
             type="button"
             onClick={() => setEpoch((value) => value + 1)}
