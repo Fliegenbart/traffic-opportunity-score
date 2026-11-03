@@ -981,6 +981,12 @@ export default function TrafficOpportunity() {
             {!embed && (
               <nav className="hidden items-center gap-1 sm:flex" aria-label="Weitere Werkzeuge">
                 <a
+                  href="/"
+                  className="inline-flex items-center px-3 py-1.5 text-[13px] font-semibold text-[#1d3bff] transition hover:text-[#0f27d6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1d3bff]"
+                >
+                  Eigenen Standort prüfen
+                </a>
+                <a
                   href="https://depot-readiness-check.vercel.app/"
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] font-medium text-[#6b6b70] transition hover:text-[#0a0a0b] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#1d3bff]"
                 >

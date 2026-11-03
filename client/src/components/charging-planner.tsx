@@ -81,7 +81,7 @@ const GAPS: Record<string, string> = {
 export type VerdictSummary = { siteId: string; tone: "good" | "mixed" | "bad"; title: string; low: number; base: number; high: number };
 export const verdictOf = (npv: { low: number; base: number; high: number }) => {
   const tone = npv.base >= 0 ? "good" as const : npv.high >= 0 ? "mixed" as const : "bad" as const;
-  return { tone, title: tone === "good" ? "Vertiefte Prüfung lohnt sich" : tone === "mixed" ? "Grenzwertig – hängt an den Annahmen" : "Unter diesen Annahmen nicht tragfähig" };
+  return { tone, title: tone === "good" ? "Vertiefte Prüfung lohnt sich" : tone === "mixed" ? "Grenzwertig – hängt an den Annahmen" : "Rechnet sich so noch nicht" };
 };
 
 export default function ChargingPlanner({ sites, activeId, onSelect, registerDate, data, dataError, onRetry, choices, onBasisChange, onVerdict }: {
