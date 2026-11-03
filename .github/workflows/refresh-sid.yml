@@ -35,7 +35,7 @@ jobs:
           MOBILITHEK_CERT_PASSWORD: ${{ secrets.MOBILITHEK_CERT_PASSWORD }}
       - name: Commit validated profiles when they changed
         run: |
-          git add -A client/public/data/truck-parking-occupancy client/public/data/truck-parking-occupancy-de.json
+          git add -A client/public/data/truck-parking-occupancy
           if git diff --cached --quiet; then exit 0; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
