@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { latestEvShare, occupancyTiles, parkingOccupancy, surroundings, type OccupancyIndex, type AutobahnServices, type EvTruckSeries } from "./surroundings";
+import { latestEvShare, occupancyTiles, parkingArrivalWeights, parkingBasis, parkingOccupancy, surroundings, type OccupancyIndex, type AutobahnServices, type EvTruckSeries } from "./surroundings";
 
 const services = JSON.parse(readFileSync("client/public/data/autobahn-services-de.json", "utf8")) as AutobahnServices;
 const ev = JSON.parse(readFileSync("client/public/data/context/ev-trucks-de.json", "utf8")) as EvTruckSeries;
@@ -32,3 +32,17 @@ const index: OccupancyIndex = { metadata: { generatedAt: "", coverage: { days: 9
 assert.deepEqual(occupancyTiles({ lon: 9.99, lat: 52.02 }, index).sort(), ["51_9", "52_10", "52_9"], "Radius über Kachelgrenzen lädt Nachbarkacheln");
 assert.deepEqual(occupancyTiles({ lon: 9.5, lat: 52.5 }, index), ["52_9"]);
 console.log("Umfeld: Parkplätze, Belegung, Schnelllader und E-Lkw-Anteil geprüft.");
+
+// Trucks per night: spaces × night occupancy (90 × 90 % + 10 × 50 % = 86).
+assert.equal(o.trucksPerNight, 86);
+const rising = hours(20).map((v, h) => (h >= 18 && h <= 22 ? 20 + (h - 17) * 15 : v));
+const weights = parkingArrivalWeights(rising);
+assert.equal(weights[17], 15, "Ankünfte = Anstieg der Belegung in die nächste Stunde");
+assert.equal(weights[23], 0, "Sinkende Belegung zählt nicht als Ankunft");
+assert.equal(parkingArrivalWeights(hours(null)).filter((w) => w > 0).length, 6, "Ohne Kurve: Abendprofil 17–22 Uhr");
+const occIndex = { metadata: { generatedAt: "2026-11-03T09:39:11+00:00", sha256: "a".repeat(64), coverage: { days: 9, samples: 200, from: "2026-10-26", to: "2026-11-03" }, nightHours: "20–6 Uhr", source: { title: "SID", url: "https://mobilithek.info/offers/961256297668182016", attribution: "Toll Collect", notice: "" } }, tiles: [] } as OccupancyIndex;
+const basis = parkingBasis(o, occIndex)!;
+assert.equal(basis.trucksPerNight, 86);
+assert.equal(basis.source.kind, "measured");
+assert.equal(parkingBasis(o, { ...occIndex, metadata: { ...occIndex.metadata, coverage: { ...occIndex.metadata.coverage, to: null } } }), null, "Ohne Messzeitraum keine Planungsbasis");
+assert.equal(parkingBasis(null, occIndex), null);

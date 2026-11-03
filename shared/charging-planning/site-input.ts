@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { parameterReferenceSchema, planningRequestSchema } from "./contracts";
+import { parameterReferenceSchema, planningRequestSchema, type ParkingDemand } from "./contracts";
 import { modelTrafficMultiplier, resolveSiteTraffic, type BasisChoice, type PlanningData } from "../site-traffic.js";
 export { uniformSource, type BasisChoice, type PlanningData } from "../site-traffic.js";
 
@@ -8,6 +8,7 @@ const money = z.number().finite().min(0).max(100000000);
 const fiveMinutes = (max: number) => z.number().int().min(0).max(max).refine((v) => v % 5 === 0, "Bitte eine Zeit in Schritten von fünf Minuten eingeben.");
 export const siteInputSchema = z.object({
   reachablePercent: percent, capturePercent: percent, energyKwh: z.number().min(1).max(2000),
+  parkingCapturePercent: percent.default(10),
   anchorCount: z.number().int().min(0).max(1000), anchorHour: z.number().int().min(0).max(23), anchorIncluded: z.boolean(),
   ports: z.number().int().min(1).max(100), portPowerKw: z.number().min(1).max(2000),
   vehiclePowerKw: z.number().finite().min(1).max(2000).default(2000),
@@ -29,7 +30,7 @@ export const siteInputSchema = z.object({
 });
 export type SiteInput = z.infer<typeof siteInputSchema>;
 export const DEFAULT_SITE_INPUT: SiteInput = {
-  reachablePercent: 50, capturePercent: 2, energyKwh: 250, anchorCount: 0, anchorHour: 8, anchorIncluded: false,
+  reachablePercent: 50, capturePercent: 2, parkingCapturePercent: 10, energyKwh: 250, anchorCount: 0, anchorHour: 8, anchorIncluded: false,
   ports: 4, portPowerKw: 250, gridPowerKw: 1000, gridKnown: true, startHour: 0, hoursOpen: 24,
   vehiclePowerKw: 2000, references: [],
   lossPercent: 8, turnaroundMinutes: 15, maxWaitMinutes: 30, access: "assumed",
@@ -40,7 +41,10 @@ export const DEFAULT_SITE_INPUT: SiteInput = {
 };
 export type PlanningSite = { id: string; label: string; lon: number; lat: number };
 
-export function buildSiteRequest(site: PlanningSite, data: PlanningData, raw: SiteInput, choice?: BasisChoice) {
+// Measured overnight parking near the site; the share that charges here comes from the site input.
+export type ParkingBasis = Omit<ParkingDemand, "captureShare" | "energyKwh">;
+
+export function buildSiteRequest(site: PlanningSite, data: PlanningData, raw: SiteInput, choice?: BasisChoice, parking?: ParkingBasis | null) {
   const a = siteInputSchema.parse(raw);
   const { edge, candidates, traffic, profiles, reason } = resolveSiteTraffic(site, data, choice);
   if (!traffic || !profiles) return { request: null, reason, candidates, edge, traffic, profiles };
@@ -52,7 +56,8 @@ export function buildSiteRequest(site: PlanningSite, data: PlanningData, raw: Si
       gridStatus: a.gridKnown ? "assumed" : "unknown", competitionStatus: "unknown" },
     traffic, profiles,
     demand: { reachableShare: a.reachablePercent / 100, captureShare: a.capturePercent / 100, energyKwh: a.energyKwh, seed: 42,
-      anchors: a.anchorCount ? [{ id: "anchor", hour: a.anchorHour, count: a.anchorCount, energyKwh: a.energyKwh, includedInPassing: a.anchorIncluded, activeOn: ["weekday"] }] : [] },
+      anchors: a.anchorCount ? [{ id: "anchor", hour: a.anchorHour, count: a.anchorCount, energyKwh: a.energyKwh, includedInPassing: a.anchorIncluded, activeOn: ["weekday"] }] : [],
+      ...(parking && parking.trucksPerNight > 0 && a.parkingCapturePercent > 0 ? { parking: { ...parking, captureShare: a.parkingCapturePercent / 100, energyKwh: a.energyKwh } } : {}) },
     references: a.references,
     capacity: { ports: a.ports, portPowerKw: a.portPowerKw, vehiclePowerKw: a.vehiclePowerKw, gridPowerKw: a.gridKnown ? a.gridPowerKw : null,
       lossPercent: a.lossPercent, turnaroundMinutes: a.turnaroundMinutes, maxWaitMinutes: a.maxWaitMinutes,

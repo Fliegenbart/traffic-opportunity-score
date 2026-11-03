@@ -45,9 +45,17 @@ export const anchorSchema = z.object({
   includedInPassing: z.boolean(),
   activeOn: z.array(z.enum(["weekday", "saturday", "sunday"])).min(1).max(3).optional(),
 }).strict();
+// Trucks measured standing overnight near the site; they reach the site independent of driving direction.
+export const parkingDemandSchema = z.object({
+  trucksPerNight: nonnegative.max(100000), captureShare: share, energyKwh: z.number().finite().min(1).max(2000),
+  weights: z.array(nonnegative.max(1000000)).length(24).refine((w) => w.some((v) => v > 0), "Leeres Ankunftsprofil"),
+  source: sourceSchema,
+}).strict();
+export type ParkingDemand = z.infer<typeof parkingDemandSchema>;
 export const demandSchema = z.object({
   reachableShare: share, captureShare: share, energyKwh: z.number().finite().min(1).max(2000),
   seed: z.number().int().min(0).max(4294967295), anchors: z.array(anchorSchema).max(24),
+  parking: parkingDemandSchema.optional(),
 }).strict().superRefine((d, ctx) => {
   if (new Set(d.anchors.map((a) => a.id)).size !== d.anchors.length) ctx.addIssue({ code: "custom", message: "Doppelte Ankerkunden-ID" });
   if (d.anchors.reduce((s, a) => s + a.count, 0) > 5000) ctx.addIssue({ code: "custom", message: "Zu viele Ankerkunden" });
@@ -73,7 +81,7 @@ export type CapacityInput = z.infer<typeof capacitySchema>;
 
 export const sessionSchema = z.object({
   id: shortText, arrivalMinute: minute.refine((v) => v < 1440),
-  energyKwh: z.number().finite().min(1).max(2000), kind: z.enum(["passing", "anchor"]),
+  energyKwh: z.number().finite().min(1).max(2000), kind: z.enum(["passing", "anchor", "parking"]),
 }).strict();
 export type ChargingSession = z.infer<typeof sessionSchema>;
 

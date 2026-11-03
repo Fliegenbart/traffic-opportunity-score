@@ -16,6 +16,9 @@ import SiteEconomics, { type VerdictSummary } from "@/components/charging-planne
 import TrafficBasisSelect from "@/components/traffic-basis-select";
 import SiteEvidence from "@/components/site-evidence";
 import SiteSurroundings from "@/components/site-surroundings";
+import SiteFinder from "@/components/site-finder";
+import WatchlistPanel, { WatchButton } from "@/components/watchlist";
+import { useWatchlist } from "@/lib/use-watchlist";
 import SiteAccessCheck from "@/components/site-access-check";
 import TrafficTutorial from "@/components/traffic-tutorial";
 import { loadPlanningData } from "@shared/charging-planning/data";
@@ -237,6 +240,8 @@ interface SitePin {
 }
 
 const MAX_PINS = 3;
+
+const NO_EDGES: never[] = [];
 
 function parsePins(raw: string): SitePin[] {
   return raw
@@ -704,6 +709,8 @@ export default function TrafficOpportunity() {
     [charging],
   );
 
+  const watch = useWatchlist(charging);
+
   const liveHubs = useMemo(
     () => (charging?.verified || []).filter((hub) => hub.status === "live"),
     [charging],
@@ -828,6 +835,11 @@ export default function TrafficOpportunity() {
   const changeBasis = (id: string, choice?: BasisChoice) => setBasisChoices((current) => ({ ...current, [id]: choice }));
 
   const addPin = (lon: number, lat: number, label = "") => {
+    const existing = pins.find((pin) => pin.lon === lon && pin.lat === lat);
+    if (existing) {
+      setActivePinId(existing.id);
+      return;
+    }
     if (pins.length >= MAX_PINS) {
       setPlaceError("Drei Standorte sind ausgewählt. Entferne zuerst einen Standort, um einen neuen hinzuzufügen.");
       return;
@@ -917,7 +929,7 @@ export default function TrafficOpportunity() {
     { id: "strecken", label: "Strecken" },
     { id: "korridore", label: "Verbindungen" },
     { id: "regionen", label: "Regionen" },
-    { id: "standort", label: "Standort-Check" },
+    { id: "standort", label: watch.freshCount ? `Standort-Check · ${watch.freshCount} neu` : "Standort-Check" },
   ];
 
   const activePin = pins.find((pin) => pin.id === activePinId) || pins[0] || null;
@@ -1530,6 +1542,8 @@ export default function TrafficOpportunity() {
                     </button>
                   </div>
                   {placeError && <p className="text-xs text-[#8b570b]">{placeError}</p>}
+                  <WatchlistPanel watch={watch} onOpen={addPin} dataDate={charging?.metadata.bnetzaDataDate || null} />
+                  <SiteFinder edges={consistentPlanningData?.network.edges ?? NO_EDGES} hubs={liveHubs} substations={substations} onPick={addPin} />
 
                   {pins.length === 0 && (
                     <p className="rounded-lg border border-dashed border-[#cfcfcb] px-5 py-4 text-sm leading-relaxed text-[#6b6b70]">
@@ -1573,6 +1587,7 @@ export default function TrafficOpportunity() {
                     <div className="border-t border-[#0a0a0b] bg-white pt-5">
                       <div data-tour="basis"><TrafficBasisSelect id="screening-basis" siteLabel={activePin.label} context={activeTraffic} choice={basisChoices[activePin.id]} onChange={(choice) => changeBasis(activePin.id, choice)} unavailable={siteDataError || (!consistentPlanningData ? "Standortdaten werden geladen" : undefined)} /></div>
                       {siteDataError && <button type="button" onClick={() => setPlanningRetry((n) => n + 1)} className="mt-2 text-xs font-semibold text-[#1d3bff]">Erneut laden</button>}
+                      <div className="mt-3"><WatchButton watch={watch} site={{ ...activePin, label: activePin.label || `${activePin.lat.toFixed(3)}, ${activePin.lon.toFixed(3)}` }} /></div>
                       <SiteEvidence context={activeTraffic} networkSize={consistentPlanningData?.network.edges.length} />
                       <SiteSurroundings site={activePin} />
                       {verdict && verdict.siteId === activePin.id && (

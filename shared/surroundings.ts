@@ -1,4 +1,5 @@
 import { distanceKm, type GeoPoint } from "./geo.js";
+import type { ParkingBasis } from "./charging-planning/site-input.js";
 
 export type LorryParking = { id: string; road: string; name: string; lat: number; lon: number; truckSpaces: number | null; blocked: boolean };
 export type FastCharger = { id: string; road: string; name: string; lat: number; lon: number; chargePoints: number | null; maxPowerKw: number | null; powerIsMinimum?: boolean; deutschlandnetz: boolean; operator: string | null };
@@ -6,7 +7,7 @@ export type AutobahnServices = { metadata: { retrievedAt: string; source: { titl
 export type EvTruckSeries = { metadata: { dataMonth: string; source: { title: string; url: string; license: string } }; series: { month: string; class: string; bev: number; all: number; bevShare: number }[] };
 
 export type OccupancyProfile = { id: string; name: string; lat: number; lon: number; spaces: number | null; night: number | null; full: number; veh: number | null; wd: (number | null)[]; we: (number | null)[] };
-export type OccupancyIndex = { metadata: { generatedAt: string; coverage: { days: number; samples: number; from: string | null; to: string | null }; nightHours: string; source: { title: string; url: string; attribution: string; notice: string } }; tiles: string[] };
+export type OccupancyIndex = { metadata: { generatedAt: string; sha256?: string; coverage: { days: number; samples: number; from: string | null; to: string | null }; nightHours: string; source: { title: string; url: string; license?: string; attribution: string; notice: string } }; tiles: string[] };
 
 export const PARKING_RADIUS_KM = 10;
 export const CHARGING_RADIUS_KM = 25;
@@ -56,8 +57,19 @@ export function parkingOccupancy(site: GeoPoint, profiles: OccupancyProfile[], d
     weighted: near.some((p) => p.item.spaces !== null),
     nearest: { ...near[0].item, km: near[0].km },
     ids: new Set(near.map((p) => p.item.id)),
+    // Trucks standing there on an average night: spaces × night occupancy, mean vehicle count where spaces are unknown.
+    trucksPerNight: Math.round(near.reduce((sum, p) => sum + (p.item.spaces !== null ? p.item.spaces * p.item.night! / 100 : p.item.veh ?? 0), 0)),
     weekday: curve("wd"), weekend: curve("we"),
   };
+}
+
+// Arrivals per hour ≈ rise in occupancy into the next hour; evening fallback while the curve is still sparse.
+export function parkingArrivalWeights(curve: (number | null)[]) {
+  const weights = curve.map((v, h) => {
+    const next = curve[(h + 1) % 24];
+    return v === null || next === null ? 0 : Math.max(0, next - v);
+  });
+  return weights.some((w) => w > 0) ? weights : Array.from({ length: 24 }, (_, h) => (h >= 17 && h <= 22 ? 1 : 0));
 }
 
 export function latestEvShare(data: EvTruckSeries, cls: string) {
@@ -66,4 +78,16 @@ export function latestEvShare(data: EvTruckSeries, cls: string) {
   if (!latest) return null;
   const yearAgo = entries.find((e) => e.month === `${Number(latest.month.slice(0, 4)) - 1}${latest.month.slice(4)}`);
   return { month: latest.month, share: latest.bevShare, bev: latest.bev, all: latest.all, shareYearAgo: yearAgo?.bevShare ?? null };
+}
+
+// Planning input from the measured night occupancy; null until a night has been measured.
+export function parkingBasis(occupancy: ReturnType<typeof parkingOccupancy>, index: OccupancyIndex): ParkingBasis | null {
+  const { coverage, sha256, generatedAt, source } = index.metadata;
+  if (!occupancy || !occupancy.trucksPerNight || !coverage.to || !sha256) return null;
+  return {
+    trucksPerNight: occupancy.trucksPerNight,
+    weights: parkingArrivalWeights(occupancy.weekday),
+    source: { id: "toll-collect-sid", title: source.title, url: source.url, kind: "measured", version: `${coverage.days} Messtage bis ${coverage.to}`,
+      retrievedAt: generatedAt, observedThrough: coverage.to, sha256, license: source.license || "Nutzungsbedingungen SID (Toll Collect)", commercialUse: "allowed" },
+  };
 }

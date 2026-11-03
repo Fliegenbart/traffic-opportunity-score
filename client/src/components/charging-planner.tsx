@@ -12,6 +12,7 @@ import PublicContextPanel from "./public-context-panel";
 import type { ParameterReference } from "@shared/charging-planning/contracts";
 import { buildSiteRequest, DEFAULT_SITE_INPUT, siteInputSchema, type BasisChoice, type PlanningData, type PlanningSite, type SiteInput } from "@shared/charging-planning/site-input";
 import type { PlanEntry, WorkerReply } from "@/lib/charging-planning.worker";
+import { useNearbyParking } from "@/lib/surroundings-data";
 import "./site-economics.css";
 import "./charging-planner.css";
 
@@ -20,6 +21,7 @@ type Field = [NumericKey, string, string, number, number, number];
 const GROUPS: { title: string; fields: Field[] }[] = [
   { title: "Mögliche Ladekunden", fields: [
     ["reachablePercent", "Anteil des Verkehrs mit Zugang zum Standort", "%", 0, 100, 1], ["capturePercent", "Anteil erreichbarer E-Lkw, die hier laden", "%", 0, 100, 0.1],
+    ["parkingCapturePercent", "Anteil der E-Lkw unter den Nachtparkern, die hier laden", "%", 0, 100, 1],
     ["energyKwh", "Energie je Ladung", "kWh", 1, 2000, 10], ["anchorCount", "Feste Kunden · Ladungen Montag bis Freitag", "pro Tag", 0, 1000, 1], ["anchorHour", "Ankunft der festen Kunden", "Uhr", 0, 23, 1],
   ] },
   { title: "Ladepark & Öffnungszeiten", fields: [
@@ -44,7 +46,7 @@ const GROUPS: { title: string; fields: Field[] }[] = [
 // The six assumptions that move the result most; everything else sits collapsed under "Weitere Annahmen".
 const FIELD_BY_KEY = new Map(GROUPS.flatMap((g) => g.fields).map((f) => [f[0], f] as const));
 const KEY_GROUPS: { tour: string; title: string; fields: Field[] }[] = [
-  { tour: "demand", title: "Kunden", fields: [FIELD_BY_KEY.get("capturePercent")!, [...FIELD_BY_KEY.get("baseSharePercent")!.slice(0, 1), "E-Lkw-Anteil ab 2030 · Basis", ...FIELD_BY_KEY.get("baseSharePercent")!.slice(2)] as Field] },
+  { tour: "demand", title: "Kunden", fields: [FIELD_BY_KEY.get("capturePercent")!, FIELD_BY_KEY.get("parkingCapturePercent")!, [...FIELD_BY_KEY.get("baseSharePercent")!.slice(0, 1), "E-Lkw-Anteil ab 2030 · Basis", ...FIELD_BY_KEY.get("baseSharePercent")!.slice(2)] as Field] },
   { tour: "capacity", title: "Ladepark", fields: [FIELD_BY_KEY.get("ports")!, FIELD_BY_KEY.get("gridPowerKw")!] },
   { tour: "costs", title: "Geld", fields: [FIELD_BY_KEY.get("salePrice")!, FIELD_BY_KEY.get("capex")!] },
 ];
@@ -71,6 +73,8 @@ const GAPS: Record<string, string> = {
   source_commercial_rights_unresolved: "Die geschäftliche Nutzung einzelner Quellen muss noch geklärt werden.",
   historical_source_not_current_observation: "Einzelne Quellen zeigen ältere Werte, nicht den heutigen Verkehr.",
   direction_split_assumed_constant_by_hour: "Der Anteil je Fahrtrichtung wird zu jeder Tageszeit gleich angesetzt.",
+  parking_demand_overlaps_passing: "Nachtparker werden zusätzlich zum Durchgangsverkehr angesetzt. Ein Teil davon kann in beiden Gruppen stecken.",
+  parking_occupancy_approximate: "Die Parkplatzbelegung stammt aus Mautdaten und ist teils modellbasiert, also ein Näherungswert.",
   direction_share_assumed_half: "Für berechneten Verkehr gibt es keine Aufteilung nach Richtung. Für eine Richtung wird die Hälfte angesetzt.",
 };
 
@@ -116,10 +120,13 @@ export default function ChargingPlanner({ sites, activeId, onSelect, registerDat
   });
   const activeSite = sites.find((s) => s.id === activeId) || sites[0];
   const sitesKey = canonicalJson(sites.map(({ id, label, lat, lon }) => ({ id, label, lat, lon })));
+  const { parking } = useNearbyParking(sites);
+  const parkingKey = canonicalJson(Object.entries(parking).map(([id, p]) => [id, p.basis]));
   const built = useMemo(() => {
     if (!data || !assumptions) return [];
-    return sites.map(({ id, label, lat, lon }) => ({ id, ...buildSiteRequest({ id, label, lat, lon }, data, assumptions, choices[id]) }));
-  }, [data, parsed, sitesKey, choices]);
+    return sites.map(({ id, label, lat, lon }) => ({ id, ...buildSiteRequest({ id, label, lat, lon }, data, assumptions, choices[id], parking[id]?.basis) }));
+  }, [data, parsed, sitesKey, choices, parkingKey]);
+  const activeParking = parking[activeSite?.id]?.occupancy;
   const activeBasis = built.find((b) => b.id === activeSite?.id);
   const activeEntry = entries.find((e) => e.id === activeSite?.id);
   const plan = activeEntry?.plan;
@@ -231,7 +238,10 @@ export default function ChargingPlanner({ sites, activeId, onSelect, registerDat
       <div className="economics-layout">
         <div className="economics-inputs">
           <div className="economics-section-heading"><h3>Annahmen</h3><span>Für alle Standorte gleich</span></div>
-          {KEY_GROUPS.map((group) => <div key={group.tour} data-tour={group.tour} className="assumption-key"><p>{group.title}</p><div className="economics-fields">{group.fields.map(renderField)}</div></div>)}
+          {KEY_GROUPS.map((group) => <div key={group.tour} data-tour={group.tour} className="assumption-key"><p>{group.title}</p><div className="economics-fields">{group.fields.map(renderField)}</div>
+            {group.tour === "demand" && <p className="economics-footnote" data-testid="parking-demand">{activeParking
+              ? `Nachts stehen im Umkreis von 10 km im Schnitt ≈ ${number(activeParking.trucksPerNight)} Lkw (Toll Collect, ${activeParking.days} ${activeParking.days === 1 ? "Messtag" : "Messtage"}${activeParking.days < 14 ? ", noch wenig belastbar" : ""}). Sie haben Zeit zum Laden; ihr elektrischer Anteil folgt dem E-Lkw-Szenario.`
+              : "Für diesen Standort gibt es noch keine gemessene Nachtbelegung von Lkw-Parkplätzen im Umkreis von 10 km. Es zählt nur der Durchgangsverkehr."}</p>}</div>)}
           <details className="economics-group assumption-more" open={hiddenIssue || undefined}><summary>Weitere Annahmen <span>{MORE_COUNT} Werte · Beispielwerte, bitte prüfen</span></summary>
             {GROUPS.map((group) => {
               const rest = group.fields.filter(([key]) => !KEY_FIELDS.has(key));
@@ -282,7 +292,7 @@ export default function ChargingPlanner({ sites, activeId, onSelect, registerDat
         const traffic = entry?.plan?.input.traffic;
         return <tr key={site.id} className={site.id === activeSite?.id ? "selected" : ""}><th><button onClick={() => onSelect(site.id)}>{site.label}</button></th><td>{traffic ? `${traffic.source.kind === "measured" ? "Zählstelle" : "Berechneter Verkehr"} · ${traffic.referenceYear} · ${traffic.vehicleClass === "truck" ? "Lkw" : "inkl. anderer schwerer Fahrzeuge"}` : "Nicht gewählt"}</td><td>{s ? mixedSources ? "Nicht vergleichbar" : euro(s.finance.npv) : "Nicht berechnet"}</td><td>{busy ? "Berechnung läuft" : entry?.plan?.status === "blocked" ? "Angaben fehlen oder schließen Laden aus" : s ? "Ergebnis unter Annahmen" : entry?.error || "Datenquelle fehlt"}</td></tr>;
       })}</tbody></table></div>}
-      <details className="economics-method"><summary>So entstehen die Ergebnisse</summary><p>Ausgangspunkt ist der Verkehr der gewählten Quelle. Davon werden die Anteile angesetzt, die den Standort erreichen, elektrisch fahren und hier laden. Feste Kunden kommen hinzu oder werden, wenn bereits mitgezählt, nicht doppelt angesetzt.</p><p>Die Stundenmessungen der BASt aus Juli bestimmen die Verteilung auf Tageszeiten und Wochentage. Bei berechnetem Verkehr wird das durchschnittliche Profil aller vollständigen Zählstellen verwendet und die Menge zwischen 2019 und 2030 interpoliert. Die Fahrtrichtung wählst du je Standort; ohne diese Wahl gibt es kein Ergebnis. In Fünf-Minuten-Schritten werden Ladeplätze, die gemeinsam verfügbare Netzleistung, Wartezeiten und Öffnungszeiten berücksichtigt. Offene Ladungen werden nicht am nächsten Tag fortgesetzt.</p><p>Berechnete Beispieltage werden auf das jeweilige Kalenderjahr hochgerechnet. Die Rechnung berücksichtigt den angenommenen E-Lkw-Anteil, Preis- und Kostenänderungen, Erneuerungen der Technik und den Restwert. Künftige Einnahmen und Ausgaben werden mit dem Kalkulationszins auf den Startzeitpunkt umgerechnet.</p><p>Nicht enthalten sind Steuern, Finanzierung, Fördermittel, schwankende Ladeleistung während einer Ladung, Jahreszeiten und technische Ausfälle. Der historische Chronos-2-Test verändert die Ladekundenzahl nicht. Dokumentierte Quellen und Nutzerangaben ersetzen keine unabhängige Prüfung.</p></details>
+      <details className="economics-method"><summary>So entstehen die Ergebnisse</summary><p>Ausgangspunkt ist der Verkehr der gewählten Quelle. Davon werden die Anteile angesetzt, die den Standort erreichen, elektrisch fahren und hier laden. Feste Kunden kommen hinzu oder werden, wenn bereits mitgezählt, nicht doppelt angesetzt.</p><p>Dazu kommen Lkw, die nachts auf Parkplätzen im Umkreis von 10 km stehen. Ihre Zahl stammt aus der gemessenen Belegung (Toll Collect, Stellplätze × Nachtbelegung). Davon zählt der elektrische Anteil des Szenarios und der Anteil, der hier lädt. Wann sie ankommen, folgt dem Anstieg der Belegung am Abend.</p><p>Die Stundenmessungen der BASt aus Juli bestimmen die Verteilung auf Tageszeiten und Wochentage. Bei berechnetem Verkehr wird das durchschnittliche Profil aller vollständigen Zählstellen verwendet und die Menge zwischen 2019 und 2030 interpoliert. Die Fahrtrichtung wählst du je Standort; ohne diese Wahl gibt es kein Ergebnis. In Fünf-Minuten-Schritten werden Ladeplätze, die gemeinsam verfügbare Netzleistung, Wartezeiten und Öffnungszeiten berücksichtigt. Offene Ladungen werden nicht am nächsten Tag fortgesetzt.</p><p>Berechnete Beispieltage werden auf das jeweilige Kalenderjahr hochgerechnet. Die Rechnung berücksichtigt den angenommenen E-Lkw-Anteil, Preis- und Kostenänderungen, Erneuerungen der Technik und den Restwert. Künftige Einnahmen und Ausgaben werden mit dem Kalkulationszins auf den Startzeitpunkt umgerechnet.</p><p>Nicht enthalten sind Steuern, Finanzierung, Fördermittel, schwankende Ladeleistung während einer Ladung, Jahreszeiten und technische Ausfälle. Der historische Chronos-2-Test verändert die Ladekundenzahl nicht. Dokumentierte Quellen und Nutzerangaben ersetzen keine unabhängige Prüfung.</p></details>
       <p className="economics-export-status" role="status">{exportStatus}</p>
     </div>
   </section>;

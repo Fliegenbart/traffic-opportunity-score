@@ -1,17 +1,5 @@
-import { useEffect, useState } from "react";
-import { CHARGING_RADIUS_KM, latestEvShare, occupancyTiles, parkingOccupancy, PARKING_RADIUS_KM, surroundings, type AutobahnServices, type EvTruckSeries, type OccupancyIndex, type OccupancyProfile } from "@shared/surroundings";
-
-// All snapshots are refreshed by GitHub Actions; load them once per page view, occupancy tiles on demand.
-type Snapshots = [AutobahnServices | null, EvTruckSeries | null, OccupancyIndex | null];
-const OCCUPANCY = "/data/truck-parking-occupancy";
-const json = (url: string) => fetch(url).then((r) => r.ok ? r.json() : null).catch(() => null);
-let cache: Promise<Snapshots> | null = null;
-const load = () => cache ??= Promise.all([json("/data/autobahn-services-de.json"), json("/data/context/ev-trucks-de.json"), json(`${OCCUPANCY}/index.json`)]);
-const tileCache = new Map<string, Promise<OccupancyProfile[]>>();
-const loadTiles = (keys: string[]) => Promise.all(keys.map((k) => {
-  if (!tileCache.has(k)) tileCache.set(k, json(`${OCCUPANCY}/${k}.json`).then((rows) => Array.isArray(rows) ? rows : []));
-  return tileCache.get(k)!;
-})).then((tiles) => tiles.flat());
+import { CHARGING_RADIUS_KM, latestEvShare, PARKING_RADIUS_KM, surroundings } from "@shared/surroundings";
+import { useNearbyParking, useSnapshots } from "@/lib/surroundings-data";
 
 const number = (v: number, digits = 0) => v.toLocaleString("de-DE", { maximumFractionDigits: digits });
 const percent = (v: number) => `${number(v * 100, 1)} %`;
@@ -42,20 +30,12 @@ function DayCurve({ weekday, weekend }: { weekday: (number | null)[]; weekend: (
 }
 
 export default function SiteSurroundings({ site }: { site: { lat: number; lon: number } }) {
-  const [data, setData] = useState<Snapshots>();
-  const [profiles, setProfiles] = useState<OccupancyProfile[]>([]);
-  useEffect(() => { let alive = true; load().then((d) => { if (alive) setData(d); }); return () => { alive = false; }; }, []);
-  const index = data?.[2] ?? null;
-  useEffect(() => {
-    if (!index) return;
-    let alive = true;
-    loadTiles(occupancyTiles(site, index)).then((rows) => { if (alive) setProfiles(rows); });
-    return () => { alive = false; };
-  }, [index, site.lat, site.lon]);
+  const data = useSnapshots();
+  const { index, parking } = useNearbyParking([{ id: "site", ...site }]);
   if (!data) return null;
   const [services, ev] = data;
   const s = services ? surroundings(site, services) : null;
-  const o = index ? parkingOccupancy(site, profiles, index.metadata.coverage.days) : null;
+  const o = parking.site?.occupancy ?? null;
   const semi = ev ? latestEvShare(ev, "sattelzug") : null;
   const trucks = ev ? latestEvShare(ev, "lkw_total") : null;
   // The Autobahn list and Toll Collect do not cover the same car parks; say which one the figures refer to.

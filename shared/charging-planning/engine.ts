@@ -16,7 +16,8 @@ export function calendarCounts(year: number) {
 
 export function runChargingPlan(raw: PlanningRequest) {
   const input = planningRequestSchema.parse(raw);
-  const sources = [input.traffic.source, ...(input.traffic.contextSource ? [input.traffic.contextSource] : []), ...daytypes.map((d) => input.profiles[d].source), ...(input.references || []).map((ref) => ref.source)];
+  const parking = input.demand.parking;
+  const sources = [input.traffic.source, ...(input.traffic.contextSource ? [input.traffic.contextSource] : []), ...daytypes.map((d) => input.profiles[d].source), ...(input.references || []).map((ref) => ref.source), ...(parking ? [parking.source] : [])];
   const gaps = ["charging_demand_not_validated", "local_and_depot_traffic_not_inferred", "scenario_assumptions_not_probabilities", "annual_seasonality_not_modelled", "truck_duty_cycle_and_energy_mix_assumed"];
   const blockers: string[] = [];
   const directions = input.site.access.directions || "both";
@@ -29,6 +30,7 @@ export function runChargingPlan(raw: PlanningRequest) {
   if (input.site.gridStatus !== "verified") gaps.push("grid_offer_not_verified");
   if (input.site.competitionStatus === "unknown") gaps.push("competition_not_reviewed");
   if (input.traffic.vehicleClass === "heavy_traffic_proxy") gaps.push("heavy_traffic_includes_other_vehicles");
+  if (parking) gaps.push("parking_demand_overlaps_passing", "parking_occupancy_approximate");
   if (directions === "r1" || directions === "r2") gaps.push("direction_split_assumed_constant_by_hour");
   if (directions === "one_unknown") gaps.push("direction_share_assumed_half");
   if (daytypes.some((d) => input.profiles[d].vehicleClass === "heavy_traffic_proxy")) gaps.push("hourly_profile_uses_heavy_traffic_proxy");
@@ -46,7 +48,8 @@ export function runChargingPlan(raw: PlanningRequest) {
       const days = daytypes.flatMap((d) => {
         const dailyTraffic = input.traffic.trucksPerDay * directionShare! * year.trafficMultiplier * profileSums[d] / weightedProfile;
         const dailyDemand = { ...input.demand, anchors: input.demand.anchors.filter((a) => !a.activeOn || a.activeOn.includes(d)) };
-        const expected = dailyTraffic * year.evShare * dailyDemand.reachableShare * dailyDemand.captureShare;
+        const expected = dailyTraffic * year.evShare * dailyDemand.reachableShare * dailyDemand.captureShare
+          + (parking ? parking.trucksPerNight * year.evShare * parking.captureShare : 0);
         const fraction = expected - Math.floor(expected);
         const variants: { rounding: "floor" | "ceil"; representativeWeight: number }[] = fraction < 1e-10
           ? [{ rounding: "floor", representativeWeight: 1 }]

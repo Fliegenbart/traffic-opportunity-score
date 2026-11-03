@@ -154,3 +154,17 @@ assert.ok(data.bast.stations.length > 1000);
 assert.equal(data.bast.source.commercialUse, "allowed");
 await assert.rejects(() => engine.loadPlanningData(async () => new Response("missing", { status: 404 })));
 console.log("Charging planning: sources, arrivals, overlap, grid, queues, conservation, calendars, cashflows, gates and exports passed.");
+
+// Overnight parkers: measured trucks × E-Lkw-Anteil × Ladeanteil, independent of traffic and direction.
+const evening = Array.from({ length: 24 }, (_, h) => (h === 19 ? 1 : 0));
+const parking = { trucksPerNight: 200, captureShare: 0.25, energyKwh: 300, weights: evening, source: { ...source, id: "sid", kind: "measured" as const } };
+const withParking = generateArrivals(0, 0.1, profile.weights, { ...demand, parking });
+assert.equal(withParking.parkingSessions, 5, "200 × 10 % × 25 % = 5 Nachtparker");
+assert.ok(withParking.sessions.every((s) => s.kind === "parking" && s.arrivalMinute >= 19 * 60 && s.arrivalMinute < 20 * 60 && s.energyKwh === 300));
+const both = generateArrivals(1000, 0.1, profile.weights, { ...demand, parking });
+assert.equal(both.passingSessions, 5, "Durchgangsverkehr bleibt unverändert");
+assert.equal(both.sessions.length, 10);
+const parkedPlan = runChargingPlan({ ...request, demand: { ...request.demand, parking } });
+assert.ok(parkedPlan.evidence.gaps.includes("parking_demand_overlaps_passing"));
+assert.ok(parkedPlan.evidence.sources.some((s) => s.id === "sid"));
+assert.ok(parkedPlan.scenarios[0].years.at(-1)!.offeredSessions > result.scenarios[0].years.at(-1)!.offeredSessions, "Nachtparker erhöhen die Nachfrage");
