@@ -228,3 +228,17 @@ CSV-Download und erzeugt die Ladepark-Datei. Der vorbereitete GitHub-Workflow pr
 Abrufdatum und tatsächlicher Datenstand bleiben getrennt. Die tagesaktuelle REST-Anbindung
 benötigt noch die von der BNetzA auf Anfrage bereitgestellte OpenAPI-Beschreibung.
 Details, Einrichtung und vorbereitete Anfrage: [BNetzA-Abruf](docs/bnetza-daily-import.md).
+
+## Lkw-Parkplatzbelegung (Toll Collect SID über die Mobilithek)
+
+Zwei kostenlose Mobilithek-Abos der Organisation tyrnon gmbh (statische und dynamische Daten des
+Stellplatzinformationsdienstes, DATEX II v2). Zugriff per Maschinenkonto-Zertifikat, hinterlegt nur als
+GitHub-Secrets `MOBILITHEK_CERT_P12` (Base64) und `MOBILITHEK_CERT_PASSWORD`; das Zertifikat gilt bis November 2028.
+
+- `sample-sid.yml` holt stündlich die aktuelle Belegung und hängt sie an `samples/JJJJ-MM-TT.csv` im
+  Branch `sid-data` an (keine Vercel-Deploys für diesen Branch).
+- `refresh-sid.yml` rechnet täglich die letzten 56 Tage zu Profilen je Parkplatz zusammen (Stundenmittel
+  werktags/Wochenende in Berliner Zeit, Nachtbelegung 20–6 Uhr, Anteil „voll“) und schreibt
+  `client/public/data/truck-parking-occupancy-de.json`.
+- Kontaktdaten der Betreiber aus dem statischen Feed werden nicht gelesen. Nutzungsbedingungen: Quellenangabe,
+  Hinweis auf Ungenauigkeit gegenüber Dritten, keine Identifizierung einzelner Fahrzeuge.

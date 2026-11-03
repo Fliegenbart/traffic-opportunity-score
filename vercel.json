@@ -23,5 +23,10 @@
       "source": "/((?!api/|@vite/|@react-refresh|@fs/|src/|node_modules/).*)",
       "destination": "/"
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "sid-data": false
+    }
+  }
 }

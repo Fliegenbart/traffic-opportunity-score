@@ -8,6 +8,7 @@ python3 -m unittest discover -s scripts -p 'test_public_context.py'
 python3 -m unittest discover -s scripts -p 'test_bnetza_register.py'
 python3 -m unittest discover -s scripts -p 'test_autobahn_services.py'
 python3 -m unittest discover -s scripts -p 'test_kba_trucks.py'
+python3 -m unittest discover -s scripts -p 'test_sid_occupancy.py'
 python3 -m unittest discover -s scripts -p 'test_watch_sources.py'
 if [[ -x node_modules/.bin/tsx ]]; then
   node_modules/.bin/tsx shared/charging-planning/planning.test.ts
