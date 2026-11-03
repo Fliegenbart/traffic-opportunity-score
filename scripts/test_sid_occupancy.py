@@ -60,6 +60,17 @@ class ProfileTests(unittest.TestCase):
         self.assertEqual((p["fullShare"], p["samples"], coverage["days"], coverage["samples"]), (0.5, 2, 1, 2))
         self.assertIsNone(p["weekend"][23])
 
+    def test_tiles(self):
+        sites = s.parse_static(STATIC.encode())
+        with tempfile.TemporaryDirectory() as tmp:
+            s.append_samples(Path(tmp), [{"id": "DE-BW-1", "occupancy": 80, "vehicles": 30}], NOW)
+            profiles, coverage = s.build_profiles(s.read_samples(Path(tmp), NOW), sites)
+        index, tiles = s.build_document(profiles, coverage, sites, NOW)
+        self.assertEqual(index["tiles"], ["48_9"])
+        row = tiles["48_9"][0]
+        self.assertEqual((row["night"], row["full"], row["veh"], len(row["wd"])), (80, 0, 30.0, 24))
+        self.assertEqual(s.cell_key(-0.5, 9.99), "-1_9")
+
     def test_quality_gate(self):
         with self.assertRaises(SystemExit):
             s.check_quality({"a": {}}, [{}], None)

@@ -5,8 +5,8 @@ export type FastCharger = { id: string; road: string; name: string; lat: number;
 export type AutobahnServices = { metadata: { retrievedAt: string; source: { title: string; url: string; license: string; attribution: string } }; parking: LorryParking[]; charging: FastCharger[] };
 export type EvTruckSeries = { metadata: { dataMonth: string; source: { title: string; url: string; license: string } }; series: { month: string; class: string; bev: number; all: number; bevShare: number }[] };
 
-export type OccupancyProfile = { id: string; name: string; lat: number; lon: number; spaces: number | null; detection: string | null; samples: number; nightOccupancy: number | null; meanVehicles: number | null; fullShare: number; weekday: (number | null)[]; weekend: (number | null)[] };
-export type OccupancyProfiles = { metadata: { generatedAt: string; coverage: { days: number; samples: number; from: string | null; to: string | null }; nightHours: string; source: { title: string; url: string; attribution: string; notice: string } }; sites: OccupancyProfile[] };
+export type OccupancyProfile = { id: string; name: string; lat: number; lon: number; spaces: number | null; night: number | null; full: number; veh: number | null; wd: (number | null)[]; we: (number | null)[] };
+export type OccupancyIndex = { metadata: { generatedAt: string; coverage: { days: number; samples: number; from: string | null; to: string | null }; nightHours: string; source: { title: string; url: string; attribution: string; notice: string } }; tiles: string[] };
 
 export const PARKING_RADIUS_KM = 10;
 export const CHARGING_RADIUS_KM = 25;
@@ -29,15 +29,35 @@ export function surroundings(site: GeoPoint, services: AutobahnServices) {
   };
 }
 
+// Occupancy profiles are stored in 1° tiles; these are the tiles a radius around the site can touch.
+export function occupancyTiles(site: GeoPoint, index: OccupancyIndex, radiusKm = PARKING_RADIUS_KM) {
+  const dLat = radiusKm / 111, dLon = radiusKm / (111 * Math.cos((site.lat * Math.PI) / 180));
+  const keys = new Set<string>();
+  for (const lat of [site.lat - dLat, site.lat + dLat]) for (const lon of [site.lon - dLon, site.lon + dLon]) keys.add(`${Math.floor(lat)}_${Math.floor(lon)}`);
+  return Array.from(keys).filter((k) => index.tiles.includes(k));
+}
+
+// Mean over sites, weighted by truck spaces when known; null hours stay null.
+function weightedMean(rows: { w: number; v: number | null }[]) {
+  const known = rows.filter((r) => r.v !== null);
+  const weight = known.reduce((sum, r) => sum + r.w, 0);
+  return weight ? Math.round(known.reduce((sum, r) => sum + r.v! * r.w, 0) / weight) : null;
+}
+
 // Measured occupancy of the SID lorry parking nearby: full car parks at night mean long stops, i.e. time to charge.
-export function parkingOccupancy(site: GeoPoint, data: OccupancyProfiles) {
-  const near = withDistance(site, data.sites.filter((p) => p.nightOccupancy !== null), PARKING_RADIUS_KM);
+export function parkingOccupancy(site: GeoPoint, profiles: OccupancyProfile[], days: number) {
+  const near = withDistance(site, profiles.filter((p) => p.night !== null), PARKING_RADIUS_KM);
   if (!near.length) return null;
-  const weighted = near.filter((p) => p.item.spaces);
-  const weight = weighted.reduce((sum, p) => sum + p.item.spaces!, 0);
-  const night = weight ? weighted.reduce((sum, p) => sum + p.item.nightOccupancy! * p.item.spaces!, 0) / weight
-    : near.reduce((sum, p) => sum + p.item.nightOccupancy!, 0) / near.length;
-  return { sites: near.length, nightOccupancy: Math.round(night), nearest: { ...near[0].item, km: near[0].km }, days: data.metadata.coverage.days };
+  const weightOf = (p: OccupancyProfile) => p.spaces ?? 1;
+  const curve = (key: "wd" | "we") => Array.from({ length: 24 }, (_, h) => weightedMean(near.map((p) => ({ w: weightOf(p.item), v: p.item[key][h] ?? null }))));
+  return {
+    sites: near.length, days,
+    nightOccupancy: weightedMean(near.map((p) => ({ w: weightOf(p.item), v: p.item.night })))!,
+    weighted: near.some((p) => p.item.spaces !== null),
+    nearest: { ...near[0].item, km: near[0].km },
+    ids: new Set(near.map((p) => p.item.id)),
+    weekday: curve("wd"), weekend: curve("we"),
+  };
 }
 
 export function latestEvShare(data: EvTruckSeries, cls: string) {

@@ -239,6 +239,6 @@ GitHub-Secrets `MOBILITHEK_CERT_P12` (Base64) und `MOBILITHEK_CERT_PASSWORD`; da
   Branch `sid-data` an (keine Vercel-Deploys für diesen Branch).
 - `refresh-sid.yml` rechnet täglich die letzten 56 Tage zu Profilen je Parkplatz zusammen (Stundenmittel
   werktags/Wochenende in Berliner Zeit, Nachtbelegung 20–6 Uhr, Anteil „voll“) und schreibt
-  `client/public/data/truck-parking-occupancy-de.json`.
+  `client/public/data/truck-parking-occupancy/` (index.json + 1°-Kacheln).
 - Kontaktdaten der Betreiber aus dem statischen Feed werden nicht gelesen. Nutzungsbedingungen: Quellenangabe,
   Hinweis auf Ungenauigkeit gegenüber Dritten, keine Identifizierung einzelner Fahrzeuge.

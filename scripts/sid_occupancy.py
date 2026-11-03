@@ -140,15 +140,28 @@ def build_profiles(samples, sites: dict[str, dict]) -> tuple[list[dict], dict]:
     return profiles, coverage
 
 
-def build_document(profiles, coverage, sites, now: datetime) -> dict:
+def cell_key(lat: float, lon: float) -> str:
+    """1° tiles so the client only loads the few tiles around a site."""
+    return f"{int(lat // 1)}_{int(lon // 1)}"
+
+
+def build_document(profiles, coverage, sites, now: datetime) -> tuple[dict, dict[str, list]]:
+    """Return (index, tiles). The index carries metadata; each tile holds the compact profiles in it."""
     payload = json.dumps(profiles, sort_keys=True, ensure_ascii=False).encode()
-    return {
-        "schemaVersion": 1,
+    tiles: dict[str, list] = defaultdict(list)
+    for p in profiles:
+        tiles[cell_key(p["lat"], p["lon"])].append({
+            "id": p["id"], "name": p["name"], "lat": p["lat"], "lon": p["lon"], "spaces": p["spaces"],
+            "night": p["nightOccupancy"], "full": round(p["fullShare"] * 100), "veh": p["meanVehicles"],
+            "wd": p["weekday"], "we": p["weekend"]})
+    index = {
+        "schemaVersion": 2,
         "metadata": {"generatedAt": now.isoformat(timespec="seconds"), "source": SOURCE, "siteCount": len(sites),
                      "profiledSites": len(profiles), "coverage": coverage, "windowDays": WINDOW_DAYS,
                      "nightHours": "20–6 Uhr", "sha256": hashlib.sha256(payload).hexdigest()},
-        "sites": profiles,
+        "tiles": sorted(tiles),
     }
+    return index, dict(tiles)
 
 
 def check_quality(sites: dict, profiles: list, previous: dict | None) -> None:
