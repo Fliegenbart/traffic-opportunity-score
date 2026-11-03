@@ -240,10 +240,6 @@ export default function Standort() {
           <span className="h-2.5 w-2.5 bg-[#1d3bff]" aria-hidden="true" />
           <span className="whitespace-nowrap text-[15px] font-semibold tracking-[-0.01em]">Ladepark-Check</span>
         </button>
-        <nav className="flex items-center gap-1 text-[13px] font-medium text-[#6b6b70]">
-          <a href="/analyse" className="whitespace-nowrap px-3 py-1.5 hover:text-[#0a0a0b]">Deutschlandkarte erkunden</a>
-          <a href="https://depot-readiness-check.vercel.app/" className="hidden px-3 py-1.5 hover:text-[#0a0a0b] sm:inline">Depot-Check</a>
-        </nav>
       </div>
     </header>
 
