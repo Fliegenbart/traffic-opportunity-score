@@ -41,7 +41,7 @@ export const DEFAULT_SITE_INPUT: SiteInput = {
   // Two ports to start; fixed costs scale per port, residual value ≈ 30 % of the investment (grid and civil works outlive 2036).
   salePrice: 0.49, electricityPrice: 0.22, variableCost: 0.03, capex: 900000, subsidy: 0, fixedCostPerPort: 30000, ghgQuotaPrice: 0,
   discountPercent: 8, priceEscalationPercent: 0, costEscalationPercent: 2,
-  replacementAmount: 200000, replacementYear: 2033, residualValue: 270000,
+  replacementAmount: 100000, replacementYear: 2033, residualValue: 270000,
   // E-truck share ramps up to the 2030 value, then keeps growing in line with the EU CO2 targets for trucks.
   lowSharePercent: 4, baseSharePercent: 8, highSharePercent: 15,
   lowShare2036Percent: 10, baseShare2036Percent: 20, highShare2036Percent: 35,
