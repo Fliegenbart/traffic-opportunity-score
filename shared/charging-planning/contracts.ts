@@ -86,7 +86,8 @@ export const sessionSchema = z.object({
 export type ChargingSession = z.infer<typeof sessionSchema>;
 
 export const financeSchema = z.object({
-  capex: nonnegative.max(100000000), fixedCostAnnual: nonnegative.max(10000000),
+  capex: nonnegative.max(100000000), subsidy: nonnegative.max(100000000).default(0), fixedCostAnnual: nonnegative.max(10000000),
+  ghgQuotaPerKwh: nonnegative.max(5).default(0),
   salePricePerKwh: nonnegative.max(5), electricityPricePerKwh: nonnegative.max(5), variableCostPerKwh: nonnegative.max(5),
   discountRate: share, priceEscalation: z.number().finite().min(-0.2).max(0.2),
   costEscalation: z.number().finite().min(-0.2).max(0.2),

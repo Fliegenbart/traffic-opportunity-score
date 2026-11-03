@@ -18,27 +18,41 @@ export const siteInputSchema = z.object({
   lossPercent: z.number().min(0).max(30), turnaroundMinutes: fiveMinutes(120), maxWaitMinutes: fiveMinutes(240),
   access: z.enum(["assumed", "verified", "unknown", "inaccessible"]), directions: z.enum(["both", "r1", "r2"]).optional(), // legacy: direction is now chosen per site with the traffic source
   salePrice: z.number().min(0).max(5), electricityPrice: z.number().min(0).max(5), variableCost: z.number().min(0).max(5),
-  capex: money, fixedCost: z.number().min(0).max(10000000), discountPercent: percent,
+  capex: money, subsidy: money.default(0), fixedCostPerPort: z.number().min(0).max(1000000), discountPercent: percent,
+  ghgQuotaPrice: z.number().min(0).max(5).default(0),
   priceEscalationPercent: z.number().min(-20).max(20), costEscalationPercent: z.number().min(-20).max(20),
   replacementAmount: money, replacementYear: z.number().int().min(2027).max(2036), residualValue: money,
   lowSharePercent: percent, baseSharePercent: percent, highSharePercent: percent,
+  lowShare2036Percent: percent, baseShare2036Percent: percent, highShare2036Percent: percent,
 }).strict().superRefine((v, ctx) => {
   if (new Set(v.references.map((r) => r.field)).size !== v.references.length) ctx.addIssue({ code: "custom", path: ["references"], message: "Doppelte Parameterreferenz" });
   for (const ref of v.references) if (v[ref.field] !== ref.appliedValue) ctx.addIssue({ code: "custom", path: ["references"], message: "Parameterreferenz stimmt nicht mit Eingabe überein" });
   if (v.startHour + v.hoursOpen > 24) ctx.addIssue({ code: "custom", path: ["hoursOpen"], message: "Das Öffnungsfenster muss vor Mitternacht enden" });
   if (v.lowSharePercent > v.baseSharePercent || v.baseSharePercent > v.highSharePercent) ctx.addIssue({ code: "custom", path: ["baseSharePercent"], message: "Der Basisanteil muss zwischen dem niedrigen und dem hohen Anteil liegen." });
+  if (v.lowShare2036Percent > v.baseShare2036Percent || v.baseShare2036Percent > v.highShare2036Percent) ctx.addIssue({ code: "custom", path: ["baseShare2036Percent"], message: "Der Basisanteil 2036 muss zwischen dem niedrigen und dem hohen Anteil liegen." });
+  if (v.subsidy > v.capex) ctx.addIssue({ code: "custom", path: ["subsidy"], message: "Die Förderung kann nicht höher sein als die Investition." });
 });
 export type SiteInput = z.infer<typeof siteInputSchema>;
 export const DEFAULT_SITE_INPUT: SiteInput = {
-  reachablePercent: 50, capturePercent: 2, parkingCapturePercent: 10, energyKwh: 250, anchorCount: 0, anchorHour: 8, anchorIncluded: false,
-  ports: 4, portPowerKw: 250, gridPowerKw: 1000, gridKnown: true, startHour: 0, hoursOpen: 24,
+  reachablePercent: 50, capturePercent: 4, parkingCapturePercent: 10, energyKwh: 250, anchorCount: 0, anchorHour: 8, anchorIncluded: false,
+  ports: 2, portPowerKw: 250, gridPowerKw: 1000, gridKnown: true, startHour: 0, hoursOpen: 24,
   vehiclePowerKw: 2000, references: [],
   lossPercent: 8, turnaroundMinutes: 15, maxWaitMinutes: 30, access: "assumed",
-  salePrice: 0.49, electricityPrice: 0.22, variableCost: 0.03, capex: 1500000, fixedCost: 90000,
+  // Two ports to start; fixed costs scale per port, residual value ≈ 30 % of the investment (grid and civil works outlive 2036).
+  salePrice: 0.49, electricityPrice: 0.22, variableCost: 0.03, capex: 900000, subsidy: 0, fixedCostPerPort: 30000, ghgQuotaPrice: 0,
   discountPercent: 8, priceEscalationPercent: 0, costEscalationPercent: 2,
-  replacementAmount: 200000, replacementYear: 2033, residualValue: 150000,
+  replacementAmount: 200000, replacementYear: 2033, residualValue: 270000,
+  // E-truck share ramps up to the 2030 value, then keeps growing in line with the EU CO2 targets for trucks.
   lowSharePercent: 4, baseSharePercent: 8, highSharePercent: 15,
+  lowShare2036Percent: 10, baseShare2036Percent: 20, highShare2036Percent: 35,
 };
+export const PLANNING_STORAGE_KEY = "traffic-opportunity:planning:v2";
+
+// 2027–2030 ramps linearly up to the 2030 share, 2031–2036 linearly on to the 2036 share.
+export function evShareFor(year: number, share2030: number, share2036: number) {
+  if (year <= 2030) return share2030 * Math.min((year - 2026) / 4, 1);
+  return share2030 + (share2036 - share2030) * Math.min((year - 2030) / 6, 1);
+}
 export type PlanningSite = { id: string; label: string; lon: number; lat: number };
 
 // Measured overnight parking near the site; the share that charges here comes from the site input.
@@ -62,12 +76,12 @@ export function buildSiteRequest(site: PlanningSite, data: PlanningData, raw: Si
     capacity: { ports: a.ports, portPowerKw: a.portPowerKw, vehiclePowerKw: a.vehiclePowerKw, gridPowerKw: a.gridKnown ? a.gridPowerKw : null,
       lossPercent: a.lossPercent, turnaroundMinutes: a.turnaroundMinutes, maxWaitMinutes: a.maxWaitMinutes,
       opening: a.hoursOpen ? [{ startMinute: a.startHour * 60, endMinute: (a.startHour + a.hoursOpen) * 60 }] : [] },
-    finance: { capex: a.capex, fixedCostAnnual: a.fixedCost, salePricePerKwh: a.salePrice,
+    finance: { capex: a.capex, subsidy: a.subsidy, ghgQuotaPerKwh: a.ghgQuotaPrice, fixedCostAnnual: a.fixedCostPerPort * a.ports, salePricePerKwh: a.salePrice,
       electricityPricePerKwh: a.electricityPrice, variableCostPerKwh: a.variableCost, discountRate: a.discountPercent / 100,
       priceEscalation: a.priceEscalationPercent / 100, costEscalation: a.costEscalationPercent / 100,
       replacements: a.replacementAmount ? [{ year: a.replacementYear, amount: a.replacementAmount }] : [], residualValue: a.residualValue },
-    scenarios: ([ ["low", "Niedrig", a.lowSharePercent], ["base", "Basis", a.baseSharePercent], ["high", "Hoch", a.highSharePercent] ] as const).map(([id, label, share]) => ({
-      id, label, years: Array.from({ length: 10 }, (_, i) => ({ year: 2027 + i, evShare: share / 100 * Math.min((i + 1) / 4, 1), trafficMultiplier: modelEdge ? modelTrafficMultiplier(modelEdge, 2027 + i) : 1 })),
+    scenarios: ([ ["low", "Niedrig", a.lowSharePercent, a.lowShare2036Percent], ["base", "Basis", a.baseSharePercent, a.baseShare2036Percent], ["high", "Hoch", a.highSharePercent, a.highShare2036Percent] ] as const).map(([id, label, share, share2036]) => ({
+      id, label, years: Array.from({ length: 10 }, (_, i) => ({ year: 2027 + i, evShare: evShareFor(2027 + i, share / 100, share2036 / 100), trafficMultiplier: modelEdge ? modelTrafficMultiplier(modelEdge, 2027 + i) : 1 })),
     })),
   });
   return { request, reason: null, candidates, edge, traffic, profiles };

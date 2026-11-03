@@ -64,7 +64,7 @@ export function runChargingPlan(raw: PlanningRequest) {
       });
       const sum = (field: "deliveredKwh" | "gridKwh" | "completedSessions" | "unservedSessions" | "offeredSessions" | "unservedKwh") => days.reduce((s, d) => s + d.annualWeightDays * d.simulation[field], 0);
       const costFactor = (1 + input.finance.costEscalation) ** yearIndex;
-      const contribution = input.finance.salePricePerKwh * (1 + input.finance.priceEscalation) ** yearIndex
+      const contribution = input.finance.salePricePerKwh * (1 + input.finance.priceEscalation) ** yearIndex + input.finance.ghgQuotaPerKwh
         - (input.finance.variableCostPerKwh + input.finance.electricityPricePerKwh / (1 - input.capacity.lossPercent / 100)) * costFactor;
       const requiredEnergyKwhPerYear = contribution > 0 ? input.finance.fixedCostAnnual * costFactor / contribution : null;
       const hoursOpen = input.capacity.opening.reduce((s, w) => s + (w.endMinute - w.startMinute) / 60, 0);

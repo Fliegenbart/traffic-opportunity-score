@@ -76,9 +76,14 @@ for (let seed = 1; seed <= 25; seed++) {
 const finance = { capex: 1000, fixedCostAnnual: 100, salePricePerKwh: 1, electricityPricePerKwh: 0.2,
   variableCostPerKwh: 0.1, discountRate: 0.1, priceEscalation: 0, costEscalation: 0,
   replacements: [{ year: 2028, amount: 200 }], residualValue: 50 };
-const flows = calculateCashflows([{ year: 2027, deliveredKwh: 1000, gridKwh: 1000, completedSessions: 10 },
-  { year: 2028, deliveredKwh: 1000, gridKwh: 1000, completedSessions: 10 }], finance);
+const volumes = [{ year: 2027, deliveredKwh: 1000, gridKwh: 1000, completedSessions: 10 },
+  { year: 2028, deliveredKwh: 1000, gridKwh: 1000, completedSessions: 10 }];
+const flows = calculateCashflows(volumes, finance);
 assert.equal(flows.initialCashflow, -1000);
+const supported = calculateCashflows(volumes, { ...finance, subsidy: 400, ghgQuotaPerKwh: 0.05 });
+assert.equal(supported.initialCashflow, -600, "Förderung senkt die Anfangsinvestition");
+assert.ok(Math.abs(supported.years[0].quotaRevenue - volumes[0].deliveredKwh * 0.05) < 1e-9);
+assert.ok(Math.abs(supported.years[0].operatingCashflow - flows.years[0].operatingCashflow - supported.years[0].quotaRevenue) < 1e-9);
 assert.equal(flows.years[0].operatingCashflow, 600);
 assert.equal(flows.years[1].projectCashflow, 450);
 assert.ok(Math.abs(flows.npv - (-1000 + 600 / 1.1 + 450 / 1.21)) < 1e-8);

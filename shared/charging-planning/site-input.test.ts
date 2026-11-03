@@ -17,8 +17,13 @@ const measured = buildSiteRequest(site, data, DEFAULT_SITE_INPUT, { basis: "stat
 assert.ok(measured.request);
 assert.equal(measured.request.traffic.source.kind, "measured");
 assert.equal(measured.request.profiles.weekday.matchStatus, "candidate");
-assert.equal(measured.request.demand.captureShare, 0.02);
+assert.equal(measured.request.demand.captureShare, 0.04);
+// E-truck share ramps to the 2030 value and keeps growing to the 2036 value.
 assert.equal(measured.request.scenarios[1].years[3].evShare, 0.08);
+assert.ok(Math.abs(measured.request.scenarios[1].years.at(-1)!.evShare - 0.2) < 1e-12);
+assert.ok(measured.request.scenarios[1].years[5].evShare > 0.08 && measured.request.scenarios[1].years[5].evShare < 0.2);
+assert.equal(measured.request.finance.fixedCostAnnual, DEFAULT_SITE_INPUT.fixedCostPerPort * DEFAULT_SITE_INPUT.ports, "Fixkosten wachsen mit den Ladeplätzen");
+assert.equal(siteInputSchema.safeParse({ ...DEFAULT_SITE_INPUT, subsidy: DEFAULT_SITE_INPUT.capex + 1 }).success, false, "Förderung höchstens so hoch wie die Investition");
 assert.equal(measured.request.scenarios[1].years.at(-1)!.year, 2036);
 assert.equal(measured.request.capacity.gridPowerKw, 1000);
 assert.equal(buildSiteRequest({ ...site, lon: 13, lat: 52 }, data, DEFAULT_SITE_INPUT, { basis: "station", stationId: station.stationId, direction: "both" }).request, null, "Ferne Station darf nicht übertragen werden");

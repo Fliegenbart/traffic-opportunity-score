@@ -3,7 +3,7 @@ import { calculateSiteEconomics as calc, DEFAULT_ECONOMICS as base, economicsCsv
 import { matchesRegionSearch } from "./region-search";
 import { assessSite } from "./standort-check";
 
-const r = calc(30000, 0.08, base);
+const r = calc(30000, 0.08, { ...base, capturePercent: 2 });
 assert.equal(r.demand, 24);
 assert.equal(r.sessions, 24);
 assert.equal(r.annualEnergy, 2190000);

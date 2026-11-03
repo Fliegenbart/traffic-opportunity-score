@@ -33,7 +33,7 @@ const assumptionLabels: Record<keyof EconomicsAssumptions, string> = {
 };
 // Illustrative planning inputs, not researched market prices or a forecast.
 export const DEFAULT_ECONOMICS: EconomicsAssumptions = {
-  reachablePercent: 50, capturePercent: 2, contractedSessions: 0,
+  reachablePercent: 50, capturePercent: 4, contractedSessions: 0,
   energyPerSession: 250, ports: 4, averagePowerKw: 250, gridPowerKw: 1000,
   hoursPerDay: 24, availabilityPercent: 95, turnaroundMinutes: 15,
   salePrice: 0.49, electricityPrice: 0.22, lossPercent: 8, variableCost: 0.03,

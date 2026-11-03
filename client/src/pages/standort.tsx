@@ -7,7 +7,7 @@ import { useWatchlist } from "@/lib/use-watchlist";
 import { useNearbyParking, useSnapshots, loadTiles } from "@/lib/surroundings-data";
 import type { PlanEntry, WorkerReply } from "@/lib/charging-planning.worker";
 import { loadPlanningData } from "@shared/charging-planning/data";
-import { buildSiteRequest, DEFAULT_SITE_INPUT, siteInputSchema } from "@shared/charging-planning/site-input";
+import { buildSiteRequest, DEFAULT_SITE_INPUT, PLANNING_STORAGE_KEY, siteInputSchema } from "@shared/charging-planning/site-input";
 import { resolveSiteTraffic, type BasisChoice, type PlanningData } from "@shared/site-traffic";
 import { assessSite } from "@shared/standort-check";
 import { finderRoads, rankRoadSites } from "@shared/site-finder";
@@ -21,11 +21,10 @@ type Hotspot = { edgeId: number; aLabel: string; bLabel: string; aLon: number; a
 type Atlas = { backdrop: [number, number][]; edgeHotspots: Hotspot[] };
 type Direction = "one_unknown" | "both";
 
-const PLANNING_STORAGE = "traffic-opportunity:planning:v1";
 const WHITE_SPOT_KM = 25;
 const json = <T,>(url: string) => fetch(url).then((r) => (r.ok ? (r.json() as Promise<T>) : null)).catch(() => null);
 const number = (v: number, digits = 0) => v.toLocaleString("de-DE", { maximumFractionDigits: digits });
-const million = (v: number) => `${v < 0 ? "−" : "+"}${number(Math.abs(v) / 1e6, 1)}`;
+const million = (v: number) => Math.abs(v) < 50000 ? "≈ 0" : `${v < 0 ? "−" : "+"}${number(Math.abs(v) / 1e6, 1)}`;
 
 function readSite(): Site | null {
   const params = new URLSearchParams(window.location.search);
@@ -36,7 +35,7 @@ function readSite(): Site | null {
 
 function savedAssumptions() {
   try {
-    const saved = siteInputSchema.safeParse(JSON.parse(localStorage.getItem(PLANNING_STORAGE) || "null"));
+    const saved = siteInputSchema.safeParse(JSON.parse(localStorage.getItem(PLANNING_STORAGE_KEY) || "null"));
     return saved.success ? saved.data : DEFAULT_SITE_INPUT;
   } catch { return DEFAULT_SITE_INPUT; }
 }
@@ -74,7 +73,7 @@ function RoadPicks({ data, hubs, substations, onPick }: { data?: PlanningData; h
   if (!services) return null;
   return <div className="mt-10">
     <div className="flex flex-wrap items-center gap-2 text-sm text-[#55555a]">
-      Noch kein Grundstück im Blick? Die besten Standorte an der
+      Oder direkt die besten Standorte an der
       <select value={road} onChange={(e) => setRoad(e.target.value)} aria-label="Autobahn" className="rounded-md border border-[#cfcfcb] bg-white px-2 py-1 text-sm font-semibold text-[#0a0a0b]">
         {finderRoads(services.parking).map((r) => <option key={r.road} value={r.road}>{r.road}</option>)}
       </select>
@@ -135,6 +134,7 @@ function GridRequest({ site, peakKw, chargesPerDay }: { site: Site; peakKw: numb
 }
 
 export default function Standort() {
+  const assumptions = useMemo(savedAssumptions, []);
   const [site, setSite] = useState<Site | null>(readSite);
   const [direction, setDirection] = useState<Direction>("one_unknown");
   const [query, setQuery] = useState("");
@@ -187,7 +187,7 @@ export default function Standort() {
   useEffect(() => {
     setEntry(null);
     if (!site || !data || !traffic?.choice) return;
-    const built = buildSiteRequest({ id: "site", label: site.label || "Standort", lon: site.lon, lat: site.lat }, data, savedAssumptions(), traffic.choice, parking.site?.basis);
+    const built = buildSiteRequest({ id: "site", label: site.label || "Standort", lon: site.lon, lat: site.lat }, data, assumptions, traffic.choice, parking.site?.basis);
     if (!built.request) return;
     setBusy(true);
     const worker = new Worker(new URL("../lib/charging-planning.worker.ts", import.meta.url), { type: "module" });
@@ -238,7 +238,7 @@ export default function Standort() {
     <main className="mx-auto grid max-w-7xl gap-8 px-4 py-8 sm:px-6 lg:grid-cols-12 lg:gap-12 lg:px-12 lg:py-12">
       <section className="lg:col-span-5">
         {!site ? <>
-          <h1 className="text-[40px] font-semibold leading-[0.98] tracking-[-0.04em] [text-wrap:balance] sm:text-6xl">Lohnt sich ein Lkw-Ladepark auf deinem Grundstück?</h1>
+          <h1 className="text-[40px] font-semibold leading-[0.98] tracking-[-0.04em] [text-wrap:balance] sm:text-6xl">Wo lohnt sich ein Lkw-Ladepark?</h1>
           <p className="mt-5 max-w-md text-[15px] leading-relaxed text-[#55555a]">Adresse eingeben oder auf die Karte klicken. Du siehst sofort, wie viele Lkw dort fahren und stehen, wer in der Nähe schon lädt und was ein Ladepark einbringen kann.</p>
           <div className="mt-7 flex gap-2">
             <label className="flex min-h-12 min-w-0 flex-1 items-center gap-3 border border-[#0a0a0b] bg-white px-4 focus-within:border-[#1d3bff]">
@@ -254,7 +254,7 @@ export default function Standort() {
           <h1 className="mt-3 text-3xl font-semibold leading-tight tracking-[-0.03em] [text-wrap:balance]">{site.label || `${site.lat.toFixed(3)}, ${site.lon.toFixed(3)}`}</h1>
 
           <fieldset className="mt-5 print:hidden">
-            <legend className="text-xs text-[#6b6b70]">Wie erreichen Lkw das Grundstück?</legend>
+            <legend className="text-xs text-[#6b6b70]">Wie erreichen Lkw den Standort?</legend>
             <div className="mt-1.5 grid grid-cols-2 gap-1 bg-[#f2f2ef] p-1">
               {([["one_unknown", "Aus einer Richtung", "z. B. Rastanlage"], ["both", "Aus beiden Richtungen", "z. B. Autohof an der Ausfahrt"]] as const).map(([value, label, hint]) =>
                 <button key={value} type="button" aria-pressed={direction === value} onClick={() => setDirection(value)} className={`px-3 py-2 text-left transition ${direction === value ? "bg-white shadow-sm" : "text-[#6b6b70] hover:text-[#0a0a0b]"}`}>
@@ -288,7 +288,7 @@ export default function Standort() {
               <a href={analyseUrl} className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#1d3bff] hover:text-[#0f27d6]"><SlidersHorizontal size={14} /> Annahmen anpassen</a>
             </div>
           </div>
-          <p className="mt-6 text-[11px] leading-relaxed text-[#6b6b70]">Gerechnet mit 8 % E-Lkw-Anteil ab 2030 (Spanne 4–15 %), 4 Ladeplätzen à 250 kW, 0,49 €/kWh Ladepreis und 1,5 Mio. € Investition. Quellen: Verkehrsmodell und BASt-Zählstellen, Ladesäulenregister der Bundesnetzagentur, Autobahn GmbH, Toll Collect GmbH (Lkw-Stellplatzinformationsdienst).</p>
+          <p className="mt-6 text-[11px] leading-relaxed text-[#6b6b70]">Gerechnet mit {assumptions.baseSharePercent} % E-Lkw-Anteil 2030 und {assumptions.baseShare2036Percent} % 2036 (Spanne {assumptions.lowShare2036Percent}–{assumptions.highShare2036Percent} %), {assumptions.capturePercent} % der erreichbaren E-Lkw laden hier, {assumptions.ports} Ladeplätze à {number(assumptions.portPowerKw)} kW, {number(assumptions.salePrice, 2)} €/kWh Ladepreis und {number(assumptions.capex / 1e6, 2)} Mio. € Investition. Quellen: Verkehrsmodell und BASt-Zählstellen, Ladesäulenregister der Bundesnetzagentur, Autobahn GmbH, Toll Collect GmbH (Lkw-Stellplatzinformationsdienst).</p>
         </>}
       </section>
 
