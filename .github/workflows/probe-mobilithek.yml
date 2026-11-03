@@ -1,0 +1,22 @@
+name: Probe Mobilithek SID
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.3 cryptography==43.0.3
+      - run: python scripts/probe_mobilithek_sid.py
+        env:
+          MOBILITHEK_CERT_P12: ${{ secrets.MOBILITHEK_CERT_P12 }}
+          MOBILITHEK_CERT_PASSWORD: ${{ secrets.MOBILITHEK_CERT_PASSWORD }}
