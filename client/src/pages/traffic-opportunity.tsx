@@ -1011,7 +1011,6 @@ export default function TrafficOpportunity() {
             <div className="lg:col-span-5">
               <p className="max-w-md text-[15px] leading-relaxed text-[#55555a] sm:text-base">
                 Standort setzen, Verkehrsquelle und Fahrtrichtung wählen und in einer Minute sehen, ob eine vertiefte Prüfung lohnt.
-                Erste Einschätzung mit deinen Annahmen, keine Investitionsentscheidung.
               </p>
               {activeTab !== "standort" && (
                 <button
@@ -1226,7 +1225,7 @@ export default function TrafficOpportunity() {
                             entfernt
                             {selectedEdgeTrend.station.directionShareR1 != null &&
                               ` · Verkehr je Richtung: ${Math.round(selectedEdgeTrend.station.directionShareR1 * 100)} % / ${Math.round((1 - selectedEdgeTrend.station.directionShareR1) * 100)} %`}
-                            {selectedEdgeTrend.trend && " · Historischer Chronos-2-Test mit Daten bis 2023. Keine Prognose für heute; die Modellspanne ist keine Garantie."}
+                            {selectedEdgeTrend.trend && " · Historischer Chronos-2-Test mit Daten bis 2023."}
                           </p>
                         </div>
                       )}
@@ -1326,14 +1325,14 @@ export default function TrafficOpportunity() {
                         <ComponentBar
                           label="Bewertung der Fahrtlänge"
                           value={selectedCorridor.score.components.distanceFit}
-                          explainer="Fahrten zwischen 150 und 600 km werden in diesem Score höher gewichtet. Das ist eine Planungsannahme, kein Nachweis für einen Ladestopp."
+                          explainer="Fahrten zwischen 150 und 600 km werden in diesem Score höher gewichtet."
                         />
                       </div>
                       {corridorStats && (
                         <p className="mt-4 text-sm text-[#55555a]">
                           {corridorStats.hubsOnRoute > 0
-                            ? `${corridorStats.hubsOnRoute} bekannte Lkw-Ladepark${corridorStats.hubsOnRoute > 1 ? "s" : ""} im Umfeld der Verbindung · größter Abstand ohne erfassten Ladepark ≈ ${formatNumber(corridorStats.maxGapKm)} km. Grobe Näherung auf Basis der Luftlinie, keine Straßenroute.`
-                            : "In den verfügbaren Daten ist kein Lkw-Ladepark im Umfeld dieser Verbindung erfasst. Die tatsächliche Straßenroute ist nicht geprüft."}
+                            ? `${corridorStats.hubsOnRoute} bekannte Lkw-Ladepark${corridorStats.hubsOnRoute > 1 ? "s" : ""} im Umfeld der Verbindung · größter Abstand ohne erfassten Ladepark ≈ ${formatNumber(corridorStats.maxGapKm)} km. Luftlinie.`
+                            : "Im Umfeld dieser Verbindung ist kein Lkw-Ladepark erfasst."}
                         </p>
                       )}
                     </div>
@@ -1592,7 +1591,7 @@ export default function TrafficOpportunity() {
                       <SiteSurroundings site={activePin} />
                       {verdict && verdict.siteId === activePin.id && (
                         <a href="#wirtschaftlichkeit" className="group mt-5 block bg-[#1d3bff] p-5 text-white transition hover:bg-[#0f27d6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0a0a0b]">
-                          <span className="font-mono text-[11px] text-white/70">Ergebnis unter deinen Annahmen</span>
+                          <span className="font-mono text-[11px] text-white/70">Ergebnis</span>
                           <span className="mt-1.5 block text-2xl font-semibold leading-tight tracking-[-0.03em]">{verdict.title}</span>
                           <span className="mt-2 block font-mono text-[13px] tabular-nums text-white/85">
                             Kapitalwert {[verdict.low, verdict.base, verdict.high].map((v) => `${v < 0 ? "−" : ""}${Math.abs(v / 1e6).toLocaleString("de-DE", { maximumFractionDigits: 2 })}`).join(" · ")} Mio. €
@@ -1649,7 +1648,7 @@ export default function TrafficOpportunity() {
                           }
                           sub={
                             activeAssessment.substation
-                              ? `${activeAssessment.substation.kv} kV · keine Zusage für einen Netzanschluss`
+                              ? `${activeAssessment.substation.kv} kV`
                               : undefined
                           }
                         />
@@ -1658,13 +1657,9 @@ export default function TrafficOpportunity() {
                       {activePin && (
                         <div className="mt-4 border-t border-[#e4e4e1] pt-4">
                           <a href="#wirtschaftlichkeit" className="inline-flex items-center gap-2 text-sm font-semibold text-[#1d3bff]">Wirtschaftlichkeit berechnen <ArrowRight size={16} /></a>
-                          <p className="mt-2 text-xs leading-relaxed text-[#6b6b70]">Einnahmen, Kosten und mögliche Ladungen für 2027–2036 unter deinen Annahmen.</p>
+                          <p className="mt-2 text-xs leading-relaxed text-[#6b6b70]">Einnahmen, Kosten und mögliche Ladungen für 2027–2036.</p>
                         </div>
                       )}
-                      <p className="mt-3 text-xs leading-relaxed text-[#6b6b70]">
-                        Erste Einschätzung, keine Bau- oder Investitionsempfehlung. Netzanschluss,
-                        Fläche und Genehmigung müssen separat geklärt werden.
-                      </p>
                     </div>
                   )}
 
@@ -1695,7 +1690,7 @@ export default function TrafficOpportunity() {
                           })}
                         </tbody>
                       </table>
-                      <p className="mt-2 text-xs text-[#6b6b70]">SV = Schwerverkehr, einschließlich anderer Fahrzeuge. Unterschiedliche Referenzjahre und Fahrzeugklassen sind nicht direkt vergleichbar; keine belastbare Standortrangfolge.</p>
+                      <p className="mt-2 text-xs text-[#6b6b70]">SV = Schwerverkehr, einschließlich anderer Fahrzeuge.</p>
                     </div>
                   )}
 
@@ -1919,8 +1914,7 @@ export default function TrafficOpportunity() {
                     <p className="mt-2.5 text-xs leading-relaxed text-[#6b6b70]">
                       Als Lkw-Ladepark zählt hier ein Standort mit einem belegten Angebot
                       für Lkw. Hohe Ladeleistung allein genügt dafür nicht: Ein Sattelzug
-                      muss den Platz auch erreichen und dort rangieren können. Die Liste
-                      ist keine Garantie für vollständigen Bestand oder freie Ladeplätze.
+                      muss den Platz auch erreichen und dort rangieren können.
                   </p>
                     <details className="mt-3 text-xs leading-relaxed text-[#6b6b70]"><summary>So werden die Standorte ausgewählt</summary><p className="mt-2">{charging.metadata.methodNote}</p></details>
                   </div>
@@ -1946,11 +1940,9 @@ export default function TrafficOpportunity() {
                       „Diese Woche wird wie dieselbe Woche im Vorjahr.“
                     </p>
                     <p className="mt-2.5 text-xs leading-relaxed text-[#6b6b70]">
-                      Das Modell war nicht durchgängig besser. Es liefert keine aktuelle
-                      Prognose und verändert die angenommene Ladekundenzahl in der
-                      Wirtschaftlichkeitsrechnung nicht.
+                      Das Modell war nicht durchgängig besser.
                   </p>
-                    <details className="mt-3 text-xs leading-relaxed text-[#6b6b70]"><summary>Testergebnisse & Rechenmethode</summary><p className="mt-2">Typische Verbesserung gegenüber dem Vorjahresvergleich (Median): {trendData.metadata.medianSkillVsSeasonalNaive === null ? "nicht verfügbar" : formatPercent(trendData.metadata.medianSkillVsSeasonalNaive * 100)}. Ein negativer Wert bedeutet einen größeren Fehler als beim einfachen Vergleich. Der für 80 % der Werte vorgesehene Modellbereich enthielt {trendData.metadata.meanCoverage80 === null ? "einen nicht verfügbaren Anteil" : formatPercent(trendData.metadata.meanCoverage80 * 100)} der gemessenen Werte. Das ist keine Garantie für künftige Vorhersagen.</p><p className="mt-2">{trendData.metadata.methodNote}</p></details>
+                    <details className="mt-3 text-xs leading-relaxed text-[#6b6b70]"><summary>Testergebnisse & Rechenmethode</summary><p className="mt-2">Typische Verbesserung gegenüber dem Vorjahresvergleich (Median): {trendData.metadata.medianSkillVsSeasonalNaive === null ? "nicht verfügbar" : formatPercent(trendData.metadata.medianSkillVsSeasonalNaive * 100)}. Ein negativer Wert bedeutet einen größeren Fehler als beim einfachen Vergleich. Der für 80 % der Werte vorgesehene Modellbereich enthielt {trendData.metadata.meanCoverage80 === null ? "einen nicht verfügbaren Anteil" : formatPercent(trendData.metadata.meanCoverage80 * 100)} der gemessenen Werte.</p><p className="mt-2">{trendData.metadata.methodNote}</p></details>
                     <a
                       href={trendData.metadata.sourceUrl}
                       target="_blank"

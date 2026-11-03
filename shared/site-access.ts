@@ -54,7 +54,7 @@ export async function checkSiteAccess(raw: SiteAccessInput, rawConfig?: RoutingC
   const input = siteAccessInputSchema.parse(raw);
   const base = { truckAccessVerified: false as const, edgeId: input.edge.edgeId, site: input.site,
     checkedAt: new Date().toISOString(), provider: "OSRM-kompatibler Dienst" as const, profile: rawConfig?.profile || "driving" };
-  if (!rawConfig) return { ...base, status: "not_configured", directions: [], message: "Der Routenanbieter ist für diese Website noch nicht freigeschaltet. Deshalb können Umweg und Fahrzeit derzeit nicht berechnet werden. Die Zufahrt für Lkw bleibt ungeprüft." };
+  if (!rawConfig) return { ...base, status: "not_configured", directions: [], message: "Der Routenanbieter ist für diese Website noch nicht freigeschaltet. Deshalb können Umweg und Fahrzeit derzeit nicht berechnet werden." };
   const config = validateRoutingConfig(rawConfig);
   const signal = AbortSignal.timeout(12000);
   const route = async (coordinates: { lon: number; lat: number }[], via: boolean) => {

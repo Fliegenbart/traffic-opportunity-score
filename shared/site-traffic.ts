@@ -66,7 +66,7 @@ export function resolveSiteTraffic(site: GeoPoint, data: PlanningData, choice?: 
   const edge = matchTrafficEdge(site, data.network.edges, 10);
   const candidates = findStationCandidates(site, data.bast.stations, 3);
   const unavailable = (reason: string) => ({ traffic: null, profiles: null, reason, candidates, edge });
-  if (!choice) return unavailable("Die Zählstellen liegen in der Nähe. Ob ihr Verkehr tatsächlich am Standort vorbeiführt, ist noch nicht geprüft.");
+  if (!choice) return unavailable("Die Zählstellen liegen in der Nähe.");
   const station = choice.basis === "station" ? candidates.find((c) => c.station.stationId === choice.stationId)?.station : undefined;
   if (choice.basis === "station" && !station) return unavailable("Für diese Zählstelle fehlen vollständige Stundenwerte, oder sie liegt mehr als 3 km entfernt.");
   if (station && station.meanObservedTrucksPerHour === null) return unavailable("Die Verkehrsmessungen dieser Zählstelle reichen für die Rechnung nicht aus.");

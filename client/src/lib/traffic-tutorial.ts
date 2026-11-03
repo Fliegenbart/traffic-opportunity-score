@@ -25,7 +25,7 @@ export const TUTORIAL_STEPS: readonly TutorialStep[] = [
   {
     id: "gaps", target: "gaps", tab: "strecken", title: "Wo fehlt ein bekanntes Ladeangebot?",
     text: "Mit „Ohne nahen Ladepark“ grenzt du die Liste auf Abschnitte ein, in deren Nähe kein Lkw-Ladepark in Betrieb erfasst ist. Fehlt der Filter, sind keine entsprechenden Ladepark-Daten verfügbar.",
-    caution: "Der Abstand ist Luftlinie. Eine Lücke in unseren Daten ist kein Nachweis für fehlende Konkurrenz oder zahlende Kunden.",
+    caution: "Der Abstand ist Luftlinie.",
   },
   {
     id: "corridors", target: "corridors", tab: "korridore", title: "Verbindungen zwischen Regionen ansehen",
@@ -49,7 +49,7 @@ export const TUTORIAL_STEPS: readonly TutorialStep[] = [
   {
     id: "access", target: "access", tab: "standort", needsSite: true, title: "Kommen die Lkw wirklich auf die Fläche?",
     text: "Prüfe unter „Zufahrt & Umweg“ das Fahrzeug und, wenn verfügbar, die Route aus beiden Richtungen. Kläre zusätzlich Einfahrt, Wendefläche, Beschränkungen und Öffnungszeiten vor Ort.",
-    caution: "Ist die Routenprüfung nicht aktiviert, bleibt die Erreichbarkeit ungeprüft. Auch eine berechnete Route bestätigt keine private Einfahrt.",
+    caution: "Ist die Routenprüfung nicht aktiviert, bleibt die Erreichbarkeit ungeprüft.",
   },
   {
     id: "demand", target: "demand", tab: "standort", needsSite: true, title: "Aus Verkehr werden nicht automatisch Kunden",
@@ -59,7 +59,7 @@ export const TUTORIAL_STEPS: readonly TutorialStep[] = [
   {
     id: "capacity", target: "capacity", tab: "standort", needsSite: true, title: "Ladeplätze und Netzleistung abstimmen",
     text: "Öffne „Ladepark & Öffnungszeiten“. Prüfe Ladeplätze, Leistung je Platz, verfügbare Netzleistung und Wartezeiten. Alle Ladeplätze teilen sich die Netzleistung. Ein nahes Umspannwerk liefert dafür noch keinen verfügbaren Wert.",
-    caution: "Eine für die Rechnung angenommene Netzleistung ist keine Zusage des Netzbetreibers. Ohne Netzangabe kann die Rechnung blockiert bleiben.",
+    caution: "Ohne Netzangabe kann die Rechnung blockiert bleiben.",
   },
   {
     id: "costs", target: "costs", tab: "standort", needsSite: true, title: "Preise, Baukosten und E-Lkw-Anteil prüfen",

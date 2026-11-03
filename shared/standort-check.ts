@@ -218,20 +218,20 @@ export function assessSite(
       traffic === "hoch"
         ? `Modellstrecke „${bestEdge.label}" mit ≈ ${trucksPerDay.toLocaleString("de-DE")} Lkw/Tag (synthetisch, 2030) in ${Math.round(bestEdgeKm)} km Luftlinie.`
         : traffic === "mittel"
-          ? `Nächste Modellstrecke („${bestEdge.label}") liegt ${Math.round(bestEdgeKm)} km Luftlinie entfernt. Straßen- und Standortzuordnung ungeprüft.`
-          : `Keine der geladenen Modellstrecken im ${EDGE_MID_KM}-km-Umkreis. Daraus folgt kein Nachweis fehlender lokaler Nachfrage.`,
+          ? `Nächste Modellstrecke („${bestEdge.label}") liegt ${Math.round(bestEdgeKm)} km Luftlinie entfernt.`
+          : `Keine der geladenen Modellstrecken im ${EDGE_MID_KM}-km-Umkreis.`,
     );
   }
   if (bestHub) {
     reasons.push(
       competition === "frei"
-        ? `Im geladenen Register kein Lkw-Ladepark im ${HUB_FREE_KM}-km-Umkreis (nächster: ${bestHub.name}, ${Math.round(bestHubKm)} km). Bestand und Planungen vor Ort prüfen.`
+        ? `Im geladenen Register kein Lkw-Ladepark im ${HUB_FREE_KM}-km-Umkreis (nächster: ${bestHub.name}, ${Math.round(bestHubKm)} km).`
         : competition === "moderat"
-          ? `${bestHub.name} liegt ${Math.round(bestHubKm)} km Luftlinie entfernt. Ob beide Standorte dieselben Kunden ansprechen, muss geprüft werden.`
-          : `${bestHub.name} liegt nur ${Math.round(bestHubKm)} km Luftlinie entfernt. Welche Kunden dort laden und wie viel Platz verfügbar ist, ist noch nicht geprüft.`,
+          ? `${bestHub.name} liegt ${Math.round(bestHubKm)} km Luftlinie entfernt.`
+          : `${bestHub.name} liegt nur ${Math.round(bestHubKm)} km Luftlinie entfernt.`,
     );
   } else {
-    reasons.push("Ladepark-Daten fehlen. Andere Anbieter sind unbekannt, nicht ausgeschlossen.");
+    reasons.push("Ladepark-Daten fehlen.");
   }
   if (bestRegion) {
     reasons.push(
@@ -240,7 +240,7 @@ export function assessSite(
   }
   if (bestSub) {
     reasons.push(
-      `Ein Umspannwerk mit mindestens 110 kV liegt ${(Math.round(bestSubKm * 10) / 10).toLocaleString("de-DE")} km Luftlinie entfernt. Ob ein Anschluss möglich ist, muss der Netzbetreiber bestätigen.`,
+      `Ein Umspannwerk mit mindestens 110 kV liegt ${(Math.round(bestSubKm * 10) / 10).toLocaleString("de-DE")} km Luftlinie entfernt.`,
     );
   }
 

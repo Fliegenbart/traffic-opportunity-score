@@ -56,8 +56,8 @@ export default function SiteFinder({ edges, hubs, substations, onPick }: {
       </li>)}
     </ol>
     <p className="mt-2 text-[11px] leading-relaxed text-[#6b6b70]">
-      Kandidaten sind die Lkw-Parkplätze der Autobahn GmbH an dieser Strecke, weil Lkw dort ohnehin stehen. Ob dort oder daneben Fläche frei ist, zeigt das Tool nicht.
-      Punkte: {number(FINDER_WEIGHTS.dwell * 100)} % Standzeit (Lkw nachts, ohne Messung nur Stellplätze mit Abschlag), {number(FINDER_WEIGHTS.traffic * 100)} % Verkehr, {number(FINDER_WEIGHTS.competition * 100)} % Abstand zum nächsten Lkw-Ladepark, {number(FINDER_WEIGHTS.grid * 100)} % Nähe zum Umspannwerk. Eine Rangfolge für die Vorauswahl, kein Standortgutachten.
+      Kandidaten sind die Lkw-Parkplätze der Autobahn GmbH an dieser Strecke, weil Lkw dort ohnehin stehen.
+      Punkte: {number(FINDER_WEIGHTS.dwell * 100)} % Standzeit (Lkw nachts, ohne Messung nur Stellplätze mit Abschlag), {number(FINDER_WEIGHTS.traffic * 100)} % Verkehr, {number(FINDER_WEIGHTS.competition * 100)} % Abstand zum nächsten Lkw-Ladepark, {number(FINDER_WEIGHTS.grid * 100)} % Nähe zum Umspannwerk.
     </p>
   </details>;
 }

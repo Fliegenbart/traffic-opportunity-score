@@ -26,7 +26,7 @@ export default function SiteAccessCheck({ site, context }: { site: PlanningSite;
       const payload = siteAccessResultSchema.parse(await response.json());
       if (payload.edgeId !== edge.edgeId || payload.site.lon !== site.lon || payload.site.lat !== site.lat) throw new Error("Standortzuordnung der Antwort stimmt nicht überein.");
       setResult(payload);
-    } catch { setError("Die Route konnte derzeit nicht geprüft werden. Ob Lkw den Standort erreichen können, bleibt offen."); }
+    } catch { setError("Die Route konnte gerade nicht berechnet werden."); }
     finally { window.clearTimeout(timeout); setBusy(false); }
   };
   return <div className="mt-4 border-t border-[#e4e4e1] pt-4" data-testid="site-access" data-tour="access">
@@ -37,7 +37,7 @@ export default function SiteAccessCheck({ site, context }: { site: PlanningSite;
       {([ ["heightM", "Höhe · m", 1, 6, 0.05], ["widthM", "Breite · m", 1, 5, 0.05], ["lengthM", "Länge · m", 2, 30, 0.1], ["weightKg", "Gesamtgewicht · kg", 1000, 80000, 500], ["axleWeightKg", "Max. Achslast · kg", 1000, 20000, 500] ] as const).map(([key, label, min, max, step]) => <label key={key}>{label}<input className="mt-1 w-full rounded border border-[#cfcfcb] p-2 text-[#0a0a0b]" type="number" value={vehicle[key]} min={min} max={max} step={step} disabled={busy} onChange={(e) => { setResult(undefined); setVehicle((v) => ({ ...v, [key]: e.target.value })); }} /></label>)}
     </div><p className="mt-2">Die Werte beschreiben einen Beispiel-Lkw, kein geprüftes Fahrzeug. Aktuelles Gewicht und zulässiges Gesamtgewicht werden gleich angesetzt. Gefahrgut und zeitabhängige Fahrverbote werden nicht geprüft.</p></details>
     {!parsedVehicle.success && <p role="alert" className="mt-2 text-xs text-[#8b570b]">Fahrzeugmaße und Gewichte korrigieren; Achslast darf nicht über dem Gesamtgewicht liegen.</p>}
-    {!result && !error && <p className="mt-2 text-xs text-[#6b6b70]">{edge ? "Noch keine Route geprüft. Die Zufahrt für Lkw ist nicht bestätigt." : context ? "Keine berechnete Strecke im Umkreis von 10 km für einen Routenvergleich verfügbar." : "Die Standortdaten für den Routenvergleich fehlen noch."}</p>}
+    {!result && !error && <p className="mt-2 text-xs text-[#6b6b70]">{edge ? "Noch keine Route berechnet." : context ? "Keine berechnete Strecke im Umkreis von 10 km für einen Routenvergleich verfügbar." : "Die Standortdaten für den Routenvergleich fehlen noch."}</p>}
     {error && <p role="alert" className="mt-2 text-xs text-[#8b570b]">{error}</p>}
     {result && <div role="status" className="mt-2 space-y-2 text-xs text-[#6b6b70]">
       <p className="font-semibold text-[#8b570b]">{result.status === "truck_route_proxy" ? "Lkw-Routen berechnet · Einfahrt vor Ort noch prüfen" : result.status === "road_proxy" ? "Straßenrouten berechnet · Eignung für Lkw noch offen" : result.status === "not_configured" ? "Routenprüfung noch nicht aktiviert" : "Route nicht vollständig prüfbar"}</p>

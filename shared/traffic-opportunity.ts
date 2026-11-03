@@ -109,7 +109,7 @@ export function classifyTrafficOpportunity(score: number): TrafficOpportunityCla
       level: "High Opportunity",
       label: "Sehr hohes Verkehrspotenzial",
       description:
-        "Viel berechneter Lkw-Verkehr und bedeutende Verbindungen. Die Region lohnt eine nähere Prüfung; tatsächliche Ladekunden und ein geeigneter Standort sind damit noch nicht bestätigt.",
+        "Viel berechneter Lkw-Verkehr und bedeutende Verbindungen. Die Region lohnt eine nähere Prüfung.",
     };
   }
 
@@ -118,7 +118,7 @@ export function classifyTrafficOpportunity(score: number): TrafficOpportunityCla
       level: "Strong Candidate",
       label: "Hohes Verkehrspotenzial",
       description:
-        "Die Verkehrsdaten sprechen für eine nähere Prüfung. Ob ein Ladepark sinnvoll ist, hängt zusätzlich von Kunden, Zufahrt, Fläche und Netzanschluss ab.",
+        "Die Verkehrsdaten sprechen für eine nähere Prüfung.",
     };
   }
 
@@ -127,7 +127,7 @@ export function classifyTrafficOpportunity(score: number): TrafficOpportunityCla
       level: "Watchlist",
       label: "Mittleres Verkehrspotenzial",
       description:
-        "Das berechnete Verkehrsaufkommen liegt im Mittelfeld. Feste Kunden aus der Umgebung könnten wichtig sein; dazu fehlen bisher Betriebsdaten.",
+        "Das berechnete Verkehrsaufkommen liegt im Mittelfeld. Hier zählen feste Kunden aus der Umgebung.",
     };
   }
 
@@ -135,6 +135,6 @@ export function classifyTrafficOpportunity(score: number): TrafficOpportunityCla
     level: "Low Opportunity",
       label: "Geringes Verkehrspotenzial",
     description:
-      "In diesem Verkehrsmodell fällt die Region weniger auf. Das schließt einen sinnvollen Ladepark für lokale Flotten oder feste Kunden nicht aus.",
+      "In diesem Verkehrsmodell fällt die Region weniger auf. Interessant eher für lokale Flotten und feste Kunden.",
   };
 }

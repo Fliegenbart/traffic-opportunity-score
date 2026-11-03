@@ -454,7 +454,7 @@ export default function KorridorReport() {
             value={`${totals.readyCount} von ${totals.relationCount}`}
             detail={
               totals.plannableCount > 0
-                ? `Weitere ${totals.plannableCount} ${totals.plannableCount === 1 ? "Strecke benötigt" : "Strecken benötigen"} eine konkrete Ladeplanung. Zufahrt und Ladezeiten sind nicht bestätigt.`
+                ? `Weitere ${totals.plannableCount} ${totals.plannableCount === 1 ? "Strecke benötigt" : "Strecken benötigen"} eine konkrete Ladeplanung.`
                 : "Auf Basis angenommener Reichweite und bekannter Ladeparks. Kein betrieblicher Fahrbarkeitsnachweis."
             }
           />
@@ -566,8 +566,7 @@ export default function KorridorReport() {
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#6e6e73]">
           Angenommen werden {assumptions.truckRangeKm} km Reichweite sowie Laden am Start-
           und Zieldepot. Verglichen werden bekannte Ladeparks und Kosten für Energie,
-          Maut und Erlöse aus der Treibhausgasquote (THG). Zufahrt, tatsächliche Ladezeiten und komplette
-          Fahrzeugkosten sind damit nicht geprüft.
+          Maut und Erlöse aus der Treibhausgasquote (THG).
         </p>
 
         <div className="mt-4 space-y-2.5">
@@ -726,7 +725,7 @@ export default function KorridorReport() {
           </div>
 
           <div className="rounded-2xl border border-black/[0.08] bg-white p-5">
-            <h3 className="font-semibold">Was die Rechnung nicht bestätigt</h3>
+            <h3 className="font-semibold">Datengrundlage</h3>
             <ul className="mt-3 space-y-2 text-sm leading-relaxed text-[#6e6e73]">
               <li>
                 Verkehr: berechnete ETISplus-Fahrten für 2010, 2019 und 2030,
@@ -737,7 +736,7 @@ export default function KorridorReport() {
               </li>
               <li>
                 Ladeparks: dokumentierte Lkw-Angebote in Betrieb aus Register und Betreiberquellen.
-                Freie Plätze und Zufahrt sind nicht bestätigt.
+               
               </li>
               <li>
                 Straßenrouten: OSRM/OpenStreetMap mit Pkw-Einstellungen, kein Lkw-Nachweis.

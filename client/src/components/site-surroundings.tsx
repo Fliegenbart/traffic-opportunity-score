@@ -63,7 +63,7 @@ export default function SiteSurroundings({ site }: { site: { lat: number; lon: n
         <dd className="text-xs text-[#6b6b70]">Zum Vergleich mit deinem angenommenen E-Lkw-Anteil. Neuzulassungen sind nicht der Bestand auf der Straße.</dd></div>}
     </dl>
     <p className="mt-3 text-[11px] leading-relaxed text-[#6b6b70]">
-      Parkplätze zeigen, wo Lkw heute schon Pause machen; das ist kein Nachweis für Ladekunden. Quellen: {services && <>Autobahn GmbH des Bundes (Stand {new Date(services.metadata.retrievedAt).toLocaleDateString("de-DE")}, Lizenz ungeklärt)</>}{services && ev ? " · " : ""}{ev && "Kraftfahrt-Bundesamt, FZ 28"}{o && <> · {index!.metadata.source.attribution} (Näherungswerte, teils modellbasiert)</>}.
+      Quellen: {services && <>Autobahn GmbH des Bundes (Stand {new Date(services.metadata.retrievedAt).toLocaleDateString("de-DE")}, Lizenz ungeklärt)</>}{services && ev ? " · " : ""}{ev && "Kraftfahrt-Bundesamt, FZ 28"}{o && <> · {index!.metadata.source.attribution} (Näherungswerte, teils modellbasiert)</>}.
     </p>
   </div>;
 }
