@@ -410,8 +410,8 @@ export default function KorridorReport() {
               <Building2 className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-lg font-semibold tracking-[-0.02em]">DepotOne</p>
-              <p className="text-xs text-[#6e6e73]">Truckonomics · Ladepark-Check</p>
+              <p className="text-lg font-semibold tracking-[-0.02em]">Ladepark-Check</p>
+              <p className="text-xs text-[#6e6e73]">TYRN.ON GmbH</p>
             </div>
           </div>
           <p className="text-sm text-[#6e6e73]">
@@ -783,7 +783,7 @@ export default function KorridorReport() {
         </div>
 
         <p className="mt-auto pt-6 text-center text-xs text-[#9b9ba0]">
-          Streckenanalyse · Truckonomics / DepotOne · Erstellt am{" "}
+          Streckenanalyse · Ladepark-Check · Erstellt am{" "}
           {reportDate.toLocaleDateString("de-DE")} · Alle Quellen dokumentiert und auf Anfrage
           einsehbar
         </p>

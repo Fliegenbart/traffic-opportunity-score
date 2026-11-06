@@ -79,9 +79,9 @@ test("Commercial frontend does not silently use a public routing demo", () => {
   assert.equal(source.includes("https://router.project-osrm.org/route/"), false);
 });
 
-test("Ladepark-Check carries no E.ON or eTruckathon branding", () => {
+test("Ladepark-Check carries no E.ON, DepotOne or eTruckathon branding", () => {
   // Betreiberangaben in Ladepark-Daten (z. B. Register-Einträge) sind Fakten und bleiben erlaubt.
-  const forbidden = /E\.ON|\beon\b|truckathon/i;
+  const forbidden = /E\.ON|\beon\b|truckathon|depot\s?one/i;
   const files = [];
   const walk = (dir) => {
     for (const entry of readdirSync(new URL(dir, root), { withFileTypes: true })) {
