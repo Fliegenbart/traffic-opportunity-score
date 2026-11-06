@@ -55,7 +55,7 @@ prüft diese Projektgrenzen; die Prüfung ist Teil von `npm test`.
 - Korridor-Report: Routen laufen nur über explizit konfigurierte, kommerziell freigegebene OSRM-kompatible Dienste (Straßen-km und
   Ladelücken ±10 km entlang der Route; Fallback Luftlinie, gekennzeichnet). Kostenmodell
   inkl. THG-Quotenerlös und Sensitivitäts-Spanne (Diesel ±0,15 €/l, Strom +0,10/−0,05 €/kWh).
-- Korridor-Report: personalisierte 4-Seiten-Analyse für Logistiker (eTruckathon-Funnel).
+- Korridor-Report: personalisierte 4-Seiten-Analyse für Logistiker.
   Konfiguration je Kunde unter `client/public/data/reports/<id>.json` (siehe `demo.json`),
   Ansicht unter `/korridor-report?id=<id>`, PDF per
   `./scripts/create_korridor_report_pdf.sh <id> [output.pdf]` (Playwright headless Chrome).
@@ -76,7 +76,7 @@ prüft diese Projektgrenzen; die Prüfung ist Teil von `npm test`.
   (CSV nach `data/external/bnetza_ladesaeulen.csv` laden; Link auf bundesnetzagentur.de unter
   E-Mobilität → Download und Kontakt) plus der handkuratierten Liste
   `curated/truck-charging-de.json` (Quelle + Prüfdatum je Eintrag). Verifizierte Hubs
-  (Milence, Aral pulse MCS, Daimler TruckCharge, E.ON Drive/MAN, Lkw-geflaggte
+  (Milence, Aral pulse MCS, Daimler TruckCharge, weitere Betreiber, Lkw-geflaggte
   Register-Einträge) erscheinen als Rauten auf der Karte; die App rechnet daraus
   Weiße-Flecken-Badges je Hotspot-Strecke und Ladelücken je Korridor
   (Geo-Helfer in `shared/geo.ts`, Test: `npm run test:geo`).

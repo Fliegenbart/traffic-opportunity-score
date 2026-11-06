@@ -20,7 +20,6 @@ test("TCO and Readiness implementations are not shipped in the Traffic repo", ()
     "client/src/components/detailed-tco-table.tsx",
     "client/src/components/embed-auto-resize.tsx",
     "client/src/components/environmental-impact-card.tsx",
-    "client/src/components/eon-drive-benefits.tsx",
     "client/src/components/fleet-size-selector.tsx",
     "client/src/components/lifecycle-assumptions-card.tsx",
     "client/src/components/lifecycle-insight-card.tsx",
@@ -78,4 +77,25 @@ test("Legacy page links redirect to the separate tools, never their APIs", () =>
 test("Commercial frontend does not silently use a public routing demo", () => {
   const source = readFileSync(new URL("client/src/pages/korridor-report.tsx", root), "utf8");
   assert.equal(source.includes("https://router.project-osrm.org/route/"), false);
+});
+
+test("Ladepark-Check carries no E.ON or eTruckathon branding", () => {
+  // Betreiberangaben in Ladepark-Daten (z. B. Register-Einträge) sind Fakten und bleiben erlaubt.
+  const forbidden = /E\.ON|\beon\b|truckathon/i;
+  const files = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(new URL(dir, root), { withFileTypes: true })) {
+      const path = `${dir}${entry.name}`;
+      if (entry.isDirectory()) walk(`${path}/`);
+      else if (/\.(tsx?|css|html|md|json)$/.test(entry.name)) files.push(path);
+    }
+  };
+  walk("client/src/");
+  walk("client/public/data/reports/");
+  walk("design/");
+  files.push("README.md", "client/index.html");
+  const hits = files.filter(
+    (file) => !file.endsWith("map-data.json") && forbidden.test(readFileSync(new URL(file, root), "utf8")),
+  );
+  assert.deepEqual(hits, []);
 });

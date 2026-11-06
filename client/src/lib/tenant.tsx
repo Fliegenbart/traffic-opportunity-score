@@ -1,63 +1,17 @@
 import React, { createContext, useContext, useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
-import type { LucideIcon } from "lucide-react";
-import { FileText, Leaf, Wrench, Zap } from "lucide-react";
-import { EonDriveLogo } from "@/components/eon-drive-logo";
 
-export type TenantId = "eon";
-
-export interface TenantBenefit {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-}
+export type TenantId = "tyrnon";
 
 export interface TenantConfig {
   id: TenantId;
   appName: string;
-  poweredByLabel: string;
-  partnerName: string;
-  PartnerLogo: React.ComponentType<{ className?: string }>;
-  links: {
-    contact: string;
-    learnMore: string;
-  };
-  benefits: TenantBenefit[];
 }
 
 const TENANTS: Record<TenantId, TenantConfig> = {
-  eon: {
-    id: "eon",
-    appName: "Truckonomics",
-    poweredByLabel: "powered by",
-    partnerName: "E.ON Drive",
-    PartnerLogo: EonDriveLogo,
-    links: {
-      contact: "https://www.eon.de/de/geschaeftskunden/e-mobilitaet/kontakt.html",
-      learnMore: "https://www.eon.de/de/geschaeftskunden/e-mobilitaet.html",
-    },
-    benefits: [
-      {
-        icon: Zap,
-        title: "Ladeinfrastruktur",
-        description: "Komplette Depot-Charging Lösung aus einer Hand",
-      },
-      {
-        icon: Leaf,
-        title: "Grüner Strom",
-        description: "100% Ökostrom-Tarif für Ihre Flotte",
-      },
-      {
-        icon: FileText,
-        title: "Fördermittel",
-        description: "Unterstützung bei der Beantragung von Förderungen",
-      },
-      {
-        icon: Wrench,
-        title: "Full Service",
-        description: "24/7 Wartung & technischer Support",
-      },
-    ],
+  tyrnon: {
+    id: "tyrnon",
+    appName: "Ladepark-Check",
   },
 };
 
@@ -70,7 +24,7 @@ function getTenantIdFromUrl(): TenantId {
   } catch {
     // noop
   }
-  return "eon";
+  return "tyrnon";
 }
 
 function getEmbedModeFromUrl(pathname: string): boolean {

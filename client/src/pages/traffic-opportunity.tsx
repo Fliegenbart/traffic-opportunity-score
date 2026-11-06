@@ -1911,7 +1911,7 @@ export default function TrafficOpportunity() {
                     </h3>
                     <p className="mt-2.5 text-sm leading-relaxed text-[#55555a]">
                       {liveHubs.length} dokumentierte Lkw-Ladeparks in Betrieb (Milence, Aral
-                      pulse, Daimler TruckCharge, E.ON Drive/MAN u. a.), dazu{" "}
+                      pulse, Daimler TruckCharge u. a.), dazu{" "}
                       {charging.verified.length - liveHubs.length} angekündigte. Quelle:
                       Ladepunktregister der Bundesnetzagentur (Stand{" "}
                       {new Date(charging.metadata.bnetzaDataDate).toLocaleDateString("de-DE")})
