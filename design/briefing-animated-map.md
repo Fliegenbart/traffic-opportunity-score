@@ -3,7 +3,7 @@
 ## Kontext & Zweck
 
 Die Karte ist das Herzstück eines Pitch- und Analyse-Tools für Lkw-Ladeinfrastruktur
-(Zielgruppe: E.ON Drive, Logistiker wie DB Schenker, Investoren wie Mitsui). Sie zeigt,
+(Zielgruppe: Ladeparkbetreiber, Logistiker wie DB Schenker, Investoren wie Mitsui). Sie zeigt,
 **wo sich Deutschlands Lkw-Verkehr 2030 bündelt — und wo entlang dieser Ströme noch kein
 Lkw-Ladepark steht.** Die Karte wird live in Meetings bedient (Klicken, Zeigen, Erzählen)
 und ist gleichzeitig die Arbeitsfläche eines Workspace mit vier Tabs (Strecken, Korridore,
@@ -20,7 +20,7 @@ Regionen, Standort-Check).
 - **Farben:** Türkis #0DBBC8 / #19c8d4 (Verkehr, Marke), Amber #e8a13a (Lade-Lücken =
   Gelegenheit), Violett #a78bfa (Lkw-Ladeparks), Weiß für Auswahl/Pins. Eine helle Variante
   (#f1f2f5 Landmasse auf Weiß) existiert für den Print-Report — Animationen betreffen nur dark.
-- **Typo:** E.ON Brix Sans; Karten-Labels als gesperrte Versalien (ANKERSTÄDTE in
+- **Typo:** Geist; Karten-Labels als gesperrte Versalien (ANKERSTÄDTE in
   rgba(255,255,255,0.32)).
 - **Designsprache drumherum:** 8px-Radien, keine Schatten, Tabellenziffern, ruhige Flächen.
 
