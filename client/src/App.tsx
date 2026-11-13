@@ -7,6 +7,7 @@ import { TenantProvider } from "@/lib/tenant";
 import TrafficOpportunity from "@/pages/traffic-opportunity";
 import KorridorReport from "@/pages/korridor-report";
 import Standort from "@/pages/standort";
+import Tour from "@/pages/tour";
 import NotFound from "@/pages/not-found";
 
 // Old shared links (tabs, regions, sections, embeds) keep opening the full analysis view.
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/traffic-opportunity" component={Home} />
       <Route path="/analyse" component={TrafficOpportunity} />
       <Route path="/korridor-report" component={KorridorReport} />
+      <Route path="/tour" component={Tour} />
       <Route component={NotFound} />
     </Switch>
   );
