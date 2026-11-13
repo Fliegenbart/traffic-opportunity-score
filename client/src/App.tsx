@@ -8,6 +8,7 @@ import TrafficOpportunity from "@/pages/traffic-opportunity";
 import KorridorReport from "@/pages/korridor-report";
 import Standort from "@/pages/standort";
 import Tour from "@/pages/tour";
+import Flotte from "@/pages/flotte";
 import NotFound from "@/pages/not-found";
 
 // Old shared links (tabs, regions, sections, embeds) keep opening the full analysis view.
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/analyse" component={TrafficOpportunity} />
       <Route path="/korridor-report" component={KorridorReport} />
       <Route path="/tour" component={Tour} />
+      <Route path="/flotte" component={Flotte} />
       <Route component={NotFound} />
     </Switch>
   );

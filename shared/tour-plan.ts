@@ -18,7 +18,7 @@ export type TourAssumptions = {
   dieselPrice: number; dieselTruckPerKm: number; dieselTollPerKm: number;
 };
 
-// Depot price and truck rate are the DepotOne launch prices; everything else is an editable assumption.
+// Depot price and truck rate are the launch prices of the as-a-service package; everything else is an editable assumption.
 export const DEFAULT_TOUR_ASSUMPTIONS: TourAssumptions = {
   temperatureC: 10, reservePercent: 15,
   depotPrice: 0.30, publicPrice: 0.55, truckPerKm: 0.42, driverPerHour: 30,

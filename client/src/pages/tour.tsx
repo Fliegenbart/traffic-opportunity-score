@@ -2,44 +2,18 @@ import { useEffect, useMemo, useState } from "react";
 import { BatteryCharging, Coffee, MapPin, Plus, Trash2, TriangleAlert, Truck } from "lucide-react";
 import { GERMANY_PATH } from "@/components/germany-outline";
 import { MAP_HEIGHT, MAP_WIDTH, project } from "@/components/traffic-map";
-import { alongRoute, DEFAULT_TOUR_ASSUMPTIONS, planTour, TOUR_VEHICLES, type TourAssumptions, type TourCharger, type TourEvent, type TourPlan } from "@shared/tour-plan";
+import { chargersAlong, fetchRoute, geocode, type Charging, type Hub, type Network, type Place, type Route } from "@/lib/tour-routing";
+import { alongRoute, DEFAULT_TOUR_ASSUMPTIONS, planTour, TOUR_VEHICLES, type TourAssumptions, type TourEvent, type TourPlan } from "@shared/tour-plan";
 
-type Hub = { id: string; name: string; operator: string; status: "live" | "announced"; lon: number; lat: number; maxKw?: number | null };
-type Charging = { verified: Hub[]; proxy: { lon: number; lat: number; chargePoints: number; maxKw: number }[] };
-type Network = "live" | "announced" | "proxy";
 type StopInput = { address: string; dwellMin: number; payloadT: number };
-type Place = { lon: number; lat: number; label: string };
-type Route = { places: Place[]; line: [number, number][]; legs: { km: number; hours: number }[] };
-
 const NETWORKS: { id: Network; label: string; hint: string }[] = [
   { id: "live", label: "Lkw-Ladeparks in Betrieb", hint: "bestätigt für Lkw" },
   { id: "announced", label: "+ angekündigte", hint: "geplant ab 2027" },
   { id: "proxy", label: "+ Schnelllader ab 300 kW", hint: "Lkw-Zufahrt unbestätigt" },
 ];
-// A truck is limited to 80 km/h; the car route time is the lower bound in towns and on slow roads.
-const TRUCK_KMH = 80;
 const number = (v: number, digits = 0) => v.toLocaleString("de-DE", { maximumFractionDigits: digits, minimumFractionDigits: digits });
 const euro = (v: number) => `${number(Math.round(v))} €`;
 const duration = (min: number) => { const m = Math.round(min); return m < 60 ? `${m} min` : `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")} min`; };
-
-async function geocode(q: string): Promise<Place | null> {
-  const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=de&q=${encodeURIComponent(q)}`, { headers: { Accept: "application/json" } });
-  const hits = (await response.json()) as { lat: string; lon: string; display_name: string }[];
-  return hits.length ? { lon: Number(hits[0].lon), lat: Number(hits[0].lat), label: hits[0].display_name.split(",").slice(0, 2).join(", ") } : null;
-}
-
-// Prototype routing: public OSRM demo server (car profile), time scaled to truck speed. Not for production load.
-async function fetchRoute(places: Place[]): Promise<Route> {
-  const coords = places.map((p) => `${p.lon.toFixed(5)},${p.lat.toFixed(5)}`).join(";");
-  const response = await fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`);
-  const body = (await response.json()) as { code: string; routes?: { geometry: { coordinates: [number, number][] }; legs: { distance: number; duration: number }[] }[] };
-  if (body.code !== "Ok" || !body.routes?.length) throw new Error("route");
-  const route = body.routes[0], every = Math.max(1, Math.ceil(route.geometry.coordinates.length / 4000));
-  return {
-    places, line: route.geometry.coordinates.filter((_, i, all) => i % every === 0 || i === all.length - 1),
-    legs: route.legs.map((l) => ({ km: l.distance / 1000, hours: Math.max(l.duration / 3600 * 1.1, l.distance / 1000 / TRUCK_KMH) })),
-  };
-}
 
 function NumberField({ label, value, onChange, step = 1, unit }: { label: string; value: number; onChange: (v: number) => void; step?: number; unit?: string }) {
   return <label className="block text-xs text-[#6b6b70]">{label}
@@ -119,7 +93,7 @@ export default function Tour() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => { document.title = "Touren-Check · DepotOne Prototyp"; fetch("/data/truck-charging-de.json").then((r) => r.json()).then(setCharging).catch(() => setCharging(null)); }, []);
+  useEffect(() => { document.title = "Touren-Check · Prototyp"; fetch("/data/truck-charging-de.json").then((r) => r.json()).then(setCharging).catch(() => setCharging(null)); }, []);
 
   const vehicle = TOUR_VEHICLES.find((v) => v.id === vehicleId) ?? TOUR_VEHICLES[0];
   const setStop = (i: number, patch: Partial<StopInput>) => setStops((list) => list.map((s, j) => (j === i ? { ...s, ...patch } : s)));
@@ -149,16 +123,7 @@ export default function Tour() {
   // Chargers along the route for each network level; the plan reruns instantly when vehicle or assumptions change.
   const plans = useMemo(() => {
     if (!route || !charging) return null;
-    const total = route.legs.reduce((sum, l) => sum + l.km, 0);
-    const live = charging.verified.filter((h) => h.status === "live"), announced = charging.verified.filter((h) => h.status === "announced");
-    const along = (points: { lon: number; lat: number }[], maxOff: number, make: (i: number) => Omit<TourCharger, "atKm">) => {
-      const { hits, lengthKm } = alongRoute(route.line, points, maxOff);
-      return hits.map((h) => ({ ...make(h.index), atKm: h.atKm * total / (lengthKm || 1) }));
-    };
-    const hub = (list: Hub[]) => along(list, 5, (i) => ({ id: list[i].id, name: list[i].name, operator: list[i].operator, maxKw: list[i].maxKw || 300, lon: list[i].lon, lat: list[i].lat }));
-    const sets: Record<Network, TourCharger[]> = { live: hub(live), announced: [], proxy: [] };
-    sets.announced = [...sets.live, ...hub(announced)];
-    sets.proxy = [...sets.announced, ...along(charging.proxy, 2, (i) => ({ id: `p${i}`, name: `Schnelllader ${number(charging.proxy[i].maxKw)} kW (Lkw-Zufahrt unbestätigt)`, maxKw: charging.proxy[i].maxKw, lon: charging.proxy[i].lon, lat: charging.proxy[i].lat }))];
+    const sets = chargersAlong(route, charging);
     const legs = route.legs.map((l, i) => ({ ...l, payloadT: Math.min(vehicle.maxPayloadT, payloads[i] ?? 0) }));
     const run = (n: Network) => planTour(vehicle, legs, dwells, sets[n], a, route.places[0].label);
     return { live: run("live"), announced: run("announced"), proxy: run("proxy") };
@@ -174,7 +139,7 @@ export default function Tour() {
     <header className="border-b border-[#e4e4e1]">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-12">
         <span className="flex items-center gap-3"><span className="h-2.5 w-2.5 bg-[#1d3bff]" aria-hidden="true" /><span className="whitespace-nowrap text-[15px] font-semibold tracking-[-0.01em]">Touren-Check</span></span>
-        <span className="text-xs text-[#6b6b70]">Prototyp für DepotOne</span>
+        <span className="flex items-center gap-4 text-xs text-[#6b6b70]"><a href="/flotte" className="font-semibold text-[#1d3bff] hover:text-[#0f27d6]">Ganze Flotte prüfen</a><span className="hidden sm:inline">Prototyp</span></span>
       </div>
     </header>
 
@@ -265,7 +230,7 @@ export default function Tour() {
               {plan.feasible && <div className="mt-5">
                 <h2 className="text-sm font-semibold">Kosten dieser Tour</h2>
                 <table className="mt-2 w-full text-sm tabular-nums">
-                  <thead><tr className="text-left text-xs text-[#6b6b70]"><th className="py-1 font-normal"></th><th className="py-1 text-right font-normal">E-Lkw mit DepotOne</th><th className="py-1 text-right font-normal">Diesel</th></tr></thead>
+                  <thead><tr className="text-left text-xs text-[#6b6b70]"><th className="py-1 font-normal"></th><th className="py-1 text-right font-normal">E-Lkw im Komplettpaket</th><th className="py-1 text-right font-normal">Diesel</th></tr></thead>
                   <tbody>
                     {([["Fahrzeug", plan.cost.electric.truck, plan.cost.diesel.truck], ["Energie", plan.cost.electric.energy, plan.cost.diesel.fuel], ["Maut", 0, plan.cost.diesel.toll], ["Fahrer", plan.cost.electric.driver, plan.cost.diesel.driver]] as const).map(([label, e, d]) =>
                       <tr key={label} className="border-t border-[#e4e4e1]"><td className="py-1.5 text-[#55555a]">{label}</td><td className="py-1.5 text-right">{euro(e)}</td><td className="py-1.5 text-right">{euro(d)}</td></tr>)}
@@ -282,7 +247,7 @@ export default function Tour() {
           <p className="mt-2 text-xs text-[#6b6b70]">Punkte: bestätigte Lkw-Ladeparks in Betrieb.</p>
         </>}
 
-        <p className="mt-8 text-[11px] leading-relaxed text-[#6b6b70]">Erste Einschätzung, keine Fahranweisung. Verbrauch: Modellwert je Fahrzeugklasse aus Ladung und Temperatur, ohne Höhenprofil und Wind. Fahrzeit: Straßenroute (OpenStreetMap) mit höchstens 80 km/h. Lenkzeiten vereinfacht: 45 Minuten Pause nach 4,5 Stunden, 11 Stunden Ruhezeit nach 9 Stunden Fahrt. Eine Standzeit ab 45 Minuten zählt als Pause. Unterwegs wird bis 90 % geladen, die Ladeleistung ist über den Stopp gemittelt. Ladeparks: Ladesäulenregister der Bundesnetzagentur und Betreiberangaben; ob ein Ladeplatz frei ist, wird nicht geprüft. E-Lkw sind in Deutschland derzeit von der Maut befreit. Depotstrom und Fahrzeugrate sind die DepotOne-Einstiegspreise, alle anderen Werte sind Annahmen.</p>
+        <p className="mt-8 text-[11px] leading-relaxed text-[#6b6b70]">Erste Einschätzung, keine Fahranweisung. Verbrauch: Modellwert je Fahrzeugklasse aus Ladung und Temperatur, ohne Höhenprofil und Wind. Fahrzeit: Straßenroute (OpenStreetMap) mit höchstens 80 km/h. Lenkzeiten vereinfacht: 45 Minuten Pause nach 4,5 Stunden, 11 Stunden Ruhezeit nach 9 Stunden Fahrt. Eine Standzeit ab 45 Minuten zählt als Pause. Unterwegs wird bis 90 % geladen, die Ladeleistung ist über den Stopp gemittelt. Ladeparks: Ladesäulenregister der Bundesnetzagentur und Betreiberangaben; ob ein Ladeplatz frei ist, wird nicht geprüft. E-Lkw sind in Deutschland derzeit von der Maut befreit. Depotstrom und Fahrzeugrate sind die Einstiegspreise des Komplettpakets, alle anderen Werte sind Annahmen.</p>
       </section>
     </main>
   </div>;
