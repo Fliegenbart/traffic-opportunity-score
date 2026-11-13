@@ -71,7 +71,7 @@ export default function Flotte() {
         setProgress(`Routen werden berechnet … ${i + 1} von ${parsed.tours.length}`);
         if (missing) { result.push({ tour, error: `„${missing}“ nicht gefunden` }); continue; }
         try {
-          const route = await fetchRoute([home, ...tour.stops.map((s) => cache[s]!), home]);
+          const route = await fetchRoute([home, ...tour.stops.map((s) => cache[s]!), home], vehicleId);
           result.push({ tour, route, sets: chargersAlong(route, charging) });
         } catch { result.push({ tour, error: "Route nicht berechenbar" }); }
       }
@@ -218,7 +218,7 @@ export default function Flotte() {
           </ol>
         </div>}
 
-        <p className="mt-8 text-[11px] leading-relaxed text-[#6b6b70]">Erste Einschätzung, kein Angebot. Jede Tour fährt ein eigener Lkw, kehrt zum Depot zurück und startet am nächsten Tag zur selben Zeit; die Ladung gilt für die ganze Tour. Ladepunkte: höchste Zahl gleichzeitig stehender Lkw. Ladergröße: kleinste Klasse (50, 150 oder 400 kW), die den Lkw in 90 % seiner Standzeit lädt. Netzanschluss: höchste Ladeleistung im Tagesverlauf, ohne Gebäude, Photovoltaik und Speicher. Kosten: {number(a.depotPrice, 2)} €/kWh im Depot und {number(a.truckPerKm, 2)} €/km für den E-Lkw (Einstiegspreise des Komplettpakets), {number(a.publicPrice, 2)} €/kWh unterwegs, Diesel {number(a.dieselPrice, 2)} €/l, Diesel-Lkw {number(a.dieselTruckPerKm, 2)} €/km, Maut {number(a.dieselTollPerKm, 2)} €/km, Fahrer {number(a.driverPerHour)} €/h, {number(a.temperatureC)} °C, {number(a.reservePercent)} % Akku-Reserve. Verbrauch, Fahrzeiten und Lenkzeiten wie im Touren-Check.</p>
+        <p className="mt-8 text-[11px] leading-relaxed text-[#6b6b70]">Erste Einschätzung, kein Angebot. {routed?.some((r) => r.route?.truckRouting) ? "Strecken: Lkw-Routen (HERE) mit Maßen und Gewicht des Fahrzeugs. " : "Strecken: Straßenrouten (OpenStreetMap) mit höchstens 80 km/h, ohne Lkw-Verbote. "}Jede Tour fährt ein eigener Lkw, kehrt zum Depot zurück und startet am nächsten Tag zur selben Zeit; die Ladung gilt für die ganze Tour. Ladepunkte: höchste Zahl gleichzeitig stehender Lkw. Ladergröße: kleinste Klasse (50, 150 oder 400 kW), die den Lkw in 90 % seiner Standzeit lädt. Netzanschluss: höchste Ladeleistung im Tagesverlauf, ohne Gebäude, Photovoltaik und Speicher. Kosten: {number(a.depotPrice, 2)} €/kWh im Depot und {number(a.truckPerKm, 2)} €/km für den E-Lkw (Einstiegspreise des Komplettpakets), {number(a.publicPrice, 2)} €/kWh unterwegs, Diesel {number(a.dieselPrice, 2)} €/l, Diesel-Lkw {number(a.dieselTruckPerKm, 2)} €/km, Maut {number(a.dieselTollPerKm, 2)} €/km, Fahrer {number(a.driverPerHour)} €/h, {number(a.temperatureC)} °C, {number(a.reservePercent)} % Akku-Reserve. Verbrauch, Fahrzeiten und Lenkzeiten wie im Touren-Check.</p>
       </section>
     </main>
   </div>;

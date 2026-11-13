@@ -130,6 +130,11 @@ erforderlich. Niemals den Schlüssel als `VITE_`-Variable verwenden. Vor öffent
 Aktivierung müssen Anbieterbudget und kommerzielle Nutzung geprüft werden;
 Instanz-Ratenlimits sind keine globale Kostenbegrenzung. Der Korridor-Report verwendet
 weiterhin seine eigene OSRM-Konfiguration, nicht automatisch HERE.
+Touren- und Flotten-Check (`/tour`, `/flotte`) fragen `POST /api/tour-route` nach einer
+HERE-Lkw-Route durch alle Stopps (eine Anfrage je Tour). Der Endpunkt antwortet nur mit
+`HERE_API_KEY`, dem eigenen Schalter `HERE_TOUR_ROUTING_ENABLED=1` und einem
+Redis-Zähler (Upstash/Vercel KV); `HERE_TOUR_DAILY_LIMIT` begrenzt die Routen pro Tag
+(Standard 300). Ohne Schalter nutzen die Seiten weiter das freie Prototyp-Routing.
 Importverfahren, Hash-Bereiche, Nutzungsrechte und Grenzen:
 [Öffentliche Referenzdaten](docs/public-context.md).
 

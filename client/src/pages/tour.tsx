@@ -113,7 +113,7 @@ export default function Tour() {
         places.push(place);
       }
       if (roundTrip) places.push(places[0]);
-      setRoute(await fetchRoute(places));
+      setRoute(await fetchRoute(places, vehicleId));
       setPayloads([depotPayload, ...stops.map((s) => s.payloadT)].slice(0, places.length - 1));
       setDwells(places.slice(1).map((p, i) => ({ label: p.label, dwellMin: stops[i]?.dwellMin ?? 0 })));
     } catch { setError("Die Routenberechnung ist gerade nicht erreichbar. Bitte in einer Minute erneut versuchen."); }
@@ -247,7 +247,7 @@ export default function Tour() {
           <p className="mt-2 text-xs text-[#6b6b70]">Punkte: bestätigte Lkw-Ladeparks in Betrieb.</p>
         </>}
 
-        <p className="mt-8 text-[11px] leading-relaxed text-[#6b6b70]">Erste Einschätzung, keine Fahranweisung. Verbrauch: Modellwert je Fahrzeugklasse aus Ladung und Temperatur, ohne Höhenprofil und Wind. Fahrzeit: Straßenroute (OpenStreetMap) mit höchstens 80 km/h. Lenkzeiten vereinfacht: 45 Minuten Pause nach 4,5 Stunden, 11 Stunden Ruhezeit nach 9 Stunden Fahrt. Eine Standzeit ab 45 Minuten zählt als Pause. Unterwegs wird bis 90 % geladen, die Ladeleistung ist über den Stopp gemittelt. Ladeparks: Ladesäulenregister der Bundesnetzagentur und Betreiberangaben; ob ein Ladeplatz frei ist, wird nicht geprüft. E-Lkw sind in Deutschland derzeit von der Maut befreit. Depotstrom und Fahrzeugrate sind die Einstiegspreise des Komplettpakets, alle anderen Werte sind Annahmen.</p>
+        <p className="mt-8 text-[11px] leading-relaxed text-[#6b6b70]">Erste Einschätzung, keine Fahranweisung. Verbrauch: Modellwert je Fahrzeugklasse aus Ladung und Temperatur, ohne Höhenprofil und Wind. {route?.truckRouting ? "Strecke und Fahrzeit: Lkw-Route (HERE) mit Maßen und Gewicht des Fahrzeugs, ohne aktuelle Verkehrslage." : "Fahrzeit: Straßenroute (OpenStreetMap) mit höchstens 80 km/h, ohne Lkw-Verbote."} Lenkzeiten vereinfacht: 45 Minuten Pause nach 4,5 Stunden, 11 Stunden Ruhezeit nach 9 Stunden Fahrt. Eine Standzeit ab 45 Minuten zählt als Pause. Unterwegs wird bis 90 % geladen, die Ladeleistung ist über den Stopp gemittelt. Ladeparks: Ladesäulenregister der Bundesnetzagentur und Betreiberangaben; ob ein Ladeplatz frei ist, wird nicht geprüft. E-Lkw sind in Deutschland derzeit von der Maut befreit. Depotstrom und Fahrzeugrate sind die Einstiegspreise des Komplettpakets, alle anderen Werte sind Annahmen.</p>
       </section>
     </main>
   </div>;

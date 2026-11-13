@@ -5,9 +5,9 @@ import { test } from "node:test";
 const root = new URL("../", import.meta.url);
 const readJson = (file) => JSON.parse(readFileSync(new URL(file, root), "utf8"));
 
-test("Traffic deploys only its charging, access and site-lead APIs", () => {
+test("Traffic deploys only its charging, access, site-lead and tour-route APIs", () => {
   const apiFiles = readdirSync(new URL("api/", root)).sort();
-  assert.deepEqual(apiFiles, ["charging-plan.ts", "leads.ts", "site-access.ts"]);
+  assert.deepEqual(apiFiles, ["charging-plan.ts", "leads.ts", "site-access.ts", "tour-route.ts"]);
 });
 
 test("TCO and Readiness implementations are not shipped in the Traffic repo", () => {
