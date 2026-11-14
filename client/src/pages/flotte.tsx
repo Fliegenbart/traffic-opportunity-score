@@ -112,7 +112,7 @@ export default function Flotte() {
     <header className="border-b border-[#e4e4e1]">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-12">
         <span className="flex items-center gap-3"><span className="h-2.5 w-2.5 bg-[#1d3bff]" aria-hidden="true" /><span className="whitespace-nowrap text-[15px] font-semibold tracking-[-0.01em]">Flotten-Check</span></span>
-        <span className="flex items-center gap-4 text-xs text-[#6b6b70]"><a href="/tour" className="font-semibold text-[#1d3bff] hover:text-[#0f27d6]">Einzelne Tour prüfen</a><span className="hidden sm:inline">Prototyp</span></span>
+        <span className="flex items-center gap-4 text-xs text-[#6b6b70]"><a href="/tour" className="font-semibold text-[#1d3bff] hover:text-[#0f27d6]">Einzelne Tour prüfen</a><a href="/tagesplan" className="font-semibold text-[#1d3bff] hover:text-[#0f27d6]">Tagesplan</a><span className="hidden sm:inline">Prototyp</span></span>
       </div>
     </header>
 

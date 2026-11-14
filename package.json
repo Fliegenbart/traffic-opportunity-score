@@ -16,7 +16,7 @@
     "check": "tsc",
     "test:geo": "npx --yes tsx shared/geo.test.ts",
     "test:report": "npx --yes tsx shared/korridor-report.test.ts",
-    "test:standort": "npx --yes tsx shared/standort-check.test.ts && npx --yes tsx shared/site-economics.test.ts && node --import tsx shared/site-traffic.test.ts && node --import tsx shared/site-access.test.ts && node --import tsx shared/site-access-api.test.ts && node --import tsx shared/here-routing.test.ts && node --import tsx shared/public-context.test.ts && node --import tsx shared/leads-api.test.ts && node --import tsx shared/surroundings.test.ts && node --import tsx shared/site-finder.test.ts && node --import tsx shared/watchlist.test.ts && node --import tsx shared/charging-gaps.test.ts && node --import tsx --test shared/tour-plan.test.ts shared/fleet-plan.test.ts shared/here-tour.test.ts"
+    "test:standort": "npx --yes tsx shared/standort-check.test.ts && npx --yes tsx shared/site-economics.test.ts && node --import tsx shared/site-traffic.test.ts && node --import tsx shared/site-access.test.ts && node --import tsx shared/site-access-api.test.ts && node --import tsx shared/here-routing.test.ts && node --import tsx shared/public-context.test.ts && node --import tsx shared/leads-api.test.ts && node --import tsx shared/surroundings.test.ts && node --import tsx shared/site-finder.test.ts && node --import tsx shared/watchlist.test.ts && node --import tsx shared/charging-gaps.test.ts && node --import tsx --test shared/tour-plan.test.ts shared/fleet-plan.test.ts shared/here-tour.test.ts shared/day-plan.test.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
